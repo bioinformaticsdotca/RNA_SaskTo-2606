@@ -1,6 +1,6 @@
 --- 
 title: "RNA-seq Analysis 2026"
-author: "Faculty: Malachi Griffith, Obi Griffith, Alyona Ivanova, Diogo Pellegrina"
+author: "Faculty: Malachi Griffith, Obi Griffith, Alyona Ivanova, Diogo Pellegrina, Isabel Risch"
 date: "June 22-24, 2026"
 site: bookdown::bookdown_site
 documentclass: book
@@ -22,7 +22,7 @@ Welcome to the 2026 RNA-seq Analysis Canadian Bioinformatics Workshop webpage!
 
 ## Pre-work
 
-<!--[You can find your pre-work here.](LINK TO PREWORK)-->
+[You can find your pre-work here.](https://docs.google.com/forms/d/e/1FAIpQLSddBS0KDcJD785ZAL0ZN7UK8wWoU6ObCs1Ju8HEXe_y2woy1w/viewform?usp=dialog)
 
 ## Class Photo
 
