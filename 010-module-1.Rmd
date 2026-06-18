@@ -4,6 +4,8 @@
 
 ## Lecture
 
+### This is an archived version of what was taught in June 2026. For the most up-to-date material, go [here](https://rnabio.org/)
+
 <!--<iframe width="640" height="360" src="YOUTUBE EMBED LINK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 -->
 
@@ -11,3 +13,282 @@
 -->
 
 ## Lab
+
+### For lab instructions, go [here](https://rnabio.org/)
+
+#### Key concepts
+* Review central dogma, RNA sequencing, RNAseq study design, library construction strategies, biological vs technical replicates, alignment strategies, etc.
+
+#### Learning objectives
+* Introduction to the theory and practice of RNA sequencing (RNA-seq) analysis
+* Rationale for sequencing RNA
+* Challenges specific to RNA-seq
+* General goals and themes of RNA-seq analysis work flows
+* Common technical questions related to RNA-seq analysis
+* Getting help outside of this course
+* Introduction to the RNA-seq hands on tutorial
+
+***
+
+![RNA-seq_Flowchart](assets/module_1/RNA-seq_Flowchart2.png)\
+
+***
+
+### FASTA/FASTQ/GTF mini lecture
+If you would like a refresher on common file formats such as FASTA, FASTQ, and GTF files, we have made a [mini lecture](https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cshl/2025/mini/RNASeq_MiniLecture_01_01_FASTA_FASTQ_GTF.pdf) briefly covering these.
+
+### Obtain a reference genome from Ensembl, iGenomes, NCBI or UCSC.
+
+In this example analysis we will use the human GRCh38 version of the genome from Ensembl. Furthermore, we are actually going to perform the analysis using only a single chromosome (chr22) and the ERCC spike-in to make it run faster.
+
+First we will create the necessary working directory.
+```bash
+cd $RNA_HOME
+echo $RNA_REFS_DIR
+mkdir -p $RNA_REFS_DIR
+
+```
+The complete data from which these files were obtained can be found at: [ftp://ftp.ensembl.org/pub/release-86/fasta/homo_sapiens/dna/](ftp://ftp.ensembl.org/pub/release-86/fasta/homo_sapiens/dna/). You could use wget to download the Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz file, then unzip/untar.
+
+We have prepared this simplified reference for you. It contains chr22 (and ERCC transcript) fasta files in both a single combined file and individual files. Download the reference genome file to the rnaseq working directory
+
+```bash
+cd $RNA_REFS_DIR
+wget http://genomedata.org/rnaseq-tutorial/fasta/GRCh38/chr22_with_ERCC92.fa
+ls
+
+```
+
+View the first 10 lines of this file. Why does it look like this?
+```bash
+head chr22_with_ERCC92.fa
+
+```
+
+How many lines and characters are in this file? How long is this chromosome (in bases and Mbp)?
+```bash
+wc chr22_with_ERCC92.fa
+
+```
+
+View 10 lines from approximately the middle of this file. What is the significance of the upper and lower case characters?
+```bash
+head -n 425000 chr22_with_ERCC92.fa | tail
+
+```
+
+What is the count of each base in the entire reference genome file (skipping the header lines for each sequence)?
+
+```bash
+cat chr22_with_ERCC92.fa | grep -v ">" | perl -ne 'chomp $_; $bases{$_}++ for split //; if (eof){print "$_ $bases{$_}\n" for sort keys %bases}'
+
+```
+
+Note: Instead of the above, you might consider getting reference genomes and associated annotations from [UCSC. e.g., UCSC GRCh38 download](http://hgdownload.cse.ucsc.edu/goldenPath/hg38/chromosomes/).
+
+Wherever you get them from, remember that the names of your reference sequences (chromosomes) must those matched in your annotation gtf files (described in the next section).
+
+View a list of all sequences in our reference genome fasta file.
+
+```bash
+grep ">" chr22_with_ERCC92.fa
+
+```
+
+***
+
+### Note on complex commands and scripting in Unix
+Take a closer look at the command above that counts the occurrence of each nucleotide base in our chr22 reference sequence. Note that for even a seemingly simple question, commands can become quite complex. In that approach, a combination of Unix commands, pipes, and the scripting language Perl are used to answer the question. In bioinformatics, generally this kind of scripting comes up before too long, because you have an analysis question that is so specific there is no out of the box tool available. Or an existing tool will give perform a much more complex and involved analysis than needed to answer a very focused question.
+
+In Unix there are usually many ways to solve the same problem. Perl as a language has mostly fallen out of favor. This kind of simple text parsing problem is one area it perhaps still remains relevant. Let's benchmark the run time of the previous approach and constrast with several alternatives that do not rely on Perl.
+
+Each of the following gives exactly the same answer. `time` is used to measure the run time of each alternative. Each starts by using `cat` to dump the file to standard out and then using `grep` to remove the header lines starting with ">". Each ends with `column -t` to make the output line up consistently.
+
+```
+#1. The Perl approach. This command removes the end of line character with chomp, then it splits each line into an array of individual characters, amd it creates a data structure called a hash to store counts of each letter on each line. Once the end of the file is reached it prints out the contents of this data structure in order.  
+time cat chr22_with_ERCC92.fa | grep -v ">" | perl -ne 'chomp $_; $bases{$_}++ for split //; if (eof){print "$bases{$_} $_\n" for sort keys %bases}' | column -t
+
+#2. The Awk approach. Awk is an alternative scripting language include in most linux distributions. This command is conceptually very similar to the Perl approach but with a different syntax. A for loop is used to iterate over each character until the end ("NF") is reached. Again the counts for each letter are stored in a simple data structure and once the end of the file is reach the results are printed.  
+time cat chr22_with_ERCC92.fa | grep -v ">" | awk '{for (i=1; i<=NF; i++){a[$i]++}}END{for (i in a){print a[i], i}}' FS= - | sort -k 2 | column -t
+
+#3. The Sed approach. Sed is an alternative scripting language. "tr" is used to remove newline characters. Then sed is used simply to split each character onto its own line, effectively creating a file with millions of lines. Then unix sort and uniq are used to produce counts of each unique character, and sort is used to order the results consistently with the previous approaches.
+time cat chr22_with_ERCC92.fa | grep -v ">" | tr -d '\n' | sed 's/\(.\)/\1\n/g'  - | sort | uniq -c | sort -k 2 | column -t
+
+#4. The grep appoach. The "-o" option of grep splits each match onto a line which we then use to get a count. The "-i" option makes the matching work for upper/lower case. The "-P" option allows us to use Perl style regular expressions with Greg.
+time cat chr22_with_ERCC92.fa | grep -v ">" | grep -i -o -P "a|c|g|t|y|n" | sort | uniq -c
+
+#5. Finally, the simplest/shortest approach that leverages the unix fold command to split each character onto its own line as in the Sed example.
+time cat chr22_with_ERCC92.fa | grep -v ">" | fold -w1 | sort | uniq -c | column -t
+
+
+```
+Which method is fastest? Why are the first two approaches so much faster than the others?
+
+***
+
+### PRACTICAL EXERCISE 2 (ADVANCED)
+Assignment: Use a commandline scripting approach of your choice to further examine our chr22 reference genome file and answer the following questions.
+
+Questions:
+- How many bases on chromosome 22 correspond to repetitive elements?
+- What is the percentage of the whole length?
+- How many occurences of the EcoRI (GAATTC) restriction site are present in the chromosome 22 sequence?
+
+Hint: Each question can be tackled using approaches similar to those above, using the file 'chr22_with_ERCC92.fa' as a starting point.
+Hint: To make things simpler, first produce a file with only the chr22 sequence.
+Hint: Remember that repetitive elements in the sequence are represented in lower case
+
+Solution: When you are ready you can check your approach against the [Solutions](#solutions).
+
+***
+
+![RNA-seq_Flowchart](assets/module_1/RNA-seq_Flowchart2.png)\
+
+***
+
+### FASTA/FASTQ/GTF mini lecture
+If you would like a refresher on common file formats such as FASTA, FASTQ, and GTF files, we have made a [mini lecture](https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cshl/2025/mini/RNASeq_MiniLecture_01_01_FASTA_FASTQ_GTF.pdf) briefly covering these.
+
+
+### Obtain Known Gene/Transcript Annotations
+
+In this tutorial we will use annotations obtained from Ensembl ([Homo_sapiens.GRCh38.86.gtf.gz](ftp://ftp.ensembl.org/pub/release-86/gtf/homo_sapiens/Homo_sapiens.GRCh38.86.gtf.gz)) for chromosome 22 only. For time reasons, these are prepared for you and made available on your AWS instance. But you should get familiar with sources of gene annotations for RNA-seq analysis.
+
+Copy the gene annotation files to the working directory.
+
+```bash
+echo $RNA_REFS_DIR
+cd $RNA_REFS_DIR
+wget http://genomedata.org/rnaseq-tutorial/annotations/GRCh38/chr22_with_ERCC92.gtf
+
+```
+
+Take a look at the contents of the .gtf file. Press `q` to exit the `less` display.
+
+```bash
+echo $RNA_REF_GTF
+less -p start_codon -S $RNA_REF_GTF
+
+```
+
+Note how the `-S` option makes it easier to veiw this file with `less`. Make the formatting a bit nicer still:
+```bash
+cat chr22_with_ERCC92.gtf | column -t | less -p exon -S
+```
+
+How many unique gene IDs are in the .gtf file?
+
+We can use a perl command-line command to find out:
+
+```bash
+perl -ne 'if ($_ =~ /(gene_id\s\"ENSG\w+\")/){print "$1\n"}' $RNA_REF_GTF | sort | uniq | wc -l
+
+```
+
+* Using `perl -ne ''` will execute the code between single quotes, on the .gtf file, line-by-line.
+
+* The `$_` variable holds the contents of each line.
+
+* The `'if ($_ =~//)'` is a pattern-matching command which will look for the pattern "gene_id" followed by a space followed by "ENSG" and one or more word characters (indicated by `\w+`) surrounded by double quotes.
+
+* The pattern to be matched is enclosed in parentheses. This allows us to print it out from the special variable `$1`.
+
+* The output of this perl command will be a long list of ENSG Ids.
+
+* By piping to `sort`, then `uniq`, then word count we can count the unique number of genes in the file.
+
+We can also use `grep` to find this same information.
+
+```bash
+cat chr22_with_ERCC92.gtf | grep -w gene | wc -l
+
+```
+
+* `grep -w gene` is telling grep to do an exact match for the string 'gene'. This means that it will return lines that are of the feature type `gene`.
+
+
+Now view the structure of a single transcript in GTF format. Press `q` to exit the `less` display when you are done.
+
+```bash
+grep ENST00000342247 $RNA_REF_GTF | less -p "exon\s" -S
+
+```
+
+To learn more, see:
+
+* [http://perldoc.perl.org/perlre.html#Regular-Expressions](http://perldoc.perl.org/perlre.html#Regular-Expressions)
+* [http://www.perl.com/pub/2004/08/09/commandline.html](http://www.perl.com/pub/2004/08/09/commandline.html)
+
+### Definitions:
+**Reference genome** - The nucleotide sequence of the chromosomes of a species. Genes are the functional units of a reference genome and gene annotations describe the structure of transcripts expressed from those gene loci.
+
+**Gene annotations** - Descriptions of gene/transcript models for a genome. A transcript model consists of the coordinates of the exons of a transcript on a reference genome. Additional information such as the strand the transcript is generated from, gene name, coding portion of the transcript, alternate transcript start sites, and other information may be provided.
+
+**GTF (.gtf) file** - A common file format referred to as Gene Transfer Format used to store gene and transcript annotation information. You can learn more about this format here: [http://genome.ucsc.edu/FAQ/FAQformat#format4](http://genome.ucsc.edu/FAQ/FAQformat#format4)
+
+### The Purpose of Gene Annotations (.gtf file)
+When running the HISAT2/StringTie/Ballgown pipeline, known gene/transcript annotations are used for several purposes:
+
+* During the HISAT2 index creation step, annotations may be provided to create local indexes to represent transcripts as well as a global index for the entire reference genome. This allows for faster mapping and better mapping across exon boundaries and splice sites. If an alignment still can not be found it will attempt to determine if the read corresponds to a novel exon-exon junction. See the [Indexing section](/module-01-inputs/0001/04/01/Indexing/) and the HISAT2 publication for more details.
+
+* During the StringTie step, a .gtf file can be used to specify transcript models to guide the assembly process and limit expression estimates to predefined transcripts using the `-G` and `-e` options together. The `-e` option will give you one expression estimate for each of the transcripts in your .gtf file, giving you a 'microarray like' expression result.
+
+* During the StringTie step, if the `-G` option is specified without the `-e` option the .gtf file is used only to 'guide' the assembly of transcripts. Instead of assuming only the known transcript models are correct, the resulting expression estimates will correspond to both known and novel/predicted transcripts.
+
+* During the StringTie and gffcompare steps, a .gtf file is used to determine the transcripts that will be examined for differential expression using Ballgown. These may be known transcripts that you download from a public source, or a .gtf of transcripts predicted by StringTie from the read data in an earlier step.
+
+### Sources for obtaining gene annotation files formatted for HISAT2/StringTie/Ballgown
+There are many possible sources of .gtf gene/transcript annotation files. For example, from Ensembl, UCSC, RefSeq, etc. Several options and related instructions for obtaining the gene annotation files are provided below.
+
+#### I. ENSEMBL FTP SITE
+
+Based on Ensembl annotations only. Available for many species. [http://useast.ensembl.org/info/data/ftp/index.html](http://useast.ensembl.org/info/data/ftp/index.html)
+
+#### II. UCSC TABLE BROWSER
+
+Based on UCSC annotations or several other possible annotation sources collected by UCSC. You might chose this option if you want to have a lot of flexibility in the annotations you obtain. e.g. to grab only the transcripts from chromosome 22 as in the following example:
+
+* Open the following in your browser: [http://genome.ucsc.edu/](http://genome.ucsc.edu/)
+* Select 'Tools' and then 'Table Browser' at the top of the page.
+* Select 'Mammal', 'Human', and 'Dec. 2013 (GRCh38/hg38)' from the first row of drop down menus.
+* Select 'Genes and Gene Predictions' and 'GENCODE v29' from the second row of drop down menus. To limit your selection to only chromosome 22, select the 'position' option beside 'region', enter 'chr22' in the 'position' box.
+* Select 'GTF - gene transfer format' for output format and enter 'UCSC_Genes.gtf' for output file.
+* Hit the 'get output' button and save the file. Make note of its location
+
+In addition to the .gtf file you may find uses for some extra files providing alternatively formatted or additional information on the same transcripts. For example:
+
+##### How to get a Gene bed file:
+
+* Change the output format to 'BED - browser extensible data'.
+* Change the output file to 'UCSC_Genes.bed', and hit the 'get output' button.
+* Make sure 'Whole Gene' is selected, hit the 'get BED' button, and save the file.
+
+##### How to get an Exon bed file:
+
+* Go back one page in your browser and change the output file to 'UCSC_Exons.bed', then hit the 'get output' button again.
+* Select 'Exons plus', enter 0 in the adjacent box, hit the 'get BED' button, and save the file.
+
+##### How to get gene symbols and descriptions for all UCSC genes:
+
+* Again go back one page in your browser and change the 'output format' to 'selected fields from primary and related tables'.
+* Change the output file to 'UCSC_Names.txt', and hit the 'get output' button.
+* Make sure 'chrom' is selected near the top of the page.
+* Under 'Linked Tables' make sure 'kgXref' is selected, and then hit 'Allow Selection From Checked Tables'. This will link the table and give you access to its fields.
+* Under 'hg38.kgXref fields' select: 'kgID', 'geneSymbol', 'description'.
+* Hit the 'get output' button and save the file.
+* To get annotations for the whole genome, make sure 'genome' is selected beside 'region'. By default, the files downloaded above will be compressed. To decompress, use 'gunzip filename' in linux.
+
+#### III. HISAT2 Precomputed Genome Index
+
+HISAT2 has prebuilt reference genome index files for both DNA and RNA alignment. Various versions of the index files include SNPs and/or transcript splice sites. Versions of both the Ensembl and UCSC genomes for human build 38 are linked from the main HISAT2 page: [https://ccb.jhu.edu/software/hisat2/index.shtml](https://ccb.jhu.edu/software/hisat2/index.shtml)
+
+Or those same files are directly available from their FTP site: [ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/](ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/data/)
+
+### Important notes:
+**On chromosome naming conventions:**
+In order for your RNA-seq analysis to work, the chromosome names in your .gtf file must match those in your reference genome (i.e. your reference genome fasta file). If you get a StringTie result where all transcripts have an expression value of 0, you may have overlooked this. Unfortunately, Ensembl, NCBI, and UCSC can not agree on how to name the chromosomes in many species, so this problem may come up often. You can avoid this by getting a complete reference genome and gene annotation package from the same source (e.g., Ensembl) to maintain consistency.
+
+**On reference genome builds:**
+Your annotations must correspond to the same reference genome build as your reference genome fasta file. e.g., both correspond to UCSC human build 'hg38', NCBI human build 'GRCh38', etc. Even if both your reference genome and annotations are from UCSC or Ensembl they could still correspond to different versions of that genome. This would cause problems in any RNA-seq pipeline.
+
+A more detailed discussion of commonly used version of the human reference genome can be found in a companion workshop [PMBIO Reference Genomes](https://pmbio.org/module-02-inputs/0002/02/01/Reference_Genome/).
