@@ -217,7 +217,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#lab-1"><i class="fa fa-check"></i>Lab</a>
 <ul>
-<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#for-lab-instructions-go-here"><i class="fa fa-check"></i>For lab instructions, go here</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#read-trimming-with-fastp"><i class="fa fa-check"></i>Read trimming with Fastp</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#use-fastqc-and-multiqc-to-compare-the-impact-of-trimming"><i class="fa fa-check"></i>Use FastQC and multiqc to compare the impact of trimming</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#clean-up-1"><i class="fa fa-check"></i>Clean up</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#practical-exercise-5"><i class="fa fa-check"></i>PRACTICAL EXERCISE 5</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html"><i class="fa fa-check"></i>Module 3</a>
@@ -228,7 +231,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#lab-2"><i class="fa fa-check"></i>Lab</a>
 <ul>
-<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#for-lab-instructions-go-here-1"><i class="fa fa-check"></i>For lab instructions, go here</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#for-lab-instructions-go-here"><i class="fa fa-check"></i>For lab instructions, go here</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html"><i class="fa fa-check"></i>Appendices</a>
@@ -287,13 +290,103 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 -->
 <iframe src="https://docs.google.com/presentation/d/1m4Z4ww4R5dYti39gQZrb3dGF_gEEdqxM/preview" width="640" height="480" allow="autoplay">
 </iframe>
-<p>–&gt;</p>
 </div>
 </div>
 <div id="lab-1" class="section level2 hasAnchor">
 <h2>Lab<a href="module-2.html#lab-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<div id="for-lab-instructions-go-here" class="section level3 hasAnchor">
-<h3>For lab instructions, go <a href="https://rnabio.org/">here</a><a href="module-2.html#for-lab-instructions-go-here" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><font size="5"><b>Adapter Trim</b></font></p>
+<hr />
+<p><img src="assets/module_2/RNA-seq_Flowchart3.png" alt="RNA-seq_Flowchart3" /><br />
+</p>
+<hr />
+<p><strong>[OPTIONAL]</strong></p>
+<p>Use Fastp to trim sequence adapter from the read FASTQ files and also perform basic data quality cleanup. The output of this step will be trimmed and filtered FASTQ files for each data set.</p>
+<p>Refer to the Fastp project and manual for a more detailed explanation:</p>
+<ul>
+<li><a href="https://github.com/OpenGene/fastp">https://github.com/OpenGene/fastp</a></li>
+</ul>
+<p>Fastp basic usage:</p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb30-1"><a href="module-2.html#cb30-1" tabindex="-1"></a>    <span class="ex">fastp</span> <span class="at">-i</span> in.R1.fq.gz <span class="at">-I</span> in.R2.fq.gz <span class="at">-o</span> out.R1.fq.gz <span class="at">-O</span> out.R2.fq.gz</span></code></pre></div>
+<p>The <code>-i</code> and <code>-I</code> parameters specify input R1 and R2 data files (raw data)
+The <code>-o</code> and <code>-O</code> parameters specify output R1 and R2 data files (trimmed and quality filtered)
+Extra options specified below:</p>
+<ul>
+<li>‘-l 25’ the minimum read length allowed after trimming is 25bp</li>
+<li>‘–adapter_fasta’ the path to the adapter FASTA file containing adapter sequences to trim</li>
+<li>‘–trim_front1 13’ trim a fixed number (13 in this case) of bases off the left end of read1</li>
+<li>‘–trim_front2 13’ trim a fixed number (13 in this case) of bases off the left end of read2</li>
+<li>‘–json’ the path to store a log file in JSON file format</li>
+<li>‘–html’ the path to store a web report file</li>
+<li>‘2&gt;’ use to store the information that would be printed to the screen into a file instead</li>
+</ul>
+<div id="read-trimming-with-fastp" class="section level3 hasAnchor">
+<h3>Read trimming with Fastp<a href="module-2.html#read-trimming-with-fastp" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>First, set up some directories for output</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb31-1"><a href="module-2.html#cb31-1" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$RNA_DATA_TRIM_DIR</span></span>
+<span id="cb31-2"><a href="module-2.html#cb31-2" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$RNA_DATA_TRIM_DIR</span></span></code></pre></div>
+<p>Download necessary Illumina adapter sequence files.</p>
+<div class="sourceCode" id="cb32"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb32-1"><a href="module-2.html#cb32-1" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$RNA_REFS_DIR</span></span>
+<span id="cb32-2"><a href="module-2.html#cb32-2" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$RNA_REFS_DIR</span></span>
+<span id="cb32-3"><a href="module-2.html#cb32-3" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_REFS_DIR</span></span>
+<span id="cb32-4"><a href="module-2.html#cb32-4" tabindex="-1"></a><span class="fu">wget</span> http://genomedata.org/rnaseq-tutorial/illumina_multiplex.fa</span></code></pre></div>
+<p>Use fastp to remove illumina adapter sequences (if any), trim the first 13 bases of each read, and perform default read quality filtering to remove reads that are too short, have too many low quality bases or have too many N’s.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb33-1"><a href="module-2.html#cb33-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span></span>
+<span id="cb33-2"><a href="module-2.html#cb33-2" tabindex="-1"></a></span>
+<span id="cb33-3"><a href="module-2.html#cb33-3" tabindex="-1"></a><span class="bu">export</span> <span class="va">S1</span><span class="op">=</span>UHR_Rep1_ERCC-Mix1_Build37-ErccTranscripts-chr22</span>
+<span id="cb33-4"><a href="module-2.html#cb33-4" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S1}</span>.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S1}</span>.read2.fastq.gz <span class="at">-o</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S1}</span>.read1.fastq.gz <span class="at">-O</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S1}</span>.read2.fastq.gz <span class="at">-l</span> 25 <span class="at">--adapter_fasta</span> <span class="va">$RNA_REFS_DIR</span>/illumina_multiplex.fa <span class="at">--trim_front1</span> 13 <span class="at">--trim_front2</span> 13 <span class="at">--json</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S1}</span>.fastp.json <span class="at">--html</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S1}</span>.fastp.html <span class="dv">2</span><span class="op">&gt;</span><span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S1}</span>.fastp.log</span>
+<span id="cb33-5"><a href="module-2.html#cb33-5" tabindex="-1"></a></span>
+<span id="cb33-6"><a href="module-2.html#cb33-6" tabindex="-1"></a><span class="bu">export</span> <span class="va">S2</span><span class="op">=</span>UHR_Rep2_ERCC-Mix1_Build37-ErccTranscripts-chr22</span>
+<span id="cb33-7"><a href="module-2.html#cb33-7" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S2}</span>.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S2}</span>.read2.fastq.gz <span class="at">-o</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S2}</span>.read1.fastq.gz <span class="at">-O</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S2}</span>.read2.fastq.gz <span class="at">-l</span> 25 <span class="at">--adapter_fasta</span> <span class="va">$RNA_REFS_DIR</span>/illumina_multiplex.fa <span class="at">--trim_front1</span> 13 <span class="at">--trim_front2</span> 13 <span class="at">--json</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S2}</span>.fastp.json <span class="at">--html</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S2}</span>.fastp.html <span class="dv">2</span><span class="op">&gt;</span><span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S2}</span>.fastp.log</span>
+<span id="cb33-8"><a href="module-2.html#cb33-8" tabindex="-1"></a></span>
+<span id="cb33-9"><a href="module-2.html#cb33-9" tabindex="-1"></a><span class="bu">export</span> <span class="va">S3</span><span class="op">=</span>UHR_Rep3_ERCC-Mix1_Build37-ErccTranscripts-chr22</span>
+<span id="cb33-10"><a href="module-2.html#cb33-10" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S3}</span>.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S3}</span>.read2.fastq.gz <span class="at">-o</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S3}</span>.read1.fastq.gz <span class="at">-O</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S3}</span>.read2.fastq.gz <span class="at">-l</span> 25 <span class="at">--adapter_fasta</span> <span class="va">$RNA_REFS_DIR</span>/illumina_multiplex.fa <span class="at">--trim_front1</span> 13 <span class="at">--trim_front2</span> 13 <span class="at">--json</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S3}</span>.fastp.json <span class="at">--html</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S3}</span>.fastp.html <span class="dv">2</span><span class="op">&gt;</span><span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S3}</span>.fastp.log</span>
+<span id="cb33-11"><a href="module-2.html#cb33-11" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="module-2.html#cb33-12" tabindex="-1"></a><span class="bu">export</span> <span class="va">S4</span><span class="op">=</span>HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22</span>
+<span id="cb33-13"><a href="module-2.html#cb33-13" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S4}</span>.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S4}</span>.read2.fastq.gz <span class="at">-o</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S4}</span>.read1.fastq.gz <span class="at">-O</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S4}</span>.read2.fastq.gz <span class="at">-l</span> 25 <span class="at">--adapter_fasta</span> <span class="va">$RNA_REFS_DIR</span>/illumina_multiplex.fa <span class="at">--trim_front1</span> 13 <span class="at">--trim_front2</span> 13 <span class="at">--json</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S4}</span>.fastp.json <span class="at">--html</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S4}</span>.fastp.html <span class="dv">2</span><span class="op">&gt;</span><span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S4}</span>.fastp.log</span>
+<span id="cb33-14"><a href="module-2.html#cb33-14" tabindex="-1"></a></span>
+<span id="cb33-15"><a href="module-2.html#cb33-15" tabindex="-1"></a><span class="bu">export</span> <span class="va">S5</span><span class="op">=</span>HBR_Rep2_ERCC-Mix2_Build37-ErccTranscripts-chr22</span>
+<span id="cb33-16"><a href="module-2.html#cb33-16" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S5}</span>.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S5}</span>.read2.fastq.gz <span class="at">-o</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S5}</span>.read1.fastq.gz <span class="at">-O</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S5}</span>.read2.fastq.gz <span class="at">-l</span> 25 <span class="at">--adapter_fasta</span> <span class="va">$RNA_REFS_DIR</span>/illumina_multiplex.fa <span class="at">--trim_front1</span> 13 <span class="at">--trim_front2</span> 13 <span class="at">--json</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S5}</span>.fastp.json <span class="at">--html</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S5}</span>.fastp.html <span class="dv">2</span><span class="op">&gt;</span><span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S5}</span>.fastp.log</span>
+<span id="cb33-17"><a href="module-2.html#cb33-17" tabindex="-1"></a></span>
+<span id="cb33-18"><a href="module-2.html#cb33-18" tabindex="-1"></a><span class="bu">export</span> <span class="va">S6</span><span class="op">=</span>HBR_Rep3_ERCC-Mix2_Build37-ErccTranscripts-chr22</span>
+<span id="cb33-19"><a href="module-2.html#cb33-19" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S6}</span>.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_DATA_DIR</span>/<span class="va">${S6}</span>.read2.fastq.gz <span class="at">-o</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S6}</span>.read1.fastq.gz <span class="at">-O</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S6}</span>.read2.fastq.gz <span class="at">-l</span> 25 <span class="at">--adapter_fasta</span> <span class="va">$RNA_REFS_DIR</span>/illumina_multiplex.fa <span class="at">--trim_front1</span> 13 <span class="at">--trim_front2</span> 13 <span class="at">--json</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S6}</span>.fastp.json <span class="at">--html</span> <span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S6}</span>.fastp.html <span class="dv">2</span><span class="op">&gt;</span><span class="va">$RNA_DATA_TRIM_DIR</span>/<span class="va">${S6}</span>.fastp.log</span></code></pre></div>
+</div>
+<div id="use-fastqc-and-multiqc-to-compare-the-impact-of-trimming" class="section level3 hasAnchor">
+<h3>Use FastQC and multiqc to compare the impact of trimming<a href="module-2.html#use-fastqc-and-multiqc-to-compare-the-impact-of-trimming" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Optional exercise: Compare the FastQC reports for fastq files before and after trimming. All fastqc reports can be generated on the commandline.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb34-1"><a href="module-2.html#cb34-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_DATA_TRIM_DIR</span></span>
+<span id="cb34-2"><a href="module-2.html#cb34-2" tabindex="-1"></a><span class="ex">fastqc</span> <span class="pp">*</span>.fastq.gz</span>
+<span id="cb34-3"><a href="module-2.html#cb34-3" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="module-2.html#cb34-4" tabindex="-1"></a><span class="ex">multiqc</span> ./</span></code></pre></div>
+<p>The resulting html reports can be viewed by navigating to:</p>
+<ul>
+<li><a href="http://" class="uri">http://</a><strong>YOUR_PUBLIC_IPv4_ADDRESS</strong>/rnaseq/data/</li>
+<li><a href="http://" class="uri">http://</a><strong>YOUR_PUBLIC_IPv4_ADDRESS</strong>/rnaseq/data/trimmed/</li>
+</ul>
+</div>
+<div id="clean-up-1" class="section level3 hasAnchor">
+<h3>Clean up<a href="module-2.html#clean-up-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Move the fastqc and fastp results into sub-directories to keep things tidy</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb35-1"><a href="module-2.html#cb35-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_DATA_TRIM_DIR</span></span>
+<span id="cb35-2"><a href="module-2.html#cb35-2" tabindex="-1"></a><span class="fu">mkdir</span> fastqc</span>
+<span id="cb35-3"><a href="module-2.html#cb35-3" tabindex="-1"></a><span class="fu">mv</span> <span class="pp">*</span>_fastqc<span class="pp">*</span> fastqc</span>
+<span id="cb35-4"><a href="module-2.html#cb35-4" tabindex="-1"></a><span class="fu">mkdir</span> fastp</span>
+<span id="cb35-5"><a href="module-2.html#cb35-5" tabindex="-1"></a><span class="fu">mv</span> <span class="pp">*</span>fastp.<span class="pp">*</span> fastp</span></code></pre></div>
+<hr />
+</div>
+<div id="practical-exercise-5" class="section level3 hasAnchor">
+<h3>PRACTICAL EXERCISE 5<a href="module-2.html#practical-exercise-5" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Assignment: Using the approach above, trim the reads for both normal and tumor samples that you downloaded for the previous practical exercise. NOTE: try dropping the hard left trim option used above (‘–trim_front1 13’ and ‘–trim_front2 13’). Once you have trimmed the reads, compare a pre- and post- trimming FastQ file using the FastQC and multiqc tools.</p>
+<ul>
+<li>Hint: These files should have been downloaded to $RNA_HOME/practice/data/.</li>
+</ul>
+<p><strong>Questions</strong></p>
+<p>Answer these questions by examining the FastQC reports:</p>
+<ul>
+<li>After trimming, what is the range of read lengths observed for hcc1395 normal replicate 1, read 1?</li>
+<li>Which sections of the FastQC report are most informative for observing the effect of trimming?</li>
+<li>In the ‘Per base sequence content section’, what pattern do you see? What could explain this pattern?</li>
+</ul>
+<p>Solution: When you are ready you can check your approach against the <a href="/module-09-appendix/0009/05/01/Practical_Exercise_Solutions/#practical-exercise-5---trim">Solutions</a>.</p>
 
 </div>
 </div>
