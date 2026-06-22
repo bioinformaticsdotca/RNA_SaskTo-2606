@@ -2,5 +2,14 @@
 
 ## Lecture
 
+### This is an archived version of what was taught in June 2026. For the most up-to-date material, go [here](https://rnabio.org/)
+
+<!--<iframe width="640" height="360" src="YOUTUBE EMBED LINK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+-->
+
+<iframe src="https://docs.google.com/presentation/d/1keQf2jYlZSqPdDjucAFhPsAzxrsLdZta/preview" width="640" height="480" allow="autoplay"></iframe>  
+-->
 
 ## Lab
+
+### For lab instructions, go [here](https://rnabio.org/)
