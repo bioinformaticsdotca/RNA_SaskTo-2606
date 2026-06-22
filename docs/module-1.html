@@ -197,6 +197,18 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#the-purpose-of-gene-annotations-.gtf-file"><i class="fa fa-check"></i>The Purpose of Gene Annotations (.gtf file)</a></li>
 <li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#sources-for-obtaining-gene-annotation-files-formatted-for-hisat2stringtieballgown"><i class="fa fa-check"></i>Sources for obtaining gene annotation files formatted for HISAT2/StringTie/Ballgown</a></li>
 <li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#important-notes"><i class="fa fa-check"></i>Important notes:</a></li>
+<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#indexing-mini-lecture"><i class="fa fa-check"></i>Indexing mini lecture</a></li>
+<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#create-a-hisat2-index"><i class="fa fa-check"></i>Create a HISAT2 index</a></li>
+<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#obtain-rna-seq-test-data."><i class="fa fa-check"></i>Obtain RNA-seq test data.</a></li>
+<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#determining-the-strandedness-of-rna-seq-data-optional"><i class="fa fa-check"></i>Determining the strandedness of RNA-seq data (Optional)</a></li>
+<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#practical-exercise-3"><i class="fa fa-check"></i>PRACTICAL EXERCISE 3</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#fastqc"><i class="fa fa-check"></i>FastQC</a></li>
+<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#fastp"><i class="fa fa-check"></i>Fastp</a>
+<ul>
+<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#multiqc"><i class="fa fa-check"></i>MultiQC</a></li>
+<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#clean-up"><i class="fa fa-check"></i>Clean up</a></li>
+<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#practical-exercise-4"><i class="fa fa-check"></i>PRACTICAL EXERCISE 4</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html"><i class="fa fa-check"></i>Module 2</a>
@@ -493,6 +505,212 @@ In order for your RNA-seq analysis to work, the chromosome names in your .gtf fi
 <p><strong>On reference genome builds:</strong>
 Your annotations must correspond to the same reference genome build as your reference genome fasta file. e.g., both correspond to UCSC human build ‘hg38’, NCBI human build ‘GRCh38’, etc. Even if both your reference genome and annotations are from UCSC or Ensembl they could still correspond to different versions of that genome. This would cause problems in any RNA-seq pipeline.</p>
 <p>A more detailed discussion of commonly used version of the human reference genome can be found in a companion workshop <a href="https://pmbio.org/module-02-inputs/0002/02/01/Reference_Genome/">PMBIO Reference Genomes</a>.</p>
+<hr />
+<p><img src="assets/module_1/RNA-seq_Flowchart2.png" alt="RNA-seq_Flowchart" /><br />
+</p>
+<hr />
+</div>
+<div id="indexing-mini-lecture" class="section level3 hasAnchor">
+<h3>Indexing mini lecture<a href="module-1.html#indexing-mini-lecture" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>If you want a refresher on indexing, we have made an <a href="https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2026/mini/RNASeq_MiniLecture_01_02_Indexing.pdf">indexing mini lecture</a> available.</p>
+</div>
+<div id="create-a-hisat2-index" class="section level3 hasAnchor">
+<h3>Create a HISAT2 index<a href="module-1.html#create-a-hisat2-index" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Create a HISAT2 index for chr22 and the ERCC spike-in sequences. HISAT2 can incorporate exons and splice sites into the index file for alignment. First create a splice site file, then an exon file. Finally make the aligner FM index.</p>
+<p>To learn more about how the HISAT2 indexing strategy is distinct from other next gen aligners refer to the <a href="https://www.ncbi.nlm.nih.gov/pubmed/25751142">HISAT publication</a>.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb15-1"><a href="module-1.html#cb15-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_REFS_DIR</span></span>
+<span id="cb15-2"><a href="module-1.html#cb15-2" tabindex="-1"></a><span class="ex">hisat2_extract_splice_sites.py</span> <span class="va">$RNA_REF_GTF</span> <span class="op">&gt;</span> <span class="va">$RNA_REFS_DIR</span>/splicesites.tsv</span>
+<span id="cb15-3"><a href="module-1.html#cb15-3" tabindex="-1"></a><span class="ex">hisat2_extract_exons.py</span> <span class="va">$RNA_REF_GTF</span> <span class="op">&gt;</span> <span class="va">$RNA_REFS_DIR</span>/exons.tsv</span>
+<span id="cb15-4"><a href="module-1.html#cb15-4" tabindex="-1"></a><span class="ex">hisat2-build</span> <span class="at">-p</span> 4 <span class="at">--ss</span> <span class="va">$RNA_REFS_DIR</span>/splicesites.tsv <span class="at">--exon</span> <span class="va">$RNA_REFS_DIR</span>/exons.tsv <span class="va">$RNA_REF_FASTA</span> <span class="va">$RNA_REF_INDEX</span></span>
+<span id="cb15-5"><a href="module-1.html#cb15-5" tabindex="-1"></a><span class="fu">ls</span></span></code></pre></div>
+<p>Perform a visual survey on the contents of your refs directory. What is the source/purpose of each file.</p>
+<p><strong>[OPTIONAL]</strong> To create an index for all chromosomes instead of just chr22 you would do something like the following:</p>
+<p><strong>WARNING:</strong> In order to index the entire human genome, HISAT2 requires 160GB of RAM. Your AWS instance size will run out of RAM.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb16-1"><a href="module-1.html#cb16-1" tabindex="-1"></a><span class="co">#hisat2_extract_splice_sites.py Homo_sapiens.GRCh38.86.gtf &gt; splicesites.tsv</span></span>
+<span id="cb16-2"><a href="module-1.html#cb16-2" tabindex="-1"></a><span class="co">#hisat2_extract_exons.py Homo_sapiens.GRCh38.86.gtf &gt; exons.tsv</span></span>
+<span id="cb16-3"><a href="module-1.html#cb16-3" tabindex="-1"></a><span class="co">#hisat2-build -p 4 --ss splicesites.tsv --exon exons.tsv Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa Homo_sapiens.GRCh38.dna_sm.primary_assembly</span></span></code></pre></div>
+<hr />
+<p><img src="assets/module_1/RNA-seq_Flowchart2.png" alt="RNA-seq_Flowchart" /><br />
+</p>
+<hr />
+</div>
+<div id="obtain-rna-seq-test-data." class="section level3 hasAnchor">
+<h3>Obtain RNA-seq test data.<a href="module-1.html#obtain-rna-seq-test-data." class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The test data consists of two commercially available RNA samples: <a href="/assets/module_1/UHR.pdf">Universal Human Reference (UHR)</a> and <a href="/assets/module_1/HBR.pdf">Human Brain Reference (HBR)</a>. The UHR is total RNA isolated from a diverse set of 10 cancer cell lines (breast, liver, cervix, testis, brain, skin, fatty tissue, histocyte, macrophage, T cell, B cell). The HBR is total RNA isolated from the brains of 23 Caucasians, male and female, of varying age but mostly 60-80 years old.</p>
+<p>In addition, a spike-in control was used. Specifically we added an aliquot of the <a href="/assets/module_1/ERCC.pdf">ERCC ExFold RNA Spike-In Control Mixes</a> to each sample. The spike-in consists of 92 transcripts that are present in known concentrations across a wide abundance range (from very few copies to many copies). This range allows us to test the degree to which the RNA-seq assay (including all laboratory and analysis steps) accurately reflects the relative abundance of transcript species within a sample. There are two ‘mixes’ of these transcripts to allow an assessment of differential expression output between samples if you put one mix in each of your two comparisons. In our case, Mix1 was added to the UHR sample, and Mix2 was added to the HBR sample. We also have 3 complete experimental replicates for each sample. This allows us to assess the technical variability of our overall process of producing RNA-seq data in the lab.</p>
+<p>From the ERCC product sheet:</p>
+<blockquote>
+<p>The ERCC plasmid reference library produces well-characterized transcripts generated largely from random unique sequences. Sequence comparisons have been made to multiple databases available at the time of design including mouse, rat, human, Drosophila, bacteria, mosquito, and other nonhuman species. The control collection contains some sequences with homology to Bacillus subtilis.</p>
+</blockquote>
+<p>For all libraries we prepared low-throughput (Set A) TruSeq Stranded Total RNA Sample Prep Kit libraries with Ribo-Zero Gold to remove both cytoplasmic and mitochondrial rRNA. Triplicate, indexed libraries were made starting with 100ng Agilent/Strategene Universal Human Reference total RNA and 100ng Ambion Human Brain Reference total RNA. The Universal Human Reference replicates received 2 ul of 1:1000 ERCC Mix 1. The Human Brain Reference replicates received 2 ul of 1:1000 ERCC Mix 2. The libraries were quantified with KAPA Library Quantification qPCR and adjusted to the appropriate concentration for sequencing. The triplicate, indexed libraries were then pooled prior to sequencing. Each pool of three replicate libraries were sequenced across 2 lanes of a HiSeq 2000 using paired-end sequence chemistry with 100 bp read lengths.</p>
+<p>So to summarize we have:</p>
+<ul>
+<li>UHR + ERCC Spike-In Mix1, Replicate 1</li>
+<li>UHR + ERCC Spike-In Mix1, Replicate 2</li>
+<li>UHR + ERCC Spike-In Mix1, Replicate 3</li>
+<li>HBR + ERCC Spike-In Mix2, Replicate 1</li>
+<li>HBR + ERCC Spike-In Mix2, Replicate 2</li>
+<li>HBR + ERCC Spike-In Mix2, Replicate 3</li>
+</ul>
+<p>Each data set has a corresponding pair of FASTQ files (read 1 and read 2 of paired end reads).</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb17-1"><a href="module-1.html#cb17-1" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$RNA_DATA_DIR</span></span>
+<span id="cb17-2"><a href="module-1.html#cb17-2" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$RNA_DATA_DIR</span></span>
+<span id="cb17-3"><a href="module-1.html#cb17-3" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_DATA_DIR</span></span>
+<span id="cb17-4"><a href="module-1.html#cb17-4" tabindex="-1"></a><span class="fu">wget</span> http://genomedata.org/rnaseq-tutorial/HBR_UHR_ERCC_ds_5pc.tar</span></code></pre></div>
+<p>Unpack the test data using tar. You should see 6 sets of paired end fastq files. One for each of our sample replicates above. We have 6 pairs (12 files) because in fastq format, read 1 and read 2 of a each read pair (fragment) are stored in separate files.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="module-1.html#cb18-1" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xvf</span> HBR_UHR_ERCC_ds_5pc.tar</span>
+<span id="cb18-2"><a href="module-1.html#cb18-2" tabindex="-1"></a><span class="fu">ls</span></span></code></pre></div>
+<p>Enter the data directory and view the first two read records of a file (in fastq format each read corresponds to 4 lines of data)</p>
+<p>The reads are paired-end 101-mers generated on an Illumina HiSeq instrument. The test data has been pre-filtered for reads that appear to map to chromosome 22. Lets copy the raw input data to our tutorial working directory.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb19-1"><a href="module-1.html#cb19-1" tabindex="-1"></a><span class="fu">zcat</span> UHR_Rep1_ERCC-Mix1_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> 8</span></code></pre></div>
+<p>Identify the following components of each read: read name, read sequence, and quality string</p>
+<p>How many reads are there in the first library? Decompress file on the fly with ‘zcat’, pipe into ‘grep’, search for the read name prefix and pipe into ‘wc’ to do a word count (‘-l’ gives lines)</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb20-1"><a href="module-1.html#cb20-1" tabindex="-1"></a><span class="fu">zcat</span> UHR_Rep1_ERCC-Mix1_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="kw">|</span> <span class="fu">grep</span> <span class="at">-P</span> <span class="st">&quot;^\@HWI&quot;</span> <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span></span></code></pre></div>
+</div>
+<div id="determining-the-strandedness-of-rna-seq-data-optional" class="section level3 hasAnchor">
+<h3>Determining the strandedness of RNA-seq data (Optional)<a href="module-1.html#determining-the-strandedness-of-rna-seq-data-optional" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In order to determine strandedness, we will be using <a href="https://github.com/betsig/how_are_we_stranded_here">check_strandedness</a>(<a href="https://hub.docker.com/r/mgibio/checkstrandedness">docker image</a>). In order use this tool, there are a few steps we need to get our inputs ready, specifically creating a fasta of our GTF file.</p>
+<p>To create a transcripts FASTA file from our reference transcriptome in GTF format we need to get our transcript information into BED12 format. To get to that format we will convert GTF -&gt; GenePred -&gt; BED12. The GenePred format is just an intermediate that we create because we did not find a tool that would convert straight from GTF to BED12.</p>
+<p>Once we have our transcriptome information (the position of exons for each transcript on each chromosome) we can use <code>bedtools getfasta</code> to splice the exon sequences from the chromosome sequence together into a full length transcript sequence.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb21-1"><a href="module-1.html#cb21-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/refs/</span>
+<span id="cb21-2"><a href="module-1.html#cb21-2" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="module-1.html#cb21-3" tabindex="-1"></a><span class="co"># Convert our reference transcriptome GTF to genePred format</span></span>
+<span id="cb21-4"><a href="module-1.html#cb21-4" tabindex="-1"></a><span class="ex">gtfToGenePred</span> chr22_with_ERCC92.gtf chr22_with_ERCC92.genePred</span>
+<span id="cb21-5"><a href="module-1.html#cb21-5" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="module-1.html#cb21-6" tabindex="-1"></a><span class="co"># Convert the genPred format to bed12 format</span></span>
+<span id="cb21-7"><a href="module-1.html#cb21-7" tabindex="-1"></a><span class="ex">genePredToBed</span> chr22_with_ERCC92.genePred chr22_with_ERCC92.bed12</span>
+<span id="cb21-8"><a href="module-1.html#cb21-8" tabindex="-1"></a></span>
+<span id="cb21-9"><a href="module-1.html#cb21-9" tabindex="-1"></a><span class="co"># Use bedtools to create fasta from GTF</span></span>
+<span id="cb21-10"><a href="module-1.html#cb21-10" tabindex="-1"></a><span class="ex">bedtools</span> getfasta <span class="at">-fi</span> chr22_with_ERCC92.fa <span class="at">-bed</span> chr22_with_ERCC92.bed12 <span class="at">-s</span> <span class="at">-split</span> <span class="at">-name</span> <span class="at">-fo</span> chr22_ERCC92_transcripts.fa</span></code></pre></div>
+<p>Use less to view the file chr22_ERCC92_transcripts.fa. Note that this file has messy transcript names. Use the following hairball perl one-liner to tidy up the header line for each fasta sequence.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb22-1"><a href="module-1.html#cb22-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/refs</span>
+<span id="cb22-2"><a href="module-1.html#cb22-2" tabindex="-1"></a><span class="fu">cat</span> chr22_ERCC92_transcripts.fa <span class="kw">|</span> <span class="fu">perl</span> <span class="at">-ne</span> <span class="st">&#39;if($_ =~/^\&gt;\S+\:\:(ERCC\-\d+)\:.*/){print &quot;&gt;$1\n&quot;}elsif ($_ =~/^\&gt;(\S+)\:\:.*/){print &quot;&gt;$1\n&quot;}else{print $_}&#39;</span> <span class="op">&gt;</span> chr22_ERCC92_transcripts.clean.fa</span></code></pre></div>
+<p>View the resulting ‘clean’ file using <code>less chr22_ERCC92_transcripts.clean.fa</code> (use ‘q’ to exit). View the end of this file using <code>tail chr22_ERCC92_transcripts.clean.fa</code>. Note that we have one fasta record for each Ensembl transcript on chromosome 22 and we have an additional fasta record for each ERCC spike-in sequence.</p>
+<p>We also need to reformat our GTF file slightly. Rows that correspond to genes are missing the “transcript_id” field. We are going to add in this field but leave it blank for these rows using the following command.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb23-1"><a href="module-1.html#cb23-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/refs</span>
+<span id="cb23-2"><a href="module-1.html#cb23-2" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{ if ($0 ~ &quot;transcript_id&quot;) print $0; else print $0&quot; transcript_id \&quot;\&quot;;&quot;; }&#39;</span> chr22_with_ERCC92.gtf <span class="op">&gt;</span> chr22_with_ERCC92_tidy.gtf</span></code></pre></div>
+<p>Now that we have created our input files, we can now run the check_strandedness tool on some of our instrument data. Note: we are using a docker image for this tool.</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb24-1"><a href="module-1.html#cb24-1" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-v</span> /home/ubuntu/workspace/rnaseq:/docker_workspace mgibio/checkstrandedness:latest check_strandedness <span class="at">--gtf</span> /docker_workspace/refs/chr22_with_ERCC92_tidy.gtf <span class="at">--transcripts</span> /docker_workspace/refs/chr22_ERCC92_transcripts.clean.fa <span class="at">--reads_1</span> /docker_workspace/data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">--reads_2</span> /docker_workspace/data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz</span></code></pre></div>
+<p><code>docker run</code> is how you initialize a docker container to run a command</p>
+<p><code>-v</code> is the parameter used to mount your workspace so that the docker container can see the files that you’re working with. In the example above, <code>/home/ubuntu/workspace/rnaseq</code> from the EC2 instance has been mounted as <code>/docker_workspace</code> within the docker container.</p>
+<p><code>mgibio/checkstrandedness</code> is the docker container name. The <code>:latest</code> refers to the specific tag and release of the docker container.</p>
+<p>The output of this command should look like so:</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb25-1"><a href="module-1.html#cb25-1" tabindex="-1"></a><span class="ex">Fraction</span> of reads failed to determine: 0.1123</span>
+<span id="cb25-2"><a href="module-1.html#cb25-2" tabindex="-1"></a><span class="ex">Fraction</span> of reads explained by <span class="st">&quot;1++,1--,2+-,2-+&quot;</span>: 0.0155</span>
+<span id="cb25-3"><a href="module-1.html#cb25-3" tabindex="-1"></a><span class="ex">Fraction</span> of reads explained by <span class="st">&quot;1+-,1-+,2++,2--&quot;</span>: 0.8722</span>
+<span id="cb25-4"><a href="module-1.html#cb25-4" tabindex="-1"></a><span class="ex">Over</span> 75% of reads explained by <span class="st">&quot;1+-,1-+,2++,2--&quot;</span></span>
+<span id="cb25-5"><a href="module-1.html#cb25-5" tabindex="-1"></a><span class="ex">Data</span> is likely RF/fr-firststrand</span></code></pre></div>
+<p>The checkstrandedness test asks a single question: in each read pair, which mate aligns in the same orientation as the gene it overlaps? The tool encodes every read as <code>read#</code> + <code>aligned strand</code> + <code>gene strand</code>, then sorts reads into two patterns. For the ‘reverse’ pattern <code>1+-,1-+,2++,2--</code>: read 2 always agrees with the gene’s strand (2++, 2–) while read 1 always disagrees (1+-, 1-+). For the ‘forward’ pattern <code>1++,1--,2+-,2-+</code> is the exact mirror, with read 1 always agreeing and read 2 always disagreeing. The four codes within each pattern aren’t independent observations; they’re that one orientation rule applied to genes on the + strand and the - strand, which is why all four always appear together. In a dUTP/fr-firststrand prep, first-strand cDNA is synthesized antisense to the mRNA, the dUTP-marked second strand is degraded before amplification, and the adapters are arranged so read 1 sequences the surviving antisense strand while read 2 reads its sense complement. So read 2 matches the transcript and read 1 opposes it. The two names describe the same molecule from different angles: “first-strand” refers to the cDNA strand that is retained, and “reverse” refers to read 1 pointing opposite the transcript. In this case, 87.22% of reads fall in the reverse pattern, only 1.55% in the forward pattern, and 11.23% are undetermined (overlapping genes, multimappers, and ambiguous orientation, all expected and harmless). This strong bias toward <code>1+-,1-+,2++,2--</code> suggests an unambiguous RF / fr-firststrand call. A forward-stranded library would have put the bulk in the other bin. And an unstranded library would have split close to 50:50.</p>
+<p>Using this <a href="https://rnabio.org/module-09-appendix/0009/12/01/StrandSettings/">table</a>, we can see if this result is what we expect. Note that since the UHR and HBR data were generated with the TruSeq Stranded Kit, as mentioned above, the correct strand setting for kallisto is <code>--rf-stranded</code>, which is what check_strandedness confirms. Similarly when we run HISAT we will use <code>--rna-strandness RF</code>, when we run StringTie we will use <code>--rf</code>, and when we run htseq-count we will use <code>--stranded reverse</code>.</p>
+<hr />
+</div>
+<div id="practical-exercise-3" class="section level3 hasAnchor">
+<h3>PRACTICAL EXERCISE 3<a href="module-1.html#practical-exercise-3" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Assignment: Download an additional dataset and unpack it. This data will be used in future practical exercises.</p>
+<ul>
+<li>Hint: Do this in a separate working directory called ‘practice’ and create sub-directories for organization (data, alignments, etc).</li>
+<li>In this exercise you will download an archive of publicly available read data from here: <a href="http://genomedata.org/rnaseq-tutorial/practical.tar">http://genomedata.org/rnaseq-tutorial/practical.tar</a></li>
+</ul>
+<p>The practice dataset includes 3 replicates of data from the HCC1395 breast cancer cell line and 3 replicates of data from HCC1395BL matched lymphoblastoid line. So, this will be a tumor vs normal (cell line) comparison. The reads are paired-end 151-mers generated on an Illumina HiSeq instrument from TruSeq Stranded Total RNA Libraries. The test data has been pre-filtered for reads that appear to map to chromosome 22.</p>
+<p><strong>Questions</strong></p>
+<ul>
+<li>How many data files were contained in the ‘practical.tar’ archive? What commonly used sequence data file format are they?</li>
+<li>In the first read of the hcc1395, normal, replicate 1, read 1 file, what was the physical location of the read on the flow cell (i.e. lane, tile, x, y)?</li>
+<li>In the first read of this same file, how many ‘T’ bases are there?</li>
+</ul>
+<p>Solution: When you are ready you can check your approach against the <a href="/module-09-appendix/0009/05/01/Practical_Exercise_Solutions/#practical-exercise-3---data">Solutions</a>.</p>
+<hr />
+<p><strong>NOTE</strong>: The complete RAW HCC1395 data sets can be found here: <a href="http://genomedata.org/pmbio-workshop/fastqs/all/">http://genomedata.org/pmbio-workshop/fastqs/all/</a></p>
+<p>If you use this data, please cite our paper: <a href="https://github.com/griffithlab/rnaseq_tutorial/wiki/Citation">Citation</a></p>
+<hr />
+<p><img src="assets/module_1/RNA-seq_Flowchart2.png" alt="RNA-seq_Flowchart" /><br />
+</p>
+<hr />
+</div>
+</div>
+<div id="fastqc" class="section level2 hasAnchor">
+<h2>FastQC<a href="module-1.html#fastqc" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>You can use <code>FastQC</code> to get a sense of your data quality before alignment:</p>
+<ul>
+<li><a href="http://www.bioinformatics.babraham.ac.uk/projects/fastqc/">http://www.bioinformatics.babraham.ac.uk/projects/fastqc/</a></li>
+</ul>
+<p>Video Tutorial here:</p>
+<ul>
+<li><a href="http://www.youtube.com/watch?v=bz93ReOv87Y">http://www.youtube.com/watch?v=bz93ReOv87Y</a></li>
+</ul>
+<p>Try to run FastQC on your fastq files:</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb26-1"><a href="module-1.html#cb26-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data</span>
+<span id="cb26-2"><a href="module-1.html#cb26-2" tabindex="-1"></a><span class="ex">fastqc</span> <span class="pp">*</span>.fastq.gz</span></code></pre></div>
+<p>Then, go to the following url in your browser:</p>
+<ul>
+<li><a href="http://" class="uri">http://</a><strong>YOUR_PUBLIC_IPv4_ADDRESS</strong>/rnaseq/data/</li>
+<li>Note, you must replace <strong>YOUR_PUBLIC_IPv4_ADDRESS</strong> with your own amazon instance DNS (e.g., ec2-54-187-159-113.us-west-2.compute.amazonaws.com))</li>
+<li>Click on any of the <code>*_fastqc.html</code> files to view the FastQC report</li>
+</ul>
+<p><strong>Exercise:</strong>
+Investigate the source/explanation for over-represented sequences:</p>
+<ul>
+<li>HINT: Try BLASTing them.</li>
+</ul>
+<hr />
+</div>
+<div id="fastp" class="section level2 hasAnchor">
+<h2>Fastp<a href="module-1.html#fastp" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><code>Fastp</code> is a similar alternative tool. QC results for this tool can be produced as follows</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="module-1.html#cb27-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data</span>
+<span id="cb27-2"><a href="module-1.html#cb27-2" tabindex="-1"></a><span class="fu">mkdir</span> fastp</span>
+<span id="cb27-3"><a href="module-1.html#cb27-3" tabindex="-1"></a><span class="bu">cd</span> fastp</span>
+<span id="cb27-4"><a href="module-1.html#cb27-4" tabindex="-1"></a><span class="fu">mkdir</span> HBR_Rep1 HBR_Rep2 HBR_Rep3 UHR_Rep1 UHR_Rep2 UHR_Rep3</span>
+<span id="cb27-5"><a href="module-1.html#cb27-5" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="module-1.html#cb27-6" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data/fastp/HBR_Rep1</span>
+<span id="cb27-7"><a href="module-1.html#cb27-7" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_HOME</span>/data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_HOME</span>/data/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz</span>
+<span id="cb27-8"><a href="module-1.html#cb27-8" tabindex="-1"></a></span>
+<span id="cb27-9"><a href="module-1.html#cb27-9" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data/fastp/HBR_Rep2</span>
+<span id="cb27-10"><a href="module-1.html#cb27-10" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_HOME</span>/data/HBR_Rep2_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_HOME</span>/data/HBR_Rep2_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz</span>
+<span id="cb27-11"><a href="module-1.html#cb27-11" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="module-1.html#cb27-12" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data/fastp/HBR_Rep3</span>
+<span id="cb27-13"><a href="module-1.html#cb27-13" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_HOME</span>/data/HBR_Rep3_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_HOME</span>/data/HBR_Rep3_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz</span>
+<span id="cb27-14"><a href="module-1.html#cb27-14" tabindex="-1"></a></span>
+<span id="cb27-15"><a href="module-1.html#cb27-15" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data/fastp/UHR_Rep1</span>
+<span id="cb27-16"><a href="module-1.html#cb27-16" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_HOME</span>/data/UHR_Rep1_ERCC-Mix1_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_HOME</span>/data/UHR_Rep1_ERCC-Mix1_Build37-ErccTranscripts-chr22.read2.fastq.gz</span>
+<span id="cb27-17"><a href="module-1.html#cb27-17" tabindex="-1"></a></span>
+<span id="cb27-18"><a href="module-1.html#cb27-18" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data/fastp/UHR_Rep2</span>
+<span id="cb27-19"><a href="module-1.html#cb27-19" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_HOME</span>/data/UHR_Rep2_ERCC-Mix1_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_HOME</span>/data/UHR_Rep2_ERCC-Mix1_Build37-ErccTranscripts-chr22.read2.fastq.gz</span>
+<span id="cb27-20"><a href="module-1.html#cb27-20" tabindex="-1"></a></span>
+<span id="cb27-21"><a href="module-1.html#cb27-21" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data/fastp/UHR_Rep3</span>
+<span id="cb27-22"><a href="module-1.html#cb27-22" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_HOME</span>/data/UHR_Rep3_ERCC-Mix1_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_HOME</span>/data/UHR_Rep3_ERCC-Mix1_Build37-ErccTranscripts-chr22.read2.fastq.gz</span></code></pre></div>
+<hr />
+<div id="multiqc" class="section level3 hasAnchor">
+<h3>MultiQC<a href="module-1.html#multiqc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Run MultiQC on your fastqc reports to generate a single summary report across all samples/replicates.</p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb28-1"><a href="module-1.html#cb28-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data</span>
+<span id="cb28-2"><a href="module-1.html#cb28-2" tabindex="-1"></a><span class="ex">multiqc</span> ./</span></code></pre></div>
+<p>Then, go to the following url in your browser:
+* <a href="http://" class="uri">http://</a><strong>YOUR_PUBLIC_IPv4_ADDRESS</strong>/rnaseq/data/multiqc_report.html</p>
+</div>
+<div id="clean-up" class="section level3 hasAnchor">
+<h3>Clean up<a href="module-1.html#clean-up" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Move all the FASTQC files into their own directory</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb29-1"><a href="module-1.html#cb29-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data</span>
+<span id="cb29-2"><a href="module-1.html#cb29-2" tabindex="-1"></a><span class="fu">mkdir</span> fastqc</span>
+<span id="cb29-3"><a href="module-1.html#cb29-3" tabindex="-1"></a><span class="fu">mv</span> <span class="pp">*</span>_fastqc<span class="pp">*</span> fastqc</span></code></pre></div>
+</div>
+<div id="practical-exercise-4" class="section level3 hasAnchor">
+<h3>PRACTICAL EXERCISE 4<a href="module-1.html#practical-exercise-4" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Assignment: Run FASTQC on one of the additional fastq files you downloaded in the previous practical exercise.</p>
+<ul>
+<li>Hint: Remember that you stored this data in a separate working directory called ‘practice’.</li>
+</ul>
+<p>Run FASTQC on the file ‘hcc1395_normal_1.fastq.gz’ and answer these questions by examining the output.</p>
+<p><strong>Questions</strong></p>
+<ul>
+<li>How many total sequences are there?</li>
+<li>What is the range (x - y) of read lengths observed?</li>
+<li>What is the most common average sequence quality score?</li>
+<li>What does the Adaptor Content warning tell us?</li>
+</ul>
+<p>Solution: When you are ready you can check your approach against the <a href="/module-09-appendix/0009/05/01/Practical_Exercise_Solutions/#practical-exercise-4---data-qc">Solutions</a>.</p>
+<hr />
 
 </div>
 </div>
