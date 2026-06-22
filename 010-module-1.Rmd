@@ -10,11 +10,11 @@
 -->
 
 <iframe src="https://docs.google.com/presentation/d/173kOvGwbETGrTNPkQRLWs6ZZSWSKvArI/preview" width="640" height="480" allow="autoplay"></iframe>  
--->
+
 
 ## Lab
 
-### For lab instructions, go [here](https://rnabio.org/)
+### 
 
 #### Key concepts
 * Review central dogma, RNA sequencing, RNAseq study design, library construction strategies, biological vs technical replicates, alignment strategies, etc.
