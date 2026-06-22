@@ -487,7 +487,7 @@ If you use this data, please cite our paper: [Citation](https://github.com/griff
 
 ***
 
-## FastQC
+### FastQC
 
 You can use `FastQC` to get a sense of your data quality before alignment:
 
@@ -518,7 +518,7 @@ Investigate the source/explanation for over-represented sequences:
 
 ***
 
-## Fastp
+### Fastp
 
 `Fastp` is a similar alternative tool. QC results for this tool can be produced as follows
 

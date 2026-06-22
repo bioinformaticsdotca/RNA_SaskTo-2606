@@ -202,10 +202,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#obtain-rna-seq-test-data."><i class="fa fa-check"></i>Obtain RNA-seq test data.</a></li>
 <li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#determining-the-strandedness-of-rna-seq-data-optional"><i class="fa fa-check"></i>Determining the strandedness of RNA-seq data (Optional)</a></li>
 <li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#practical-exercise-3"><i class="fa fa-check"></i>PRACTICAL EXERCISE 3</a></li>
-</ul></li>
 <li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#fastqc"><i class="fa fa-check"></i>FastQC</a></li>
-<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#fastp"><i class="fa fa-check"></i>Fastp</a>
-<ul>
+<li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#fastp"><i class="fa fa-check"></i>Fastp</a></li>
 <li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#multiqc"><i class="fa fa-check"></i>MultiQC</a></li>
 <li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#clean-up"><i class="fa fa-check"></i>Clean up</a></li>
 <li class="chapter" data-level="" data-path="module-1.html"><a href="module-1.html#practical-exercise-4"><i class="fa fa-check"></i>PRACTICAL EXERCISE 4</a></li>
@@ -627,9 +625,8 @@ Your annotations must correspond to the same reference genome build as your refe
 </p>
 <hr />
 </div>
-</div>
-<div id="fastqc" class="section level2 hasAnchor">
-<h2>FastQC<a href="module-1.html#fastqc" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="fastqc" class="section level3 hasAnchor">
+<h3>FastQC<a href="module-1.html#fastqc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>You can use <code>FastQC</code> to get a sense of your data quality before alignment:</p>
 <ul>
 <li><a href="http://www.bioinformatics.babraham.ac.uk/projects/fastqc/">http://www.bioinformatics.babraham.ac.uk/projects/fastqc/</a></li>
@@ -654,8 +651,8 @@ Investigate the source/explanation for over-represented sequences:</p>
 </ul>
 <hr />
 </div>
-<div id="fastp" class="section level2 hasAnchor">
-<h2>Fastp<a href="module-1.html#fastp" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="fastp" class="section level3 hasAnchor">
+<h3>Fastp<a href="module-1.html#fastp" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><code>Fastp</code> is a similar alternative tool. QC results for this tool can be produced as follows</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb27-1"><a href="module-1.html#cb27-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data</span>
 <span id="cb27-2"><a href="module-1.html#cb27-2" tabindex="-1"></a><span class="fu">mkdir</span> fastp</span>
@@ -680,6 +677,7 @@ Investigate the source/explanation for over-represented sequences:</p>
 <span id="cb27-21"><a href="module-1.html#cb27-21" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/data/fastp/UHR_Rep3</span>
 <span id="cb27-22"><a href="module-1.html#cb27-22" tabindex="-1"></a><span class="ex">fastp</span> <span class="at">-i</span> <span class="va">$RNA_HOME</span>/data/UHR_Rep3_ERCC-Mix1_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-I</span> <span class="va">$RNA_HOME</span>/data/UHR_Rep3_ERCC-Mix1_Build37-ErccTranscripts-chr22.read2.fastq.gz</span></code></pre></div>
 <hr />
+</div>
 <div id="multiqc" class="section level3 hasAnchor">
 <h3>MultiQC<a href="module-1.html#multiqc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>Run MultiQC on your fastqc reports to generate a single summary report across all samples/replicates.</p>
