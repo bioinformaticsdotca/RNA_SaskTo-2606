@@ -12,14 +12,13 @@
 
 ## Lab
 
-<font size="5"><b>Adapter Trim</b></font>
 
 ***
 
 ![RNA-seq_Flowchart3](assets/module_2/RNA-seq_Flowchart3.png)\
 
 ***
-
+<font size="5"><b>Adapter Trim</b></font>
 
 **[OPTIONAL]**
 

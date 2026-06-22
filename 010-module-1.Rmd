@@ -28,11 +28,13 @@
 * Getting help outside of this course
 * Introduction to the RNA-seq hands on tutorial
 
+
 ***
 
 ![RNA-seq_Flowchart](assets/module_1/RNA-seq_Flowchart2.png)\
 
 ***
+<font size="5"><b>Reference Genomes</b></font>
 
 ### FASTA/FASTQ/GTF mini lecture
 If you would like a refresher on common file formats such as FASTA, FASTQ, and GTF files, we have made a [mini lecture](https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cshl/2025/mini/RNASeq_MiniLecture_01_01_FASTA_FASTQ_GTF.pdf) briefly covering these.
@@ -146,6 +148,7 @@ Solution: When you are ready you can check your approach against the [Solutions]
 ![RNA-seq_Flowchart](assets/module_1/RNA-seq_Flowchart2.png)\
 
 ***
+<font size="5"><b>Annotations</b></font>
 
 ### FASTA/FASTQ/GTF mini lecture
 If you would like a refresher on common file formats such as FASTA, FASTQ, and GTF files, we have made a [mini lecture](https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cshl/2025/mini/RNASeq_MiniLecture_01_01_FASTA_FASTQ_GTF.pdf) briefly covering these.
@@ -301,6 +304,8 @@ A more detailed discussion of commonly used version of the human reference genom
 
 ***
 
+<font size="5"><b>Indexing</b></font>
+
 ### Indexing mini lecture
 If you want a refresher on indexing, we have made an [indexing mini lecture](https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2026/mini/RNASeq_MiniLecture_01_02_Indexing.pdf) available.
 
@@ -335,6 +340,7 @@ Perform a visual survey on the contents of your refs directory. What is the sour
 ![RNA-seq_Flowchart](assets/module_1/RNA-seq_Flowchart2.png)\
 
 ***
+<font size="5"><b>RNAseq Data</b></font>
 
 ### Obtain RNA-seq test data.
 The test data consists of two commercially available RNA samples: [Universal Human Reference (UHR)](/assets/module_1/UHR.pdf) and [Human Brain Reference (HBR)](/assets/module_1/HBR.pdf). The UHR is total RNA isolated from a diverse set of 10 cancer cell lines (breast, liver, cervix, testis, brain, skin, fatty tissue, histocyte, macrophage, T cell, B cell). The HBR is total RNA isolated from the brains of 23 Caucasians, male and female, of varying age but mostly 60-80 years old.
@@ -486,6 +492,8 @@ If you use this data, please cite our paper: [Citation](https://github.com/griff
 ![RNA-seq_Flowchart](assets/module_1/RNA-seq_Flowchart2.png)\
 
 ***
+
+<font size="5"><b>Pre-alignment QC</b></font>
 
 ### FastQC
 
