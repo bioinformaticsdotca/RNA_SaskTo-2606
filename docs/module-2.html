@@ -233,6 +233,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#visualize-alignments-with-igv"><i class="fa fa-check"></i>Visualize alignments with IGV</a></li>
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#practical-exercise-7"><i class="fa fa-check"></i>PRACTICAL EXERCISE 7</a></li>
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#bam-read-counting"><i class="fa fa-check"></i>BAM Read Counting</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#alignment-qc-mini-lecture"><i class="fa fa-check"></i>Alignment QC mini lecture</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#use-samtools-and-fastqc-to-evaluate-the-alignments"><i class="fa fa-check"></i>Use samtools and FastQC to evaluate the alignments</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#create-versions-of-our-bam-files-with-only-the-chromosome-22-alignments"><i class="fa fa-check"></i>Create versions of our BAM files with only the chromosome 22 alignments</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#using-fastqc"><i class="fa fa-check"></i>Using FastQC</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#using-picard"><i class="fa fa-check"></i>Using Picard</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#rseqc-optional"><i class="fa fa-check"></i>RSeQC [optional]</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#multiqc-1"><i class="fa fa-check"></i>MultiQC</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#view-a-pre-generated-multiqc-report-for-full-bam-files"><i class="fa fa-check"></i>View a pre-generated MultiQC report for full bam files</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html"><i class="fa fa-check"></i>Module 3</a>
@@ -944,6 +952,215 @@ Welcome to the lab for Genome Visualization! This lab will introduce you to the 
 <span id="cb52-18"><a href="module-2.html#cb52-18" tabindex="-1"></a><span class="st">      $1, $2, A_data[2], C_data[2], T_data[2], G_data[2]</span></span>
 <span id="cb52-19"><a href="module-2.html#cb52-19" tabindex="-1"></a><span class="st">}&#39;</span> HBR_bam-readcounts.txt</span></code></pre></div>
 <p>Finally if you wish to extend this concept to a more complex analysis, here is a <a href="https://github.com/genome/bam-readcount/tree/master/tutorial">bam-readcount tutorial</a> that uses python to parse output from bam-readcount to identify a Omicron SARS-CoV-2 variant of concern from raw sequence data.</p>
+<hr />
+<p><img src="assets/module_2/RNA-seq_Flowchart3.png" alt="RNA-seq_Flowchart3" /><br />
+</p>
+<hr />
+</div>
+<div id="alignment-qc-mini-lecture" class="section level3 hasAnchor">
+<h3>Alignment QC mini lecture<a href="module-2.html#alignment-qc-mini-lecture" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>If you would like a refresher on alignment QC, we have made a <a href="https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2026/mini/RNASeq_MiniLecture_02_04_alignmentQC.pdf">mini lecture</a> briefly covering the topic.</p>
+</div>
+<div id="use-samtools-and-fastqc-to-evaluate-the-alignments" class="section level3 hasAnchor">
+<h3>Use samtools and FastQC to evaluate the alignments<a href="module-2.html#use-samtools-and-fastqc-to-evaluate-the-alignments" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Use <code>samtools view</code> to see the format of a SAM/BAM alignment file</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb53-1"><a href="module-2.html#cb53-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_ALIGN_DIR</span></span>
+<span id="cb53-2"><a href="module-2.html#cb53-2" tabindex="-1"></a><span class="ex">samtools</span> view <span class="at">-H</span> UHR.bam</span>
+<span id="cb53-3"><a href="module-2.html#cb53-3" tabindex="-1"></a><span class="ex">samtools</span> view UHR.bam <span class="kw">|</span> <span class="fu">head</span></span>
+<span id="cb53-4"><a href="module-2.html#cb53-4" tabindex="-1"></a><span class="ex">samtools</span> view UHR.bam <span class="kw">|</span> <span class="fu">head</span> <span class="kw">|</span> <span class="ex">column</span> <span class="at">-t</span> <span class="kw">|</span> <span class="fu">less</span> <span class="at">-S</span></span></code></pre></div>
+<p>Try filtering the BAM file to require or exclude certain flags. This can be done with <code>samtools view -f -F</code> options</p>
+<p>-f INT required flag -F INT filtering flag</p>
+<p>“Samtools flags explained”</p>
+<ul>
+<li><a href="http://broadinstitute.github.io/picard/explain-flags.html">http://broadinstitute.github.io/picard/explain-flags.html</a></li>
+</ul>
+<p>Try requiring that alignments are ‘paired’ and ‘mapped in a proper pair’ (=3).</p>
+<p>Also filter out alignments that are ‘unmapped’, the ‘mate is unmapped’, and ‘not primary alignment’ (=268)</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb54-1"><a href="module-2.html#cb54-1" tabindex="-1"></a><span class="ex">samtools</span> view <span class="at">-f</span> 3 <span class="at">-F</span> 268 UHR.bam <span class="kw">|</span> <span class="fu">head</span> <span class="kw">|</span> <span class="ex">column</span> <span class="at">-t</span> <span class="kw">|</span> <span class="fu">less</span> <span class="at">-S</span></span></code></pre></div>
+<p>Now require that the alignments be only for ‘PCR or optical duplicate’. How many reads meet this criteria? Why?</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb55-1"><a href="module-2.html#cb55-1" tabindex="-1"></a><span class="ex">samtools</span> view <span class="at">-f</span> 1024 UHR.bam <span class="kw">|</span> <span class="fu">head</span></span></code></pre></div>
+<p>Use <code>samtools flagstat</code> to get a basic summary of an alignment. What percent of reads are mapped? Is this realistic? Why?</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb56-1"><a href="module-2.html#cb56-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_ALIGN_DIR</span></span>
+<span id="cb56-2"><a href="module-2.html#cb56-2" tabindex="-1"></a><span class="fu">mkdir</span> flagstat</span>
+<span id="cb56-3"><a href="module-2.html#cb56-3" tabindex="-1"></a></span>
+<span id="cb56-4"><a href="module-2.html#cb56-4" tabindex="-1"></a><span class="ex">samtools</span> flagstat HBR_Rep1.bam <span class="op">&gt;</span> flagstat/HBR_Rep1.bam.flagstat</span>
+<span id="cb56-5"><a href="module-2.html#cb56-5" tabindex="-1"></a><span class="ex">samtools</span> flagstat HBR_Rep2.bam <span class="op">&gt;</span> flagstat/HBR_Rep2.bam.flagstat</span>
+<span id="cb56-6"><a href="module-2.html#cb56-6" tabindex="-1"></a><span class="ex">samtools</span> flagstat HBR_Rep3.bam <span class="op">&gt;</span> flagstat/HBR_Rep3.bam.flagstat</span>
+<span id="cb56-7"><a href="module-2.html#cb56-7" tabindex="-1"></a><span class="ex">samtools</span> flagstat UHR_Rep1.bam <span class="op">&gt;</span> flagstat/UHR_Rep1.bam.flagstat</span>
+<span id="cb56-8"><a href="module-2.html#cb56-8" tabindex="-1"></a><span class="ex">samtools</span> flagstat UHR_Rep2.bam <span class="op">&gt;</span> flagstat/UHR_Rep2.bam.flagstat</span>
+<span id="cb56-9"><a href="module-2.html#cb56-9" tabindex="-1"></a><span class="ex">samtools</span> flagstat UHR_Rep3.bam <span class="op">&gt;</span> flagstat/UHR_Rep3.bam.flagstat</span>
+<span id="cb56-10"><a href="module-2.html#cb56-10" tabindex="-1"></a></span>
+<span id="cb56-11"><a href="module-2.html#cb56-11" tabindex="-1"></a><span class="co"># Note that we could have created and run a samtools flagstat command for all files ending in *Rep*.bam using the following construct:</span></span>
+<span id="cb56-12"><a href="module-2.html#cb56-12" tabindex="-1"></a><span class="co"># find *Rep*.bam -exec echo samtools flagstat {} \&gt; flagstat/{}.flagstat \; | sh</span></span>
+<span id="cb56-13"><a href="module-2.html#cb56-13" tabindex="-1"></a></span>
+<span id="cb56-14"><a href="module-2.html#cb56-14" tabindex="-1"></a><span class="co"># View an example</span></span>
+<span id="cb56-15"><a href="module-2.html#cb56-15" tabindex="-1"></a><span class="fu">cat</span> flagstat/UHR_Rep1.bam.flagstat</span></code></pre></div>
+<p>Details of the SAM/BAM format can be found here: <a href="http://samtools.sourceforge.net/SAM1.pdf">http://samtools.sourceforge.net/SAM1.pdf</a></p>
+</div>
+<div id="create-versions-of-our-bam-files-with-only-the-chromosome-22-alignments" class="section level3 hasAnchor">
+<h3>Create versions of our BAM files with only the chromosome 22 alignments<a href="module-2.html#create-versions-of-our-bam-files-with-only-the-chromosome-22-alignments" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Note that our alignments contain those for the spiked in ERCC control sequences. For some QC analyses, these sequences complicate interpretation because they are not like human genes (e.g. no introns or UTRs). To allow us flexibility for the QC analysis we will create a version of each BAM file that only has the chromosome 22 alignments.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb57-1"><a href="module-2.html#cb57-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_ALIGN_DIR</span></span>
+<span id="cb57-2"><a href="module-2.html#cb57-2" tabindex="-1"></a><span class="fu">mkdir</span> chr22_only_bams</span>
+<span id="cb57-3"><a href="module-2.html#cb57-3" tabindex="-1"></a><span class="fu">find</span> <span class="pp">*</span>Rep<span class="pp">*</span>.bam <span class="at">-exec</span> echo samtools view <span class="at">-b</span> {} 22 <span class="at">-o</span> chr22_only_bams/{} <span class="dt">\;</span> <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb57-4"><a href="module-2.html#cb57-4" tabindex="-1"></a><span class="ex">samtools</span> index <span class="at">-M</span> chr22_only_bams/<span class="pp">*</span>.bam</span></code></pre></div>
+</div>
+<div id="using-fastqc" class="section level3 hasAnchor">
+<h3>Using FastQC<a href="module-2.html#using-fastqc" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>You can use FastQC to perform basic QC of your BAM file (See <a href="https://rnabio.org/module-01-inputs/0001/06/01/Pre-alignment_QC/">Pre-alignment QC</a>). This will give you output very similar to when you ran FastQC on your fastq files.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb58-1"><a href="module-2.html#cb58-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_ALIGN_DIR</span></span>
+<span id="cb58-2"><a href="module-2.html#cb58-2" tabindex="-1"></a><span class="ex">fastqc</span> UHR_Rep1.bam UHR_Rep2.bam UHR_Rep3.bam HBR_Rep1.bam HBR_Rep2.bam HBR_Rep3.bam</span>
+<span id="cb58-3"><a href="module-2.html#cb58-3" tabindex="-1"></a><span class="fu">mkdir</span> fastqc</span>
+<span id="cb58-4"><a href="module-2.html#cb58-4" tabindex="-1"></a><span class="fu">mv</span> <span class="pp">*</span>fastqc.html fastqc/</span>
+<span id="cb58-5"><a href="module-2.html#cb58-5" tabindex="-1"></a><span class="fu">mv</span> <span class="pp">*</span>fastqc.zip fastqc/</span></code></pre></div>
+</div>
+<div id="using-picard" class="section level3 hasAnchor">
+<h3>Using Picard<a href="module-2.html#using-picard" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>You can use Picard to generate RNA-seq specific quality metrics and figures</p>
+<p>In this section we need to create some additional formats of our reference transcriptome files.</p>
+<p>Picard uses a “sequence dictionary” file for many commands (simply a list of reference sequences and their sizes)</p>
+<p>We will also filter our transcriptome GTF to one with only ribosomal features, convert it to BED format and then to IntervalList format.
+This is all done to get the IntervalList format needed for Picard CollectRnaSeqMetrics</p>
+<p>We will also create a version of our whole transcriptome GTF in the <a href="http://genome.ucsc.edu/goldenPath/gbdDescriptionsOld.html#RefFlat">RefFlat</a> format needed for Picard CollectRnaSeqMetrics. To get to the RefFlat format we will convert GTF to <a href="https://genome.ucsc.edu/goldenPath/gbdDescriptionsOld.html#GenePredExt">GenePredExt</a> format and then simplify this to RefFlat.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb59-1"><a href="module-2.html#cb59-1" tabindex="-1"></a><span class="co"># Generating the necessary input files for picard CollectRnaSeqMetrics</span></span>
+<span id="cb59-2"><a href="module-2.html#cb59-2" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/refs</span>
+<span id="cb59-3"><a href="module-2.html#cb59-3" tabindex="-1"></a></span>
+<span id="cb59-4"><a href="module-2.html#cb59-4" tabindex="-1"></a><span class="co"># Create a .dict file for our reference</span></span>
+<span id="cb59-5"><a href="module-2.html#cb59-5" tabindex="-1"></a><span class="ex">java</span> <span class="at">-jar</span> <span class="va">$PICARD</span> CreateSequenceDictionary <span class="at">-R</span> chr22_with_ERCC92.fa <span class="at">-O</span> chr22_with_ERCC92.dict</span>
+<span id="cb59-6"><a href="module-2.html#cb59-6" tabindex="-1"></a></span>
+<span id="cb59-7"><a href="module-2.html#cb59-7" tabindex="-1"></a><span class="co"># Create a bed file of the location of ribosomal sequences in our reference (first extract them from the GTF then convert to BED format)</span></span>
+<span id="cb59-8"><a href="module-2.html#cb59-8" tabindex="-1"></a><span class="co"># Note that here we pull all the &quot;rrna&quot; transcripts from the GTF. This is a good strategy for the whole transcriptome ...</span></span>
+<span id="cb59-9"><a href="module-2.html#cb59-9" tabindex="-1"></a><span class="co"># ... but on chr22 there is very little &quot;rrna&quot; content, leading to 0 coverage for all samples, so we are also adding a single protein coding ribosomal gene &quot;RRP7A&quot; (normally we would not do this)</span></span>
+<span id="cb59-10"><a href="module-2.html#cb59-10" tabindex="-1"></a></span>
+<span id="cb59-11"><a href="module-2.html#cb59-11" tabindex="-1"></a><span class="co"># Note the convert2bed command will convert our GTF to BED format</span></span>
+<span id="cb59-12"><a href="module-2.html#cb59-12" tabindex="-1"></a><span class="co"># &quot;&lt;&quot; is used to feed the GTF file into the tool.  &quot;&gt;2/dev/null&quot; is used to throw away a harmless warning. &quot;1&gt;&quot; is use to save our result to a file</span></span>
+<span id="cb59-13"><a href="module-2.html#cb59-13" tabindex="-1"></a></span>
+<span id="cb59-14"><a href="module-2.html#cb59-14" tabindex="-1"></a><span class="fu">grep</span> <span class="at">--color</span><span class="op">=</span>none <span class="at">-i</span> <span class="at">-P</span> <span class="st">&quot;rrna|rrp7a&quot;</span> chr22_with_ERCC92.gtf <span class="op">&gt;</span> ref_ribosome.gtf</span>
+<span id="cb59-15"><a href="module-2.html#cb59-15" tabindex="-1"></a><span class="ex">convert2bed</span> <span class="at">--input</span><span class="op">=</span>gtf <span class="at">--output</span><span class="op">=</span>bed <span class="op">&lt;</span> ref_ribosome.gtf <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="dv">1</span><span class="op">&gt;</span>ref_ribosome.bed</span>
+<span id="cb59-16"><a href="module-2.html#cb59-16" tabindex="-1"></a></span>
+<span id="cb59-17"><a href="module-2.html#cb59-17" tabindex="-1"></a><span class="co"># Create interval list file for the location of just the ribosomal sequences in our reference</span></span>
+<span id="cb59-18"><a href="module-2.html#cb59-18" tabindex="-1"></a><span class="ex">java</span> <span class="at">-jar</span> <span class="va">$PICARD</span> BedToIntervalList <span class="at">-I</span> ref_ribosome.bed <span class="at">-O</span> ref_ribosome.interval_list <span class="at">-SD</span> chr22_with_ERCC92.dict</span>
+<span id="cb59-19"><a href="module-2.html#cb59-19" tabindex="-1"></a></span>
+<span id="cb59-20"><a href="module-2.html#cb59-20" tabindex="-1"></a><span class="co"># Create a genePred file for our whole reference transcriptome</span></span>
+<span id="cb59-21"><a href="module-2.html#cb59-21" tabindex="-1"></a><span class="ex">gtfToGenePred</span> <span class="at">-genePredExt</span> chr22_with_ERCC92.gtf chr22_with_ERCC92.genePredExt</span>
+<span id="cb59-22"><a href="module-2.html#cb59-22" tabindex="-1"></a></span>
+<span id="cb59-23"><a href="module-2.html#cb59-23" tabindex="-1"></a><span class="co"># Reformat this genePred file to first add the Ensembl gene ID column to the beginning of the dataframe using &quot;awk&quot;, and then subset it down to the first 11 columns using &quot;cut&quot;.</span></span>
+<span id="cb59-24"><a href="module-2.html#cb59-24" tabindex="-1"></a><span class="fu">cat</span> chr22_with_ERCC92.genePredExt <span class="kw">|</span> <span class="fu">awk</span> <span class="st">&#39;{print $12&quot;\t&quot;$0}&#39;</span> <span class="kw">|</span> <span class="fu">cut</span> <span class="at">-d</span><span class="st">$&#39;</span><span class="dt">\t</span><span class="st">&#39;</span> <span class="at">-f1-11</span> <span class="op">&gt;</span> chr22_with_ERCC92.refFlat.txt</span>
+<span id="cb59-25"><a href="module-2.html#cb59-25" tabindex="-1"></a></span>
+<span id="cb59-26"><a href="module-2.html#cb59-26" tabindex="-1"></a><span class="co"># Use the &quot;find&quot; command to run &quot;picard CollectRnaSeqMetrics&quot; on all 6 BAM files. </span></span>
+<span id="cb59-27"><a href="module-2.html#cb59-27" tabindex="-1"></a><span class="co"># The basic structure of this kind of automation is: find &lt;search pattern&gt; -exec command {} \;</span></span>
+<span id="cb59-28"><a href="module-2.html#cb59-28" tabindex="-1"></a><span class="co"># The &quot;{}&quot; will insert the file found by the &quot;find&quot; command using &lt;search pattern&gt;.  &quot;\;&quot; indicates the end of the command.</span></span>
+<span id="cb59-29"><a href="module-2.html#cb59-29" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/alignments/hisat2/</span>
+<span id="cb59-30"><a href="module-2.html#cb59-30" tabindex="-1"></a><span class="fu">mkdir</span> picard</span>
+<span id="cb59-31"><a href="module-2.html#cb59-31" tabindex="-1"></a><span class="fu">find</span> <span class="pp">*</span>Rep<span class="pp">*</span>.bam <span class="at">-exec</span> echo java <span class="at">-jar</span> <span class="va">$PICARD</span> CollectRnaSeqMetrics I={} O=picard/{}.RNA_Metrics REF_FLAT=<span class="va">$RNA_HOME</span>/refs/chr22_with_ERCC92.refFlat.txt STRAND=SECOND_READ_TRANSCRIPTION_STRAND RIBOSOMAL_INTERVALS=<span class="va">$RNA_HOME</span>/refs/ref_ribosome.interval_list <span class="dt">\;</span> <span class="kw">|</span> <span class="fu">sh</span></span></code></pre></div>
+</div>
+<div id="rseqc-optional" class="section level3 hasAnchor">
+<h3>RSeQC [optional]<a href="module-2.html#rseqc-optional" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Background:</strong> RSeQC is a tool that can be used to generate QC reports for RNA-seq. For more information, please check: <a href="http://rseqc.sourceforge.net/">RSeQC Tool Homepage</a></p>
+<p>Files needed:</p>
+<ul>
+<li>Aligned bam files</li>
+<li>Index file for each bam file.</li>
+<li>A transcript bed file (in bed12 format).</li>
+</ul>
+<div class="sourceCode" id="cb60"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb60-1"><a href="module-2.html#cb60-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/refs/</span>
+<span id="cb60-2"><a href="module-2.html#cb60-2" tabindex="-1"></a></span>
+<span id="cb60-3"><a href="module-2.html#cb60-3" tabindex="-1"></a><span class="co"># Convert GTF to genePred</span></span>
+<span id="cb60-4"><a href="module-2.html#cb60-4" tabindex="-1"></a><span class="ex">gtfToGenePred</span> chr22_with_ERCC92.gtf chr22_with_ERCC92.genePred</span>
+<span id="cb60-5"><a href="module-2.html#cb60-5" tabindex="-1"></a></span>
+<span id="cb60-6"><a href="module-2.html#cb60-6" tabindex="-1"></a><span class="co"># Convert genePred to BED12</span></span>
+<span id="cb60-7"><a href="module-2.html#cb60-7" tabindex="-1"></a><span class="ex">genePredToBed</span> chr22_with_ERCC92.genePred chr22_with_ERCC92.bed12</span>
+<span id="cb60-8"><a href="module-2.html#cb60-8" tabindex="-1"></a></span>
+<span id="cb60-9"><a href="module-2.html#cb60-9" tabindex="-1"></a><span class="co"># Create a version of the BED12 with the ERCC92 sequences removed (because they confuse the QC analysis that looks at how many reads are coding, UTR, intronic, etc.</span></span>
+<span id="cb60-10"><a href="module-2.html#cb60-10" tabindex="-1"></a><span class="fu">grep</span> <span class="at">-v</span> ERCC chr22_with_ERCC92.bed12 <span class="op">&gt;</span> chr22_without_ERCC92.bed12</span>
+<span id="cb60-11"><a href="module-2.html#cb60-11" tabindex="-1"></a></span>
+<span id="cb60-12"><a href="module-2.html#cb60-12" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_ALIGN_DIR</span></span>
+<span id="cb60-13"><a href="module-2.html#cb60-13" tabindex="-1"></a><span class="fu">mkdir</span> rseqc</span>
+<span id="cb60-14"><a href="module-2.html#cb60-14" tabindex="-1"></a><span class="ex">geneBody_coverage.py</span> <span class="at">-i</span> chr22_only_bams/UHR_Rep1.bam,chr22_only_bams/UHR_Rep2.bam,chr22_only_bams/UHR_Rep3.bam <span class="at">-r</span> <span class="va">$RNA_HOME</span>/refs/chr22_without_ERCC92.bed12 <span class="at">-o</span> rseqc/UHR</span>
+<span id="cb60-15"><a href="module-2.html#cb60-15" tabindex="-1"></a><span class="ex">geneBody_coverage.py</span> <span class="at">-i</span> chr22_only_bams/HBR_Rep1.bam,chr22_only_bams/HBR_Rep2.bam,chr22_only_bams/HBR_Rep3.bam <span class="at">-r</span> <span class="va">$RNA_HOME</span>/refs/chr22_without_ERCC92.bed12 <span class="at">-o</span> rseqc/HBR</span>
+<span id="cb60-16"><a href="module-2.html#cb60-16" tabindex="-1"></a></span>
+<span id="cb60-17"><a href="module-2.html#cb60-17" tabindex="-1"></a><span class="co"># Calculate the inner distance of RNA-seq fragments. </span></span>
+<span id="cb60-18"><a href="module-2.html#cb60-18" tabindex="-1"></a><span class="co">#              RNA fragment</span></span>
+<span id="cb60-19"><a href="module-2.html#cb60-19" tabindex="-1"></a><span class="co">#  _________________||_________________</span></span>
+<span id="cb60-20"><a href="module-2.html#cb60-20" tabindex="-1"></a><span class="co"># |                                    |</span></span>
+<span id="cb60-21"><a href="module-2.html#cb60-21" tabindex="-1"></a><span class="co"># |                                    |</span></span>
+<span id="cb60-22"><a href="module-2.html#cb60-22" tabindex="-1"></a><span class="co"># ||||||||||------------------||||||||||</span></span>
+<span id="cb60-23"><a href="module-2.html#cb60-23" tabindex="-1"></a><span class="co">#   read_1    inner_distance    read_2</span></span>
+<span id="cb60-24"><a href="module-2.html#cb60-24" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb60-25"><a href="module-2.html#cb60-25" tabindex="-1"></a><span class="co"># fragment size = read_1 + inner_distance + read_2</span></span>
+<span id="cb60-26"><a href="module-2.html#cb60-26" tabindex="-1"></a><span class="fu">find</span> <span class="pp">*</span>Rep<span class="pp">*</span>.bam <span class="at">-exec</span> echo inner_distance.py <span class="at">-i</span> {} <span class="at">-r</span> <span class="va">$RNA_HOME</span>/refs/chr22_without_ERCC92.bed12 <span class="at">-o</span> rseqc/{} <span class="dt">\;</span> <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb60-27"><a href="module-2.html#cb60-27" tabindex="-1"></a></span>
+<span id="cb60-28"><a href="module-2.html#cb60-28" tabindex="-1"></a><span class="co"># Annotate exon-exon junctions observed in RNA-seq alignments compared to know exon-exon junctions</span></span>
+<span id="cb60-29"><a href="module-2.html#cb60-29" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_ALIGN_DIR</span>/chr22_only_bams</span>
+<span id="cb60-30"><a href="module-2.html#cb60-30" tabindex="-1"></a><span class="fu">find</span> <span class="pp">*</span>Rep<span class="pp">*</span>.bam <span class="at">-exec</span> echo junction_annotation.py <span class="at">-i</span> {} <span class="at">-r</span> <span class="va">$RNA_HOME</span>/refs/chr22_without_ERCC92.bed12 <span class="at">-o</span> ../rseqc/{} <span class="dt">\;</span> <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb60-31"><a href="module-2.html#cb60-31" tabindex="-1"></a></span>
+<span id="cb60-32"><a href="module-2.html#cb60-32" tabindex="-1"></a><span class="co"># Perform a saturation analysis using only exon-exon junction mapping reads</span></span>
+<span id="cb60-33"><a href="module-2.html#cb60-33" tabindex="-1"></a><span class="fu">find</span> <span class="pp">*</span>Rep<span class="pp">*</span>.bam <span class="at">-exec</span> echo junction_saturation.py <span class="at">-i</span> {} <span class="at">-r</span> <span class="va">$RNA_HOME</span>/refs/chr22_without_ERCC92.bed12 <span class="at">-o</span> ../rseqc/{} <span class="dt">\;</span> <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb60-34"><a href="module-2.html#cb60-34" tabindex="-1"></a></span>
+<span id="cb60-35"><a href="module-2.html#cb60-35" tabindex="-1"></a><span class="co"># Determine the distribution of reads with respect to the parts of transcripts they align to (e.g. 5&#39; UTR, CDS, 3&#39;UTR, intron, etc.)</span></span>
+<span id="cb60-36"><a href="module-2.html#cb60-36" tabindex="-1"></a><span class="fu">find</span> <span class="pp">*</span>Rep<span class="pp">*</span>.bam <span class="at">-exec</span> echo read_distribution.py  <span class="at">-i</span> {} <span class="at">-r</span> <span class="va">$RNA_HOME</span>/refs/chr22_without_ERCC92.bed12 <span class="dt">\&gt;</span> ../rseqc/{}.read_dist.txt <span class="dt">\;</span> <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb60-37"><a href="module-2.html#cb60-37" tabindex="-1"></a></span>
+<span id="cb60-38"><a href="module-2.html#cb60-38" tabindex="-1"></a><span class="co"># Calculate the RNA fragment sizes and produce statistics for each transcript</span></span>
+<span id="cb60-39"><a href="module-2.html#cb60-39" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_ALIGN_DIR</span></span>
+<span id="cb60-40"><a href="module-2.html#cb60-40" tabindex="-1"></a><span class="fu">find</span> <span class="pp">*</span>Rep<span class="pp">*</span>.bam <span class="at">-exec</span> echo RNA_fragment_size.py <span class="at">-i</span> {} <span class="at">-r</span> <span class="va">$RNA_HOME</span>/refs/chr22_without_ERCC92.bed12 <span class="dt">\&gt;</span> rseqc/{}.frag_size.txt <span class="dt">\;</span> <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb60-41"><a href="module-2.html#cb60-41" tabindex="-1"></a></span>
+<span id="cb60-42"><a href="module-2.html#cb60-42" tabindex="-1"></a><span class="co"># Summarizing mapping statistics of each BAM file</span></span>
+<span id="cb60-43"><a href="module-2.html#cb60-43" tabindex="-1"></a><span class="fu">find</span> <span class="pp">*</span>Rep<span class="pp">*</span>.bam <span class="at">-exec</span> echo bam_stat.py <span class="at">-i</span> {} <span class="dt">\&gt;</span> rseqc/{}.bam_stat.txt <span class="dt">\;</span> <span class="kw">|</span> <span class="fu">sh</span></span>
+<span id="cb60-44"><a href="module-2.html#cb60-44" tabindex="-1"></a></span>
+<span id="cb60-45"><a href="module-2.html#cb60-45" tabindex="-1"></a><span class="fu">rm</span> <span class="at">-f</span> log.txt</span></code></pre></div>
+</div>
+<div id="multiqc-1" class="section level3 hasAnchor">
+<h3>MultiQC<a href="module-2.html#multiqc-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We will now use multiQC to compile a QC report from all the QC tools above.</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb61-1"><a href="module-2.html#cb61-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_ALIGN_DIR</span></span>
+<span id="cb61-2"><a href="module-2.html#cb61-2" tabindex="-1"></a><span class="ex">multiqc</span> ./</span></code></pre></div>
+<div id="multiqc-screenshot" class="section level5 hasAnchor">
+<h5>MultiQC screenshot<a href="module-2.html#multiqc-screenshot" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<p><img src="assets/module_2/multiqc.png" alt="MultiQC" /><br />
+</p>
+</div>
+</div>
+<div id="view-a-pre-generated-multiqc-report-for-full-bam-files" class="section level3 hasAnchor">
+<h3>View a pre-generated MultiQC report for full bam files<a href="module-2.html#view-a-pre-generated-multiqc-report-for-full-bam-files" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>View a multiQC on QC reports from non-downsampled bam files:</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb62-1"><a href="module-2.html#cb62-1" tabindex="-1"></a><span class="fu">mkdir</span> <span class="va">$RNA_ALIGN_DIR</span>/example_QC</span>
+<span id="cb62-2"><a href="module-2.html#cb62-2" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_ALIGN_DIR</span>/example_QC</span>
+<span id="cb62-3"><a href="module-2.html#cb62-3" tabindex="-1"></a><span class="fu">wget</span> http://genomedata.org/rnaseq-tutorial/multiqc_report.html</span></code></pre></div>
+<p>Below is a brief description of each of the samples included in the multiQC report.</p>
+<table>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Sample type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sample 1</td>
+<td>Brain metastasis</td>
+</tr>
+<tr class="even">
+<td>Sample 2</td>
+<td>Melanoma xenograft</td>
+</tr>
+<tr class="odd">
+<td>Sample 3</td>
+<td>Melanoma cell line</td>
+</tr>
+<tr class="even">
+<td>Sample 4</td>
+<td>Melanoma</td>
+</tr>
+<tr class="odd">
+<td>Sample 5</td>
+<td>Small Cell Lung Cancer FFPE</td>
+</tr>
+<tr class="even">
+<td>Sample 6</td>
+<td>Brain metastasis</td>
+</tr>
+</tbody>
+</table>
 
 </div>
 </div>
