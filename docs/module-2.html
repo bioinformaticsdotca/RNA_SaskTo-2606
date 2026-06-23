@@ -230,6 +230,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#visualization-part-2-inspecting-snps-snvs-and-svs"><i class="fa fa-check"></i>Visualization Part 2: Inspecting SNPs, SNVs, and SVs</a></li>
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#visualization-part-3-automating-tasks-in-igv"><i class="fa fa-check"></i>Visualization Part 3: Automating Tasks in IGV</a></li>
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#indexing-bam-files-with-samtools"><i class="fa fa-check"></i>Indexing BAM files with samtools</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#visualize-alignments-with-igv"><i class="fa fa-check"></i>Visualize alignments with IGV</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#practical-exercise-7"><i class="fa fa-check"></i>PRACTICAL EXERCISE 7</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#bam-read-counting"><i class="fa fa-check"></i>BAM Read Counting</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html"><i class="fa fa-check"></i>Module 3</a>
@@ -809,6 +812,140 @@ Welcome to the lab for Genome Visualization! This lab will introduce you to the 
 <p><code>-v</code> is the parameter used to mount your workspace so that the docker container can see the files that you’re working with. In the example above, <code>/tmp</code> from the EC2 instance has been mounted as <code>/docker_workspace</code> within the docker container.</p>
 <p><code>biocontainers/samtools</code> is the docker container name. The <code>:v1.9-4-deb_cv1</code> refers to the specific tag and release of the docker container.</p>
 <p>In the next step we will visualize these alignment BAM files using IGV.</p>
+<hr />
+<p><img src="assets/module_2/RNA-seq_Flowchart3.png" alt="RNA-seq_Flowchart3" /><br />
+</p>
+<hr />
+<p>Now that our BAM files have been indexed with samtools we can load them and explore the RNA-seq alignments using the Integrative Genomics Viewer (<a href="https://igv.org/">IGV</a>).</p>
+<p>The exercise below assumes that you have IGV installed on your local computer. If you are unable to get IGV to run locally you may also consider a web based version of IGV that runs in your browser. The interface of the IGV Web App is different from the local install, and is missing a few features, but is conceptually very similar. To access it simply visit: <a href="https://igv.org/app/">IGV Web App</a>.</p>
+</div>
+<div id="visualize-alignments-with-igv" class="section level3 hasAnchor">
+<h3>Visualize alignments with IGV<a href="module-2.html#visualize-alignments-with-igv" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Start IGV on your computer/laptop. Load the UHR.bam &amp; HBR.bam files in IGV. If you’re using AWS, you can load the necessary files in IGV directly from your web accessible amazon workspace (see below) using ‘File’ -&gt; ‘Load from URL’.</p>
+<p>Make sure you select the appropriate reference genome build in IGV (top left corner of IGV): in this case <code>hg38</code>.</p>
+<div id="aws-links-to-bam-files" class="section level4 hasAnchor">
+<h4>AWS links to bam files<a href="module-2.html#aws-links-to-bam-files" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li><strong>UHR hisat2 alignment</strong>: <a href="http://" class="uri">http://</a><strong>YOUR_PUBLIC_IPv4_ADDRESS</strong>/rnaseq/alignments/hisat2/UHR.bam</li>
+<li><strong>HBR hisat2 alignment</strong>: <a href="http://" class="uri">http://</a><strong>YOUR_PUBLIC_IPv4_ADDRESS</strong>/rnaseq/alignments/hisat2/HBR.bam</li>
+</ul>
+</div>
+<div id="links-to-cached-version-of-these-bam-files" class="section level4 hasAnchor">
+<h4>Links to cached version of these bam files<a href="module-2.html#links-to-cached-version-of-these-bam-files" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>If for some reason you do not have access to the BAM files from running through this course you can download and use these cached versions instead:</p>
+<ul>
+<li><strong>UHR hisat2 alignment</strong>: <a href="https://genomedata.org/rnaseq-tutorial/results/alignments/hisat/UHR.bam">UHR.bam</a> (<a href="https://genomedata.org/rnaseq-tutorial/results/alignments/hisat/UHR.bam.bai">UHR.bam.bai</a>)</li>
+<li><strong>HBR hisat2 alignment</strong>: <a href="https://genomedata.org/rnaseq-tutorial/results/alignments/hisat/HBR.bam">HBR.bam</a> (<a href="https://genomedata.org/rnaseq-tutorial/results/alignments/hisat/HBR.bam.bai">HBR.bam.bai</a>)</li>
+</ul>
+<p>You may wish to customize the track names as you load them in to keep them straight. Do this by right-clicking on the alignment track and choosing ‘Rename Track’.</p>
+<p>Go to an example gene locus on chr22:</p>
+<ul>
+<li>e.g. EIF3L, NDUFA6, and RBX1 have nice coverage</li>
+<li>e.g. SULT4A1 and GTSE1 are differentially expressed. Are they up-regulated or down-regulated in the brain (HBR) compared to cancer cell lines (UHR)?</li>
+<li>Mouse over some reads and use the read group (RG) flag to determine which replicate the reads come from. What other details can you learn about each read and its alignment to the reference genome.</li>
+</ul>
+</div>
+<div id="exercise" class="section level4 hasAnchor">
+<h4>Exercise<a href="module-2.html#exercise" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Try to find a variant position in the RNAseq data:</p>
+<ul>
+<li>HINT: DDX17 is a highly expressed gene with several variants in its 3 prime UTR.</li>
+<li>Other highly expressed genes you might explore are: NUP50, CYB5R3, and EIF3L (all have at least one transcribed variant).</li>
+<li>Are these variants previously known (e.g., present in dbSNP)?</li>
+<li>How should we interpret the allele frequency of each variant? Remember that we have rather unusual samples here in that they are actually pooled RNAs corresponding to multiple individuals (genotypes).</li>
+<li>Take note of the genomic position of your variant. We will need this later.</li>
+</ul>
+<div id="igv-visualization-example-ddx17-3-prime-region" class="section level5 hasAnchor">
+<h5>IGV visualization example (DDX17 3 prime region)<a href="module-2.html#igv-visualization-example-ddx17-3-prime-region" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<p><img src="assets/module_2/igv-ddx17.png" alt="IGV-DDX17" /><br />
+</p>
+<hr />
+</div>
+</div>
+</div>
+<div id="practical-exercise-7" class="section level3 hasAnchor">
+<h3>PRACTICAL EXERCISE 7<a href="module-2.html#practical-exercise-7" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Assignment: Index your bam files from Practical Exercise 6 and visualize in IGV.</p>
+<ul>
+<li>Hint: As before, it may be simplest to just index and visualize the combined/merged bam files HCC1395_normal.bam and HCC1395_tumor.bam.</li>
+<li>If this works, you should have two BAM files that can be loaded into IGV from the following location on your cloud instance:
+<ul>
+<li><a href="http://" class="uri">http://</a><strong>YOUR_PUBLIC_IPv4_ADDRESS</strong>/rnaseq/practice/alignments/hisat2/</li>
+</ul></li>
+</ul>
+<div id="links-to-cached-version-of-the-practical-exercise-bam-files" class="section level4 hasAnchor">
+<h4>Links to cached version of the practical exercise bam files<a href="module-2.html#links-to-cached-version-of-the-practical-exercise-bam-files" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>If for some reason you do not have access to the BAM files from running through this course you can download and use these cached versions instead:</p>
+<ul>
+<li><strong>HCC1395-normal hisat2 alignment</strong>: <a href="https://genomedata.org/rnaseq-tutorial/results/alignments/hisat/HCC1395_normal.bam">HCC1395-normal.bam</a> (<a href="https://genomedata.org/rnaseq-tutorial/results/alignments/hisat/HCC1395_normal.bam.bai">HCC1395-normal.bam.bai</a>)</li>
+<li><strong>HCC1395-tumor hisat2 alignment</strong>: <a href="https://genomedata.org/rnaseq-tutorial/results/alignments/hisat/HCC1395_tumor.bam">HCC1395-tumor.bam</a> (<a href="https://genomedata.org/rnaseq-tutorial/results/alignments/hisat/HCC1395_tumor.bam.bai">HCC1395-tumor.bam.bai</a>)</li>
+</ul>
+<p><strong>Questions</strong></p>
+<ul>
+<li>Load your merged normal and tumor BAM files into IGV. Navigate to this location on chromosome 22: ‘chr22:38,466,394-38,508,115’. What do you see here? How would you describe the direction of transcription for the two genes? Does the reported strand for the reads aligned to each of these genes appear to make sense? How do you modify IGV settings to see the strand clearly?</li>
+<li>How can we modify IGV to color reads by Read Group? How many read groups are there for each sample (tumor &amp; normal)? What are your read group names for the tumor sample?</li>
+<li>What are the options for visualizing splicing or alternative splicing patterns in IGV? Navigate to this location on chromosome 22: ‘chr22:40,363,200-40,367,500’. What splicing event do you see?</li>
+</ul>
+<p>Solution: When you are ready you can check your approach against the <a href="/module-09-appendix/0009/05/01/Practical_Exercise_Solutions/#practical-exercise-7---visualize">Solutions</a>.</p>
+<hr />
+<div class="float">
+<img src="/assets/module_2/RNA-seq_Flowchart3.png" alt="RNA-seq_Flowchart3" />
+<div class="figcaption">RNA-seq_Flowchart3</div>
+</div>
+<hr />
+<p><font size="5"><b>Alignment Visualization - Allele Expression</b></font></p>
+<p>In this section we will demonstrate how to assess expression of specific variant alleles in the RNA-seq BAM using tools designed to interrogate read alignments and sequence base identities at particular positions.</p>
+</div>
+</div>
+<div id="bam-read-counting" class="section level3 hasAnchor">
+<h3>BAM Read Counting<a href="module-2.html#bam-read-counting" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Using one of the variant positions identified above, count the number of supporting reference and variant reads. First, use <code>samtools mpileup</code> to visualize a region of alignment with a variant.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb46-1"><a href="module-2.html#cb46-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span></span>
+<span id="cb46-2"><a href="module-2.html#cb46-2" tabindex="-1"></a><span class="fu">mkdir</span> bam_readcount</span>
+<span id="cb46-3"><a href="module-2.html#cb46-3" tabindex="-1"></a><span class="bu">cd</span> bam_readcount</span></code></pre></div>
+<p>Create faidx indexed reference sequence file for use with mpileup</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb47-1"><a href="module-2.html#cb47-1" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$RNA_REF_FASTA</span></span>
+<span id="cb47-2"><a href="module-2.html#cb47-2" tabindex="-1"></a><span class="ex">samtools</span> faidx <span class="va">$RNA_REF_FASTA</span></span></code></pre></div>
+<p>Run <code>samtools mpileup</code> on a region of interest</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb48-1"><a href="module-2.html#cb48-1" tabindex="-1"></a><span class="ex">samtools</span> mpileup <span class="at">-f</span> <span class="va">$RNA_REF_FASTA</span> <span class="at">-r</span> 22:18918457-18918467 <span class="va">$RNA_ALIGN_DIR</span>/UHR.bam <span class="va">$RNA_ALIGN_DIR</span>/HBR.bam</span></code></pre></div>
+<p>Each line consists of chromosome, 1-based coordinate, reference base, the number of reads covering the site, read bases and base qualities. At the read base column, a dot stands for a match to the reference base on the forward strand, a comma for a match on the reverse strand, <code>ACGTN</code> for a mismatch on the forward strand and <code>acgtn</code> for a mismatch on the reverse strand. A pattern <code>\+[0-9]+[ACGTNacgtn]+</code> indicates there is an insertion between this reference position and the next reference position. The length of the insertion is given by the integer in the pattern, followed by the inserted sequence. See samtools pileup/mpileup documentation for more explanation of the output:</p>
+<ul>
+<li><a href="http://samtools.sourceforge.net/pileup.shtml">http://samtools.sourceforge.net/pileup.shtml</a></li>
+<li><a href="http://samtools.sourceforge.net/mpileup.shtml">http://samtools.sourceforge.net/mpileup.shtml</a></li>
+</ul>
+<p>Now, use <code>bam-readcount</code> to count reference and variant bases at a specific position. First, create a bed file with some positions of interest (we will create a file called snvs.bed using the echo command).</p>
+<p>It will contain a single line specifying a variant position on chr22 e.g.:</p>
+<p>22:38483683-38483683</p>
+<p>Create the bed file</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb49-1"><a href="module-2.html#cb49-1" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;22 38483683 38483683&quot;</span></span>
+<span id="cb49-2"><a href="module-2.html#cb49-2" tabindex="-1"></a><span class="bu">echo</span> <span class="st">&quot;22 38483683 38483683&quot;</span> <span class="op">&gt;</span> snvs.bed</span></code></pre></div>
+<p>Run <code>bam-readcount</code> on this list for the tumor and normal merged bam files</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb50-1"><a href="module-2.html#cb50-1" tabindex="-1"></a><span class="ex">bam-readcount</span> <span class="at">-l</span> snvs.bed <span class="at">-f</span> <span class="va">$RNA_REF_FASTA</span> <span class="va">$RNA_ALIGN_DIR</span>/UHR.bam <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span>
+<span id="cb50-2"><a href="module-2.html#cb50-2" tabindex="-1"></a><span class="ex">bam-readcount</span> <span class="at">-l</span> snvs.bed <span class="at">-f</span> <span class="va">$RNA_REF_FASTA</span> <span class="va">$RNA_ALIGN_DIR</span>/HBR.bam <span class="dv">2</span><span class="op">&gt;</span>/dev/null</span></code></pre></div>
+<p>Now, run it again, but ignore stderr and redirect stdout to a file:</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb51-1"><a href="module-2.html#cb51-1" tabindex="-1"></a><span class="ex">bam-readcount</span> <span class="at">-l</span> snvs.bed <span class="at">-f</span> <span class="va">$RNA_REF_FASTA</span> <span class="va">$RNA_ALIGN_DIR</span>/UHR.bam <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="dv">1</span><span class="op">&gt;</span>UHR_bam-readcounts.txt</span>
+<span id="cb51-2"><a href="module-2.html#cb51-2" tabindex="-1"></a><span class="ex">bam-readcount</span> <span class="at">-l</span> snvs.bed <span class="at">-f</span> <span class="va">$RNA_REF_FASTA</span> <span class="va">$RNA_ALIGN_DIR</span>/HBR.bam <span class="dv">2</span><span class="op">&gt;</span>/dev/null <span class="dv">1</span><span class="op">&gt;</span>HBR_bam-readcounts.txt</span></code></pre></div>
+<p>From this output, use AWK to pull out the read counts for each base (A, C, G, T) in columns 6-9 and then print a simplified summary. Each “split” command takes the specified column of bam-readcount data (6-9), parses the values separated by “:”, and stores them in a _data array. The “printf” command prints out the summary line, including the total count for each base (from the second position of the data array for each nucleotide).</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb52-1"><a href="module-2.html#cb52-1" tabindex="-1"></a><span class="co">#UHR counts</span></span>
+<span id="cb52-2"><a href="module-2.html#cb52-2" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{</span></span>
+<span id="cb52-3"><a href="module-2.html#cb52-3" tabindex="-1"></a><span class="st">      split($6, A_data, &quot;:&quot;)</span></span>
+<span id="cb52-4"><a href="module-2.html#cb52-4" tabindex="-1"></a><span class="st">      split($7, C_data, &quot;:&quot;)</span></span>
+<span id="cb52-5"><a href="module-2.html#cb52-5" tabindex="-1"></a><span class="st">      split($8, G_data, &quot;:&quot;)</span></span>
+<span id="cb52-6"><a href="module-2.html#cb52-6" tabindex="-1"></a><span class="st">      split($9, T_data, &quot;:&quot;)</span></span>
+<span id="cb52-7"><a href="module-2.html#cb52-7" tabindex="-1"></a><span class="st">      printf &quot;UHR Counts\t%s\t%s\tA: %s\tC: %s\tT: %s\tG: %s\n&quot;, </span></span>
+<span id="cb52-8"><a href="module-2.html#cb52-8" tabindex="-1"></a><span class="st">      $1, $2, A_data[2], C_data[2], T_data[2], G_data[2]</span></span>
+<span id="cb52-9"><a href="module-2.html#cb52-9" tabindex="-1"></a><span class="st">}&#39;</span> UHR_bam-readcounts.txt</span>
+<span id="cb52-10"><a href="module-2.html#cb52-10" tabindex="-1"></a></span>
+<span id="cb52-11"><a href="module-2.html#cb52-11" tabindex="-1"></a><span class="co">#HBR counts</span></span>
+<span id="cb52-12"><a href="module-2.html#cb52-12" tabindex="-1"></a><span class="fu">awk</span> <span class="st">&#39;{</span></span>
+<span id="cb52-13"><a href="module-2.html#cb52-13" tabindex="-1"></a><span class="st">      split($6, A_data, &quot;:&quot;)</span></span>
+<span id="cb52-14"><a href="module-2.html#cb52-14" tabindex="-1"></a><span class="st">      split($7, C_data, &quot;:&quot;)</span></span>
+<span id="cb52-15"><a href="module-2.html#cb52-15" tabindex="-1"></a><span class="st">      split($8, G_data, &quot;:&quot;)</span></span>
+<span id="cb52-16"><a href="module-2.html#cb52-16" tabindex="-1"></a><span class="st">      split($9, T_data, &quot;:&quot;)</span></span>
+<span id="cb52-17"><a href="module-2.html#cb52-17" tabindex="-1"></a><span class="st">      printf &quot;HBR Counts\t%s\t%s\tA: %s\tC: %s\tT: %s\tG: %s\n&quot;, </span></span>
+<span id="cb52-18"><a href="module-2.html#cb52-18" tabindex="-1"></a><span class="st">      $1, $2, A_data[2], C_data[2], T_data[2], G_data[2]</span></span>
+<span id="cb52-19"><a href="module-2.html#cb52-19" tabindex="-1"></a><span class="st">}&#39;</span> HBR_bam-readcounts.txt</span></code></pre></div>
+<p>Finally if you wish to extend this concept to a more complex analysis, here is a <a href="https://github.com/genome/bam-readcount/tree/master/tutorial">bam-readcount tutorial</a> that uses python to parse output from bam-readcount to identify a Omicron SARS-CoV-2 variant of concern from raw sequence data.</p>
 
 </div>
 </div>
