@@ -241,6 +241,11 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#rseqc-optional"><i class="fa fa-check"></i>RSeQC [optional]</a></li>
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#multiqc-1"><i class="fa fa-check"></i>MultiQC</a></li>
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#view-a-pre-generated-multiqc-report-for-full-bam-files"><i class="fa fa-check"></i>View a pre-generated MultiQC report for full bam files</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#part-i---obtaining-the-dataset-reference-files"><i class="fa fa-check"></i>Part I - Obtaining the dataset &amp; reference files</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#part-ii---data-preprocessing-qc-trimming"><i class="fa fa-check"></i>Part II - Data Preprocessing (QC &amp; Trimming)</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#part-iii---alignment"><i class="fa fa-check"></i>Part III - Alignment</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#part-iv---post-alignment-qc-igv-visualization"><i class="fa fa-check"></i>Part IV - Post-alignment QC &amp; IGV Visualization</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#presenting-your-results"><i class="fa fa-check"></i>Presenting Your Results</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html"><i class="fa fa-check"></i>Module 3</a>
@@ -1161,6 +1166,108 @@ This is all done to get the IntervalList format needed for Picard CollectRnaSeqM
 </tr>
 </tbody>
 </table>
+<hr />
+<p><font size="5"><b><u>Team Assignment</u></b></font></p>
+<p>The goal of the following team assignment is for students to gain hands-on experience by working on recently published RNA-seq data and apply the concepts they have learned up to RNA alignment. To complete this assignment, students will need to review commands we performed in earlier sections.</p>
+<p><strong>Background on Dataset used</strong></p>
+<p>In this assignment, we will be using subsets of the GSE136366 dataset (Roczniak-Ferguson A, Ferguson SM. Pleiotropic requirements for human TDP-43 in the regulation of cell and organelle homeostasis. Life Sci Alliance 2019 Oct;2(5). PMID: 31527135). This dataset consists of 6 RNA sequencing files of human cells that either express or lack the TDP-43 protein.</p>
+<p><strong>Experimental Details</strong>
+- The libraries are prepared as paired end.
+- The samples are sequenced on an Illumina HiSeq 2500.
+- Each read is 63 bp long
+- The data are RF/fr-firststrand stranded (dUTP)
+- The source dataset is located here: <a href="https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE136366">GSE136366</a>
+- 3 samples are from TDP-43 Knockout HeLa cells and 3 samples wherein a wildtype TDP-43 transgene was re-expressed.
+- For this exercise we will be using different subsets of the reads:
+- Team A: chr11
+- Team B: chr12
+- Team C: chr17
+- Team D: chr19
+- Team E: chr6
+- The files are named based on their SRR id’s, and obey the following key:
+- SRR10045016 = KO sample 1
+- SRR10045017 = KO sample 2
+- SRR10045018 = KO sample 3
+- SRR10045019 = Rescue sample 1
+- SRR10045020 = Rescue sample 2
+- SRR10045021 = Rescue sample 3</p>
+</div>
+<div id="part-i---obtaining-the-dataset-reference-files" class="section level3 hasAnchor">
+<h3>Part I - Obtaining the dataset &amp; reference files<a href="module-2.html#part-i---obtaining-the-dataset-reference-files" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Obtain the files necessary for data processing</li>
+<li>Review reference and annotation file formats</li>
+<li>Review sequence FASTQ format</li>
+</ul>
+<p>As mentioned previously, we have subsetted the 6 RNA-seq samples into 5 different chromosome regions. Each team can download their corresponding dataset using the following commands.</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb63-1"><a href="module-2.html#cb63-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/</span>
+<span id="cb63-2"><a href="module-2.html#cb63-2" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> team_exercise/untrimmed</span>
+<span id="cb63-3"><a href="module-2.html#cb63-3" tabindex="-1"></a><span class="bu">cd</span> team_exercise/untrimmed</span>
+<span id="cb63-4"><a href="module-2.html#cb63-4" tabindex="-1"></a></span>
+<span id="cb63-5"><a href="module-2.html#cb63-5" tabindex="-1"></a><span class="co"># Fill in the &quot;XX&quot; below with your team&#39;s letter (A, B, C...)</span></span>
+<span id="cb63-6"><a href="module-2.html#cb63-6" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-c</span> http://genomedata.org/seq-tec-workshop/read_data/rna_alignment-de_exercise/dataset_XX/dataset.tar.gz</span>
+<span id="cb63-7"><a href="module-2.html#cb63-7" tabindex="-1"></a><span class="fu">tar</span> <span class="at">-xzvf</span> dataset.tar.gz</span></code></pre></div>
+<p>Additionally, teams will need to create a separate directory and download the corresponding reference files needed for RNA alignment &amp; further expression analysis. Don’t forget to modify the below commands to <strong>use your team’s chromosome</strong>.</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb64-1"><a href="module-2.html#cb64-1" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$RNA_HOME</span>/team_exercise/references</span>
+<span id="cb64-2"><a href="module-2.html#cb64-2" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/team_exercise/references</span>
+<span id="cb64-3"><a href="module-2.html#cb64-3" tabindex="-1"></a></span>
+<span id="cb64-4"><a href="module-2.html#cb64-4" tabindex="-1"></a><span class="co">## Adapter trimming</span></span>
+<span id="cb64-5"><a href="module-2.html#cb64-5" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-c</span> http://genomedata.org/seq-tec-workshop/references/RNA/illumina_multiplex.fa</span>
+<span id="cb64-6"><a href="module-2.html#cb64-6" tabindex="-1"></a></span>
+<span id="cb64-7"><a href="module-2.html#cb64-7" tabindex="-1"></a><span class="co">## Reference fasta corresponding to your team&#39;s assigned chromosome (e.g. chr6)</span></span>
+<span id="cb64-8"><a href="module-2.html#cb64-8" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-c</span> http://genomedata.org/seq-tec-workshop/references/RNA/chrXX.fa</span>
+<span id="cb64-9"><a href="module-2.html#cb64-9" tabindex="-1"></a></span>
+<span id="cb64-10"><a href="module-2.html#cb64-10" tabindex="-1"></a><span class="co">## Obtain annotated reference gtf file corresponding to your team&#39;s assigned chromosome (e.g. chr6)</span></span>
+<span id="cb64-11"><a href="module-2.html#cb64-11" tabindex="-1"></a><span class="fu">wget</span> <span class="at">-c</span> http://genomedata.org/seq-tec-workshop/references/RNA/chrXX_Homo_sapiens.GRCh38.95.gtf</span></code></pre></div>
+</div>
+<div id="part-ii---data-preprocessing-qc-trimming" class="section level3 hasAnchor">
+<h3>Part II - Data Preprocessing (QC &amp; Trimming)<a href="module-2.html#part-ii---data-preprocessing-qc-trimming" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Perform adapter trimming on your data and also pre-trim 5 bases from <strong>end (right)</strong> of reads</li>
+<li>Perform QC on your data with <code>fastqc</code> and <code>multiqc</code> before and after trimming your data</li>
+</ul>
+<p><strong>Q1.</strong> What is the average percentage of reads that are trimmed?</p>
+<p><strong>Q2.</strong> How do you expect the sequence length distribution to look prior to and after trimming? Is your answer confirmed by the multiqc report results?</p>
+<p><strong>Q3.</strong> Are there any metrics where the sample(s) failed?</p>
+</div>
+<div id="part-iii---alignment" class="section level3 hasAnchor">
+<h3>Part III - Alignment<a href="module-2.html#part-iii---alignment" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Create HISAT2 index files <strong>for your chromosome</strong></li>
+<li>Review HISAT2 alignment options</li>
+<li>Perform alignments</li>
+<li>Obtain an alignment summary</li>
+<li>Sort and convert your alignments into compressed BAM format</li>
+</ul>
+<p><em>A useful option to add to the end of your commands is <code>2&gt;</code>, which redirects the stderr from any command into a specific file. This can be used to redirect your stderr into a summary file, and can be used as follows: <code>my_alignment_command 2&gt; alignment_metrics.txt</code>. The advantage of this is being able to view the alignment metrics later on.</em></p>
+<p><strong>Q4.</strong> What were the percentages of reads that aligned to the reference for each sample?</p>
+<p><strong>Q5.</strong> By compressing your sam format to bam, approximately how much space is saved (fold change in size)?</p>
+</div>
+<div id="part-iv---post-alignment-qc-igv-visualization" class="section level3 hasAnchor">
+<h3>Part IV - Post-alignment QC &amp; IGV Visualization<a href="module-2.html#part-iv---post-alignment-qc-igv-visualization" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Perform post-alignment QC analysis using <code>fastqc</code> and <code>multiqc</code></li>
+<li>Merge bam files (one for each condition) for easier visualization in IGV</li>
+<li>Index the bam files</li>
+<li>Explore the alignments using IGV</li>
+</ul>
+<p><strong>Q6.</strong> How does the information from your post-alignment QC report differ from pre-alignment QC?</p>
+<p><strong>Q7.</strong> IGV: Can you identify certain exons that have significantly more/less coverage in one of your KO/RESCUE samples compared to the other? What is happening here?</p>
+<p><strong>Q8.</strong> IGV: Can you identify regions where the RNAseq reads are mapping to unexpected regions? What do you think is the reason for this phenomenon?</p>
+<p><strong>Q9.</strong> IGV: Can you identify a gene region that has RNA sequencing support for multiple isoforms?</p>
+</div>
+<div id="presenting-your-results" class="section level3 hasAnchor">
+<h3>Presenting Your Results<a href="module-2.html#presenting-your-results" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>At the end of this team exercise, groups will present findings from their QC reports and IGV analysis to the class for specific questions listed below.</p>
+<p>Team A: Present IGV findings regarding question 9.</p>
+<p>Team B: Present multiqc report on pre- and post-alignment qc files (question 6).</p>
+<p>Team C: Present IGV findings regarding question 7.</p>
+<p>Team D: Present IGV findings regarding question 8.</p>
+<p>Team E: Present multiqc report on pre- and post-trimming qc files (Data Preprocessing section).</p>
 
 </div>
 </div>
