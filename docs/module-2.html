@@ -221,6 +221,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#use-fastqc-and-multiqc-to-compare-the-impact-of-trimming"><i class="fa fa-check"></i>Use FastQC and multiqc to compare the impact of trimming</a></li>
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#clean-up-1"><i class="fa fa-check"></i>Clean up</a></li>
 <li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#practical-exercise-5"><i class="fa fa-check"></i>PRACTICAL EXERCISE 5</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#alignment-mini-lecture"><i class="fa fa-check"></i>Alignment mini lecture</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#hisat2-alignment"><i class="fa fa-check"></i>HISAT2 alignment</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#merge-hisat2-bam-files"><i class="fa fa-check"></i>Merge HISAT2 BAM files</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#practical-exercise-6"><i class="fa fa-check"></i>PRACTICAL EXERCISE 6</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#introduction"><i class="fa fa-check"></i>Introduction</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#visualization-part-1-getting-familiar-with-igv"><i class="fa fa-check"></i>Visualization Part 1: Getting familiar with IGV</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#visualization-part-2-inspecting-snps-snvs-and-svs"><i class="fa fa-check"></i>Visualization Part 2: Inspecting SNPs, SNVs, and SVs</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#visualization-part-3-automating-tasks-in-igv"><i class="fa fa-check"></i>Visualization Part 3: Automating Tasks in IGV</a></li>
+<li class="chapter" data-level="" data-path="module-2.html"><a href="module-2.html#indexing-bam-files-with-samtools"><i class="fa fa-check"></i>Indexing BAM files with samtools</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html"><i class="fa fa-check"></i>Module 3</a>
@@ -387,6 +396,419 @@ Extra options specified below:</p>
 <li>In the ‘Per base sequence content section’, what pattern do you see? What could explain this pattern?</li>
 </ul>
 <p>Solution: When you are ready you can check your approach against the <a href="/module-09-appendix/0009/05/01/Practical_Exercise_Solutions/#practical-exercise-5---trim">Solutions</a>.</p>
+<hr />
+<p><font size="5"><b>Alignment</b></font></p>
+</div>
+<div id="alignment-mini-lecture" class="section level3 hasAnchor">
+<h3>Alignment mini lecture<a href="module-2.html#alignment-mini-lecture" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>If you would like a refresher on alignment, we have created an <a href="https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2026/mini/RNASeq_MiniLecture_02_01_Alignment.pdf">alignment mini lecture</a>.</p>
+<p>We have also provided a mini lectures describing the differences between <a href="https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2026/mini/RNASeq_MiniLecture_02_02_Alignment_vs_Assembly_vs_Kmer.pdf">alignment, assembly, and pseudoalignment</a> and describing <a href="https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2026/mini/RNASeq_MiniLecture_02_03_SAM_BAM_BED.pdf">sam, bam, and bed file formats</a>.</p>
+</div>
+<div id="hisat2-alignment" class="section level3 hasAnchor">
+<h3>HISAT2 alignment<a href="module-2.html#hisat2-alignment" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Perform alignments with HISAT2 to the genome and transcriptome.</p>
+<p>First, begin by making the appropriate output directory for our alignment results.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb36-1"><a href="module-2.html#cb36-1" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$RNA_ALIGN_DIR</span></span>
+<span id="cb36-2"><a href="module-2.html#cb36-2" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$RNA_ALIGN_DIR</span></span>
+<span id="cb36-3"><a href="module-2.html#cb36-3" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_ALIGN_DIR</span></span></code></pre></div>
+<p>HISAT2 uses a graph-based alignment and has succeeded HISAT and TOPHAT2. The output of this step will be a SAM/BAM file for each data set.</p>
+<p>Refer to HISAT2 manual for a more detailed explanation:</p>
+<ul>
+<li><a href="http://daehwankimlab.github.io/hisat2/manual/">http://daehwankimlab.github.io/hisat2/manual/</a></li>
+</ul>
+<p>HISAT2 basic usage:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb37-1"><a href="module-2.html#cb37-1" tabindex="-1"></a><span class="co">#hisat2 [options]* -x &lt;ht2-idx&gt; {-1 &lt;m1&gt; -2 &lt;m2&gt; | -U &lt;r&gt; | --sra-acc &lt;SRA accession number&gt;} [-S &lt;sam&gt;]</span></span></code></pre></div>
+<p>Extra options specified below:</p>
+<ul>
+<li>‘-p 4’ tells HISAT2 to use 4 CPUs for bowtie alignments.</li>
+<li>‘–rna-strandness RF’ specifies strandness of RNAseq library. We will specify RF since the TruSeq strand-specific library was used to make these libraries. See here for options.</li>
+<li>‘–rg-id $ID’ specifies a read group ID that is a unique identifier.</li>
+<li>‘–rg SM:$SAMPLE_NAME’ specifies a read group sample name. This together with rg-id will allow you to determine which reads came from which sample in the merged bam later on.</li>
+<li>‘–rg LB:$LIBRARY_NAME’ specifies a read group library name. This together with rg-id will allow you to determine which reads came from which library in the merged bam later on.</li>
+<li>‘–rg PL:ILLUMINA’ specifies a read group sequencing platform.</li>
+<li>‘–rg PU:$PLATFORM_UNIT’ specifies a read group sequencing platform unit. Typically this consists of FLOWCELL-BARCODE.LANE</li>
+<li>‘–dta’ Reports alignments tailored for transcript assemblers.</li>
+<li>‘-x /path/to/hisat2/index’ The HISAT2 index filename prefix (minus the trailing .X.ht2) built earlier including splice sites and exons.</li>
+<li>‘-1 /path/to/read1.fastq.gz’ The read 1 FASTQ file, optionally gzip(.gz) or bzip2(.bz2) compressed.</li>
+<li>‘-2 /path/to/read2.fastq.gz’ The read 2 FASTQ file, optionally gzip(.gz) or bzip2(.bz2) compressed.</li>
+<li>‘-S /path/to/output.sam’ The output SAM format text file of alignments.</li>
+</ul>
+<div class="sourceCode" id="cb38"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb38-1"><a href="module-2.html#cb38-1" tabindex="-1"></a><span class="ex">hisat2</span> <span class="at">-p</span> 4 <span class="at">--rg-id</span><span class="op">=</span>UHR_Rep1 <span class="at">--rg</span> SM:UHR <span class="at">--rg</span> LB:UHR_Rep1_ERCC-Mix1 <span class="at">--rg</span> PL:ILLUMINA <span class="at">--rg</span> PU:CXX1234-ACTGAC.1 <span class="at">-x</span> <span class="va">$RNA_REF_INDEX</span> <span class="at">--dta</span> <span class="at">--rna-strandness</span> RF <span class="at">-1</span> <span class="va">$RNA_DATA_DIR</span>/UHR_Rep1_ERCC-Mix1_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-2</span> <span class="va">$RNA_DATA_DIR</span>/UHR_Rep1_ERCC-Mix1_Build37-ErccTranscripts-chr22.read2.fastq.gz <span class="at">-S</span> ./UHR_Rep1.sam</span>
+<span id="cb38-2"><a href="module-2.html#cb38-2" tabindex="-1"></a><span class="ex">hisat2</span> <span class="at">-p</span> 4 <span class="at">--rg-id</span><span class="op">=</span>UHR_Rep2 <span class="at">--rg</span> SM:UHR <span class="at">--rg</span> LB:UHR_Rep2_ERCC-Mix1 <span class="at">--rg</span> PL:ILLUMINA <span class="at">--rg</span> PU:CXX1234-TGACAC.1 <span class="at">-x</span> <span class="va">$RNA_REF_INDEX</span> <span class="at">--dta</span> <span class="at">--rna-strandness</span> RF <span class="at">-1</span> <span class="va">$RNA_DATA_DIR</span>/UHR_Rep2_ERCC-Mix1_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-2</span> <span class="va">$RNA_DATA_DIR</span>/UHR_Rep2_ERCC-Mix1_Build37-ErccTranscripts-chr22.read2.fastq.gz <span class="at">-S</span> ./UHR_Rep2.sam</span>
+<span id="cb38-3"><a href="module-2.html#cb38-3" tabindex="-1"></a><span class="ex">hisat2</span> <span class="at">-p</span> 4 <span class="at">--rg-id</span><span class="op">=</span>UHR_Rep3 <span class="at">--rg</span> SM:UHR <span class="at">--rg</span> LB:UHR_Rep3_ERCC-Mix1 <span class="at">--rg</span> PL:ILLUMINA <span class="at">--rg</span> PU:CXX1234-CTGACA.1 <span class="at">-x</span> <span class="va">$RNA_REF_INDEX</span> <span class="at">--dta</span> <span class="at">--rna-strandness</span> RF <span class="at">-1</span> <span class="va">$RNA_DATA_DIR</span>/UHR_Rep3_ERCC-Mix1_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-2</span> <span class="va">$RNA_DATA_DIR</span>/UHR_Rep3_ERCC-Mix1_Build37-ErccTranscripts-chr22.read2.fastq.gz <span class="at">-S</span> ./UHR_Rep3.sam</span>
+<span id="cb38-4"><a href="module-2.html#cb38-4" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="module-2.html#cb38-5" tabindex="-1"></a><span class="ex">hisat2</span> <span class="at">-p</span> 4 <span class="at">--rg-id</span><span class="op">=</span>HBR_Rep1 <span class="at">--rg</span> SM:HBR <span class="at">--rg</span> LB:HBR_Rep1_ERCC-Mix2 <span class="at">--rg</span> PL:ILLUMINA <span class="at">--rg</span> PU:CXX1234-TGACAC.1 <span class="at">-x</span> <span class="va">$RNA_REF_INDEX</span> <span class="at">--dta</span> <span class="at">--rna-strandness</span> RF <span class="at">-1</span> <span class="va">$RNA_DATA_DIR</span>/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-2</span> <span class="va">$RNA_DATA_DIR</span>/HBR_Rep1_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz <span class="at">-S</span> ./HBR_Rep1.sam</span>
+<span id="cb38-6"><a href="module-2.html#cb38-6" tabindex="-1"></a><span class="ex">hisat2</span> <span class="at">-p</span> 4 <span class="at">--rg-id</span><span class="op">=</span>HBR_Rep2 <span class="at">--rg</span> SM:HBR <span class="at">--rg</span> LB:HBR_Rep2_ERCC-Mix2 <span class="at">--rg</span> PL:ILLUMINA <span class="at">--rg</span> PU:CXX1234-GACACT.1 <span class="at">-x</span> <span class="va">$RNA_REF_INDEX</span> <span class="at">--dta</span> <span class="at">--rna-strandness</span> RF <span class="at">-1</span> <span class="va">$RNA_DATA_DIR</span>/HBR_Rep2_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-2</span> <span class="va">$RNA_DATA_DIR</span>/HBR_Rep2_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz <span class="at">-S</span> ./HBR_Rep2.sam</span>
+<span id="cb38-7"><a href="module-2.html#cb38-7" tabindex="-1"></a><span class="ex">hisat2</span> <span class="at">-p</span> 4 <span class="at">--rg-id</span><span class="op">=</span>HBR_Rep3 <span class="at">--rg</span> SM:HBR <span class="at">--rg</span> LB:HBR_Rep3_ERCC-Mix2 <span class="at">--rg</span> PL:ILLUMINA <span class="at">--rg</span> PU:CXX1234-ACACTG.1 <span class="at">-x</span> <span class="va">$RNA_REF_INDEX</span> <span class="at">--dta</span> <span class="at">--rna-strandness</span> RF <span class="at">-1</span> <span class="va">$RNA_DATA_DIR</span>/HBR_Rep3_ERCC-Mix2_Build37-ErccTranscripts-chr22.read1.fastq.gz <span class="at">-2</span> <span class="va">$RNA_DATA_DIR</span>/HBR_Rep3_ERCC-Mix2_Build37-ErccTranscripts-chr22.read2.fastq.gz <span class="at">-S</span> ./HBR_Rep3.sam</span></code></pre></div>
+<p>Note: in the above alignments, we are treating each library as an independent data set. If you had multiple lanes of data for a single library, you could align them all together in one HISAT2 command. Similarly you might combine technical replicates into a single alignment run (perhaps after examining them and removing outliers…). To combine multiple lanes, you would provide all the read1 files as a comma separated list for the ‘-1’ input argument, and then all read2 files as a comma separated list for the ‘-2’ input argument, (where both lists have the same order) : You can also use samtools merge to combine bam files after alignment. This is the approach we will take.</p>
+<p><strong>HISAT2 Alignment Summary</strong>
+HISAT2 generates a summary of the alignments printed to the terminal. Notice the number of total reads, reads aligned and various metrics regarding how the reads aligned to the reference.</p>
+<p><strong>SAM to BAM Conversion</strong>
+Convert HISAT2 sam files to bam files and sort by aligned position</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb39-1"><a href="module-2.html#cb39-1" tabindex="-1"></a><span class="ex">samtools</span> sort <span class="at">-@</span> 4 <span class="at">-o</span> UHR_Rep1.bam UHR_Rep1.sam</span>
+<span id="cb39-2"><a href="module-2.html#cb39-2" tabindex="-1"></a><span class="ex">samtools</span> sort <span class="at">-@</span> 4 <span class="at">-o</span> UHR_Rep2.bam UHR_Rep2.sam</span>
+<span id="cb39-3"><a href="module-2.html#cb39-3" tabindex="-1"></a><span class="ex">samtools</span> sort <span class="at">-@</span> 4 <span class="at">-o</span> UHR_Rep3.bam UHR_Rep3.sam</span>
+<span id="cb39-4"><a href="module-2.html#cb39-4" tabindex="-1"></a><span class="ex">samtools</span> sort <span class="at">-@</span> 4 <span class="at">-o</span> HBR_Rep1.bam HBR_Rep1.sam</span>
+<span id="cb39-5"><a href="module-2.html#cb39-5" tabindex="-1"></a><span class="ex">samtools</span> sort <span class="at">-@</span> 4 <span class="at">-o</span> HBR_Rep2.bam HBR_Rep2.sam</span>
+<span id="cb39-6"><a href="module-2.html#cb39-6" tabindex="-1"></a><span class="ex">samtools</span> sort <span class="at">-@</span> 4 <span class="at">-o</span> HBR_Rep3.bam HBR_Rep3.sam</span></code></pre></div>
+</div>
+<div id="merge-hisat2-bam-files" class="section level3 hasAnchor">
+<h3>Merge HISAT2 BAM files<a href="module-2.html#merge-hisat2-bam-files" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Make a single BAM file combining all UHR data and another for all HBR data. Note: This could be done in several ways such as ‘samtools merge’, ‘bamtools merge’, or using picard-tools (see below). We chose the third method because it did the best job at merging the bam header information. NOTE: sambamba also retains header info.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb40-1"><a href="module-2.html#cb40-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/alignments/hisat2</span>
+<span id="cb40-2"><a href="module-2.html#cb40-2" tabindex="-1"></a><span class="ex">java</span> <span class="at">-Xmx2g</span> <span class="at">-jar</span> <span class="va">$PICARD</span> MergeSamFiles <span class="at">-OUTPUT</span> UHR.bam <span class="at">-INPUT</span> UHR_Rep1.bam <span class="at">-INPUT</span> UHR_Rep2.bam <span class="at">-INPUT</span> UHR_Rep3.bam</span>
+<span id="cb40-3"><a href="module-2.html#cb40-3" tabindex="-1"></a><span class="ex">java</span> <span class="at">-Xmx2g</span> <span class="at">-jar</span> <span class="va">$PICARD</span> MergeSamFiles <span class="at">-OUTPUT</span> HBR.bam <span class="at">-INPUT</span> HBR_Rep1.bam <span class="at">-INPUT</span> HBR_Rep2.bam <span class="at">-INPUT</span> HBR_Rep3.bam</span></code></pre></div>
+<p>Count the alignment (BAM) files to make sure all were created successfully (you should have 8 total)</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb41-1"><a href="module-2.html#cb41-1" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-l</span> <span class="pp">*</span>.bam <span class="kw">|</span> <span class="fu">wc</span> <span class="at">-l</span></span>
+<span id="cb41-2"><a href="module-2.html#cb41-2" tabindex="-1"></a><span class="fu">ls</span> <span class="at">-l</span> <span class="pp">*</span>.bam</span></code></pre></div>
+<hr />
+</div>
+<div id="practical-exercise-6" class="section level3 hasAnchor">
+<h3>PRACTICAL EXERCISE 6<a href="module-2.html#practical-exercise-6" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Assignment: Perform some alignments on additional read data sets. Align the reads using the skills you learned above. Try using the HISAT2 aligner. Also practice converting SAM to BAM files, and merging BAM files.</p>
+<p>Hint: Do this analysis on the additional data and in the separate working directory called ‘practice’ that you created in Practical Exercise 3.
+Questions</p>
+<p>What is the difference between a .sam and .bam file?
+If you sorted the resulting BAM file as we did above, is the result sorted by read name? Or position?
+Which columns of the BAM file can be viewed to determine the style of sorting?
+What command can you use to view only the BAM header?</p>
+<p>Solution: When you are ready you can check your approach against the <a href="/module-09-appendix/0009/05/01/Practical_Exercise_Solutions/#practical-exercise-6---alignment">Solutions</a>.</p>
+<hr />
+<p><font size="5"><b>IGV</b></font></p>
+</div>
+<div id="introduction" class="section level3 hasAnchor">
+<h3>Introduction<a href="module-2.html#introduction" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><strong>Description of the lab</strong>
+Welcome to the lab for Genome Visualization! This lab will introduce you to the <a href="http://www.broadinstitute.org/igv/">Integrative Genomics Viewer</a>, one of the most popular visualization tools for High Throughput Sequencing (HTS) data.</p>
+<p>Lecture files that accompany this tutorial:</p>
+<ul>
+<li><a href="assets/module_2/IGV_Tutorial_Brief.pdf">IGV Lecture - Brief</a><br />
+</li>
+<li><a href="assets/module_2/IGV_Tutorial_Long_BroadInstitute.pdf">IGV Lecture - Long, from Broad Institute</a><br />
+</li>
+</ul>
+<p>After this lab, you will be able to:</p>
+<ul>
+<li>Visualize a variety of genomic data</li>
+<li>Quickly navigate around the genome</li>
+<li>Visualize read alignments</li>
+<li>Validate SNP/SNV calls and structural re-arrangements by eye</li>
+</ul>
+<p>Things to know before you start:</p>
+<ul>
+<li><p>The lab may take between <strong>1-2 hours</strong>, depending on your familiarity with genome browsing. Do not worry if you do not complete the lab. It will remain available to review later.</p></li>
+<li><p>There are a few thought-provoking <strong>Questions</strong> or <strong>Notes</strong> pertaining to sections of the lab. These are <strong>optional</strong>, and may take more time, but are meant to help you better understand the visualizations you are seeing. These questions will be denoted by boxes, as follows: <strong>Question(s):</strong></p></li>
+</ul>
+<p>`Thought-provoking question goes here.``</p>
+<div id="requirements" class="section level4 hasAnchor">
+<h4>Requirements<a href="module-2.html#requirements" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li><p><a href="https://software.broadinstitute.org/software/igv/">Integrative Genomics Viewer</a></p></li>
+<li><p>Ability to run Java</p></li>
+<li><p>Note that while most tutorials in this course are performed on the cloud, IGV will always be run on your local machine</p></li>
+<li><p>Note a version of this tutorial can also be performed directly in your web browser at <a href="https://sandbox.bio/tutorials?id=igv-intro">sandbox.bio IGV Intro</a>.</p></li>
+</ul>
+</div>
+<div id="compatibility" class="section level4 hasAnchor">
+<h4>Compatibility<a href="module-2.html#compatibility" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>This tutorial was most recently updated for IGV v2.16.2, which is available on the <a href="http://software.broadinstitute.org/software/igv/download">IGV Download page</a>. It is recommended that you use this version. Most other recent versions will work but their may be slight differences.</p>
+</div>
+<div id="data-set-for-igv" class="section level4 hasAnchor">
+<h4>Data Set for IGV<a href="module-2.html#data-set-for-igv" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>We will be using publicly available Illumina sequence data from the HCC1143 cell line. The HCC1143 cell line was generated from a 52 year old caucasian woman with breast cancer. Additional information on this cell line can be found here: <a href="https://www.atcc.org/products/all/CRL-2321.aspx">HCC1143</a> (tumor, TNM stage IIA, grade 3, primary ductal carcinoma) and <a href="https://www.atcc.org/products/all/CRL-2362.aspx">HCC1143/BL</a> (matched normal EBV transformed lymphoblast cell line).</p>
+<ul>
+<li>Sequence read alignments generated from a cell line HCC1143 that have been filtered to this region:</li>
+<li>Chromosome 21: 19,000,000-20,000,000</li>
+<li><a href="assets/module_2/HCC1143.normal.21.19M-20M.bam">HCC1143.normal.21.19M-20M.bam</a><br />
+</li>
+<li><a href="assets/module_2/HCC1143.normal.21.19M-20M.bam.bai">HCC1143.normal.21.19M-20M.bam.bai</a><br />
+</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="visualization-part-1-getting-familiar-with-igv" class="section level3 hasAnchor">
+<h3>Visualization Part 1: Getting familiar with IGV<a href="module-2.html#visualization-part-1-getting-familiar-with-igv" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We will be visualizing read alignments using <a href="http://www.broadinstitute.org/igv/">IGV</a>, a popular visualization tool for HTS data.</p>
+<p>First, lets familiarize ourselves with it.</p>
+<div id="get-familiar-with-the-interface" class="section level4 hasAnchor">
+<h4>Get familiar with the interface<a href="module-2.html#get-familiar-with-the-interface" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<div id="load-a-genome-and-some-data-tracks" class="section level5 hasAnchor">
+<h5>Load a Genome and some Data Tracks<a href="module-2.html#load-a-genome-and-some-data-tracks" class="anchor-section" aria-label="Anchor link to header"></a></h5>
+<p>By default, IGV loads the Human GRCh38/hg38 reference genome. If you work with another version of the human genome, or another organism altogether, you can change the genome by clicking the drop down menu in the upper-left. For this lab, we will be using Human GRCh37/hg19.</p>
+<p>We will also load additional tracks from Server using (<code>File</code> -&gt; <code>Load from Server...</code>):</p>
+<ul>
+<li>Ensembl Genes (or your favourite source of gene annotations)</li>
+<li>GC Percentage</li>
+<li>dbSNP 1.4.7</li>
+</ul>
+<p><strong>Load hg19 genome and additional data tracks</strong></p>
+<p><img src="assets/module_2/load.data.tracks.png" alt="Load hg19 genome and additional data tracks" /><br />
+</p>
+</div>
+</div>
+<div id="navigation" class="section level4 hasAnchor">
+<h4>Navigation<a href="module-2.html#navigation" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>You should see listing of chromosomes in this reference genome. Choose 1, for chromosome 1.</p>
+<p><strong>Chromosome chooser</strong></p>
+<p><img src="assets/module_2/chromosomes.png" alt="Chromosome chooser" /><br />
+</p>
+<p>Navigate to <strong>chr1:10,000-11,000</strong> by entering this into the location field (in the top-left corner of the interface) and clicking <code>Go</code>. This shows a window of chromosome 1 that is 1,000 base pairs wide and beginning at position 10,000.</p>
+<p><strong>Navigition using Location text field. Sequence displayed as thin coloured rectangles.</strong></p>
+<p><img src="assets/module_2/1.png" alt="Navigition using Location text field. Sequence displayed as thin coloured rectangles." /><br />
+</p>
+<p>IGV displays the sequence of letters in a genome as a sequence of colours (e.g. A = green, C = blue, etc.). This makes repetitive sequences, like the ones found at the start of this region, easy to identify. Zoom in a bit more using the <code>+</code> button to see the individual bases of the reference genome sequence.</p>
+<p>You can navigate to a gene of interest by typing it in the same box the genomic coordinates are in and pressing Enter/Return. Try it for your favourite gene, or BRCA1 if you can not decide.</p>
+<p><strong>Gene model</strong></p>
+<p><img src="assets/module_2/gene_model.png" alt="Gene model" /><br />
+</p>
+<p>Genes are represented as lines and boxes. Lines represent intronic regions, and boxes represent exonic regions. The arrows indicate the direction/strand of transcription for the gene. When an exon box become narrower in height, this indicates a UTR.</p>
+<p>When loaded, tracks are stacked on top of each other. You can identify which track is which by consulting the label to the left of each track.</p>
+</div>
+<div id="region-lists" class="section level4 hasAnchor">
+<h4>Region Lists<a href="module-2.html#region-lists" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Sometimes, it is really useful to save where you are, or to load regions of interest. For this purpose, there is a <strong>Region Navigator</strong> in IGV. To access it, click <code>Regions</code> &gt; <code>Region Navigator</code>. While you browse around the genome, you can save some bookmarks by pressing the <code>Add</code> button at any time.</p>
+<p><strong>Bookmarks in IGV</strong></p>
+<p><img src="assets/module_2/bookmarks.png" alt="Bookmarks in IGV" /><br />
+</p>
+</div>
+<div id="loading-read-alignments" class="section level4 hasAnchor">
+<h4>Loading Read Alignments<a href="module-2.html#loading-read-alignments" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>We will be using the breast cancer cell line HCC1143 to visualize alignments. For speed, only a small portion of chr21 will be loaded (19M:20M).</p>
+<p><strong>HCC1143 Alignments to hg19:</strong></p>
+<ul>
+<li><a href="assets/module_2/HCC1143.normal.21.19M-20M.bam">HCC1143.normal.21.19M-20M.bam</a><br />
+</li>
+<li><a href="assets/module_2/HCC1143.normal.21.19M-20M.bam.bai">HCC1143.normal.21.19M-20M.bam.bai</a><br />
+</li>
+</ul>
+<p>Copy the files to your local drive, and in IGV choose <code>File &gt; Load from File...</code>, select the bam file, and click <code>OK</code>. Note that the bam and index files must be in the same directory for IGV to load these properly.</p>
+<p><strong>Load BAM track from File</strong></p>
+<p><img src="assets/module_2/load_bam.png" alt="Load BAM track from File" /><br />
+</p>
+</div>
+<div id="visualizing-read-alignments" class="section level4 hasAnchor">
+<h4>Visualizing read alignments<a href="module-2.html#visualizing-read-alignments" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Navigate to a narrow window on chromosome 21: <code>chr21:19,480,041-19,480,386</code>.</p>
+<p>To start our exploration, right click on the read alignment track, and select the following options:</p>
+<ul>
+<li><code>Sort alignments by</code> -&gt; <code>start location</code></li>
+<li><code>Group alignments by</code> -&gt; <code>pair orientation</code></li>
+</ul>
+<p>Experiment with the various settings by right clicking the read alignment track and toggling the options. Think about which would be best for specific tasks (e.g. quality control, SNP calling, CNV finding).</p>
+<p><strong>Changing how read alignments are sorted, grouped, and colored</strong></p>
+<p><img src="assets/module_2/sort_and_group.png" alt="Changing how read alignments are sorted, grouped, and colored" /><br />
+</p>
+<p>You will see reads represented by grey or white bars stacked on top of each other, where they were aligned to the reference genome. The reads are pointed to indicate their orientation (i.e. the strand on which they are mapped). Mouse over any read and notice that a lot of information is available. To toggle read display from hover to <code>click</code>, select the yellow box and change the setting.</p>
+<p><strong>Changing how read information is shown (i.e. on hover, click, never)</strong></p>
+<p><img src="assets/module_2/show_details_on_click.png" alt="Changing how read information is shown (i.e. on hover, click, never)" /><br />
+</p>
+<p>Once you select a read, you will learn what many of these metrics mean, and how to use them to assess the quality of your datasets. At each base that the read sequence <strong>mismatches</strong> the reference, the colour of the base represents the letter that exists in the read (using the same colour legend used for displaying the reference).</p>
+<p><strong>Viewing read information for a single aligned read</strong></p>
+<p><img src="assets/module_2/click_read.png" alt="Viewing read information for a single aligned read" /><br />
+</p>
+<hr />
+</div>
+</div>
+<div id="visualization-part-2-inspecting-snps-snvs-and-svs" class="section level3 hasAnchor">
+<h3>Visualization Part 2: Inspecting SNPs, SNVs, and SVs<a href="module-2.html#visualization-part-2-inspecting-snps-snvs-and-svs" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In this section we will be looking in detail at 8 positions in the genome, and determining whether they represent real events or artifacts.</p>
+<div id="two-neighbouring-snps" class="section level4 hasAnchor">
+<h4>Two neighbouring SNPs<a href="module-2.html#two-neighbouring-snps" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li><p>Navigate to region <code>chr21:19,479,237-19,479,814</code></p></li>
+<li><p>Note two heterozygous variants, one corresponds to a known dbSNP (<code>G/T</code> on the right) the other does not (<code>C/T</code> on the left)</p></li>
+<li><p>Zoom in and center on the <code>C/T</code> SNV on the left, sort by base (window <code>chr21:19,479,321</code> is the SNV position)</p></li>
+<li><p>Sort alignments by <code>base</code></p></li>
+<li><p>Color alignments by <code>read strand</code></p></li>
+</ul>
+<p><strong>Example1. Good quality SNVs/SNPs</strong></p>
+<p><img src="assets/module_2/example1_color.png" alt="Example1. Good quality SNVs/SNPs" /><br />
+</p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>High base qualities in all reads except one (where the alt allele is the last base of the read)</li>
+<li>Good mapping quality of reads, no strand bias, allele frequency consistent with heterozygous mutation</li>
+</ul>
+<p><strong>Question(s):</strong></p>
+<pre><code>* What does *Shade base by quality* do? How might this be helpful?
+* How does Color by *read strand* help?</code></pre>
+</div>
+<div id="homopolymer-region-with-indel" class="section level4 hasAnchor">
+<h4>Homopolymer region with indel<a href="module-2.html#homopolymer-region-with-indel" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Navigate to position <code>chr21:19,518,412-19,518,497</code></p>
+<p><strong>Example 2a</strong></p>
+<ul>
+<li>Group alignments by <code>read strand</code></li>
+<li>Center on the <code>A</code> within the homopolymer run (<code>chr21:19,518,470</code>), and <code>Sort alignments by</code> -&gt; <code>base</code></li>
+</ul>
+<p><img src="assets/module_2/example2a.png" alt="Example 2a" /><br />
+</p>
+<p><strong>Example 2b</strong></p>
+<ul>
+<li>Center on the one base deletion (<code>chr21:19,518,452</code>), and <code>Sort alignments by</code> -&gt; <code>base</code></li>
+</ul>
+<p><img src="assets/module_2/example2b.png" alt="Example 2b" /><br />
+</p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>The alt allele is either a deletion or insertion of one or two Ts</li>
+<li>The remaining bases are mismatched, because the alignment is now out of sync</li>
+</ul>
+</div>
+<div id="coverage-by-gc" class="section level4 hasAnchor">
+<h4>Coverage by GC<a href="module-2.html#coverage-by-gc" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Navigate to position <code>chr21:19,611,925-19,631,555</code>. Note that the range contains areas where coverage drops to zero in a few places.</p>
+<p><strong>Example 3</strong></p>
+<ul>
+<li>Use <code>Collapsed</code> view</li>
+<li><code>Color alignments by</code> -&gt; <code>insert size and pair orientation</code></li>
+<li><code>Group alignments by</code> -&gt; <code>none</code></li>
+<li>Load GC track (if not already loaded above)</li>
+<li>See concordance of coverage with GC content</li>
+</ul>
+<p><img src="assets/module_2/example3.png" alt="Example 3" /><br />
+</p>
+<p><strong>Question:</strong></p>
+<pre><code>* Why are there blue and red reads throughout the alignments?</code></pre>
+</div>
+<div id="heterozygous-snps-on-different-alleles" class="section level4 hasAnchor">
+<h4>Heterozygous SNPs on different alleles<a href="module-2.html#heterozygous-snps-on-different-alleles" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Navigate to region <code>chr21:19,666,833-19,667,007</code></p>
+<p><strong>Example 4</strong></p>
+<ul>
+<li>Sort by base (at position chr21:19,666,901)</li>
+</ul>
+<p><img src="assets/module_2/example4.png" alt="Example 4" /><br />
+</p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>There is no linkage between alleles for these two SNPs because reads covering both only contain one or the other</li>
+</ul>
+</div>
+<div id="low-mapping-quality" class="section level4 hasAnchor">
+<h4>Low mapping quality<a href="module-2.html#low-mapping-quality" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Navigate to region <code>chr21:19,800,320-19,818,162</code></p>
+<ul>
+<li>Load repeat track (<code>File</code> -&gt; <code>Load from server...</code>)</li>
+</ul>
+<p><strong>Load repeats</strong></p>
+<p><img src="assets/module_2/load_repeats.png" alt="Load repeats" /><br />
+</p>
+<p><strong>Example 5</strong></p>
+<p><img src="assets/module_2/example5.png" alt="Example 5" /><br />
+</p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Mapping quality plunges in all reads (white instead of grey). Once we load repeat elements, we see that there are two LINE elements that cause this.</li>
+</ul>
+</div>
+<div id="homozygous-deletion" class="section level4 hasAnchor">
+<h4>Homozygous deletion<a href="module-2.html#homozygous-deletion" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Navigate to region <code>chr21:19,324,469-19,331,468</code></p>
+<p><strong>Example 6</strong></p>
+<ul>
+<li>Turn on <code>View as Pairs</code> and <code>Expanded</code> view</li>
+<li>Use <code>Color alignments by</code> -&gt; <code>insert size and pair orientation</code></li>
+<li>Sort reads by insert size</li>
+<li>Click on a red read pair to pull up information on alignments</li>
+</ul>
+<p><img src="assets/module_2/example6.png" alt="Example 6" /><br />
+</p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Typical insert size of read pair in the vicinity: 350bp</li>
+<li>Insert size of red read pairs: 2,875bp</li>
+<li>This corresponds to a homozygous deletion of 2.5kb</li>
+</ul>
+</div>
+<div id="mis-alignment" class="section level4 hasAnchor">
+<h4>Mis-alignment<a href="module-2.html#mis-alignment" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Navigate to region <code>chr21:19,102,154-19,103,108</code></p>
+<p><strong>Example 7</strong></p>
+<p><img src="assets/module_2/example7.png" alt="Example 7" /><br />
+</p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>This is a position where AluY element causes mis-alignment.</li>
+<li>Misaligned reads have mismatches to the reference and well-aligned reads have partners on other chromosomes where additional ALuY elements are encoded.</li>
+<li>Zoom out until you can clearly see the contrast between the difficult alignment region (corresponding to an AluY) and regions with clean alignments on either side</li>
+</ul>
+</div>
+<div id="translocation" class="section level4 hasAnchor">
+<h4>Translocation<a href="module-2.html#translocation" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Navigate to region <code>chr21:19,089,694-19,095,362</code></p>
+<p><strong>Example 8</strong></p>
+<ul>
+<li>Expanded view</li>
+<li><code>Group alignments by</code> -&gt; <code>pair orientation</code></li>
+<li><code>Color alignments by</code> -&gt; <code>insert size and pair orientation</code></li>
+</ul>
+<p><img src="assets/module_2/example8.png" alt="Example 8" /><br />
+</p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>Many reads with mismatches to reference</li>
+<li>Read pairs in RL pattern (instead of LR pattern)</li>
+<li>Region is flanked by reads with poor mapping quality (white instead of grey)</li>
+<li>Presence of reads with pairs on other chromosomes (coloured reads at the bottom when scrolling down)</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="visualization-part-3-automating-tasks-in-igv" class="section level3 hasAnchor">
+<h3>Visualization Part 3: Automating Tasks in IGV<a href="module-2.html#visualization-part-3-automating-tasks-in-igv" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We can use the Tools menu to invoke running a batch script. Batch scripts are described on the IGV website:</p>
+<ul>
+<li>Batch file requirements: <a href="https://software.broadinstitute.org/software/igv/batch">https://www.broadinstitute.org/igv/batch</a></li>
+<li>Commands recognized in a batch script: <a href="https://software.broadinstitute.org/software/igv/PortCommands">https://software.broadinstitute.org/software/igv/PortCommands</a></li>
+<li>We also need to provide sample attribute file as described here: <a href="https://software.broadinstitute.org/software/igv/SampleInformation">https://software.broadinstitute.org/software/igv/SampleInformation</a></li>
+</ul>
+<p>Download the batch script and the attribute file for our dataset:</p>
+<ul>
+<li>Batch script: <a href="https://github.com/griffithlab/rnabio.org/raw/master/assets/scripts/Run_batch_IGV_snapshots.txt">Run_batch_IGV_snapshots.txt</a></li>
+<li>Attribute file: <a href="https://github.com/griffithlab/rnabio.org/raw/master/assets/scripts/Igv_HCC1143_attributes.txt">Igv_HCC1143_attributes.txt</a></li>
+</ul>
+<p>Hint: You can use the <code>curl -L -O</code> with the above URLs to download the files using the terminal!</p>
+<p>Now run the file from the <code>Tools</code> menu:</p>
+<p><strong>Automation</strong></p>
+<p><img src="assets/module_2/run_batch_script.png" alt="Automation" /><br />
+</p>
+<p><strong>Notes:</strong></p>
+<ul>
+<li>This script will navigate automatically to each location in the lab</li>
+<li>A screenshot will be taken and saved to the screenshots directory specified</li>
+</ul>
+<div id="contributorsacknowledgements" class="section level4 hasAnchor">
+<h4>Contributors/acknowledgements<a href="module-2.html#contributorsacknowledgements" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Malachi Griffith, Sorana Morrissy, Jim Robinson, Ben Ainscough, Jason Walker, Obi Griffith, Kartik Singhal</p>
+<hr />
+<p><img src="assets/module_2/RNA-seq_Flowchart3.png" alt="RNA-seq_Flowchart3" /><br />
+</p>
+<hr />
+<p><font size="5"><b>Alignment Visualization - Preparation</b></font></p>
+<p>Before we can view our alignments in the IGV browser we need to index our BAM files. We will use samtools index for this purpose. For convenience later, index all bam files.</p>
+</div>
+</div>
+<div id="indexing-bam-files-with-samtools" class="section level3 hasAnchor">
+<h3>Indexing BAM files with samtools<a href="module-2.html#indexing-bam-files-with-samtools" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb44"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb44-1"><a href="module-2.html#cb44-1" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$RNA_ALIGN_DIR</span></span>
+<span id="cb44-2"><a href="module-2.html#cb44-2" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_ALIGN_DIR</span></span>
+<span id="cb44-3"><a href="module-2.html#cb44-3" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="module-2.html#cb44-4" tabindex="-1"></a><span class="ex">samtools</span> index <span class="at">-M</span> <span class="pp">*</span>.bam</span>
+<span id="cb44-5"><a href="module-2.html#cb44-5" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="module-2.html#cb44-6" tabindex="-1"></a><span class="co"># flag -M interprets all filename arguments as files to be indexed, allowing multiple files to be indexed at the same time. To index individual file, use &#39;samtools index input.bam&#39; </span></span>
+<span id="cb44-7"><a href="module-2.html#cb44-7" tabindex="-1"></a><span class="co"># Note that we could have created and run a samtools index command for all files ending in .bam using the following construct:</span></span>
+<span id="cb44-8"><a href="module-2.html#cb44-8" tabindex="-1"></a><span class="co"># find *.bam -exec echo samtools index {} \; | sh</span></span></code></pre></div>
+<p>Optional:</p>
+<p>Try to create an index file for one of your bam files using a samtools docker image rather than the locally installed version of samtools. Below is an example docker run command.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb45-1"><a href="module-2.html#cb45-1" tabindex="-1"></a><span class="fu">cp</span> HBR.bam /tmp/</span>
+<span id="cb45-2"><a href="module-2.html#cb45-2" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-v</span> /tmp:/docker_workspace biocontainers/samtools:v1.9-4-deb_cv1 samtools index /docker_workspace/HBR.bam</span>
+<span id="cb45-3"><a href="module-2.html#cb45-3" tabindex="-1"></a><span class="fu">ls</span> /tmp/HBR.bam<span class="pp">*</span></span></code></pre></div>
+<p><code>docker run</code> is how you initialize a docker container to run a command</p>
+<p><code>-v</code> is the parameter used to mount your workspace so that the docker container can see the files that you’re working with. In the example above, <code>/tmp</code> from the EC2 instance has been mounted as <code>/docker_workspace</code> within the docker container.</p>
+<p><code>biocontainers/samtools</code> is the docker container name. The <code>:v1.9-4-deb_cv1</code> refers to the specific tag and release of the docker container.</p>
+<p>In the next step we will visualize these alignment BAM files using IGV.</p>
 
 </div>
 </div>
