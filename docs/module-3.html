@@ -263,6 +263,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#ballgown-de-analysis"><i class="fa fa-check"></i>Ballgown DE Analysis</a></li>
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#practical-exercise-9"><i class="fa fa-check"></i>PRACTICAL EXERCISE 9</a></li>
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#ercc-de-analysis"><i class="fa fa-check"></i>ERCC DE Analysis</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#differential-expression-mini-lecture-1"><i class="fa fa-check"></i>Differential Expression mini lecture</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#edger-de-analysis"><i class="fa fa-check"></i>edgeR DE Analysis</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#differential-expression-mini-lecture-2"><i class="fa fa-check"></i>Differential Expression mini lecture</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#deseq2-de-analysis"><i class="fa fa-check"></i>DESeq2 DE Analysis</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#setup"><i class="fa fa-check"></i>Setup</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#format-htseq-counts-data-to-work-with-deseq2"><i class="fa fa-check"></i>Format htseq counts data to work with DESeq2</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#filter-raw-counts"><i class="fa fa-check"></i>Filter raw counts</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#specifying-the-experimental-design"><i class="fa fa-check"></i>Specifying the experimental design</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#construct-the-deseq2-object-piecing-all-the-data-together"><i class="fa fa-check"></i>Construct the DESeq2 object piecing all the data together</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#running-deseq2"><i class="fa fa-check"></i>Running DESeq2</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#log-fold-change-shrinkage"><i class="fa fa-check"></i>Log-fold change shrinkage</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#annotate-gene-symbols-onto-the-de-results"><i class="fa fa-check"></i>Annotate gene symbols onto the DE results</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#data-manipulation"><i class="fa fa-check"></i>Data manipulation</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#save-results-to-files"><i class="fa fa-check"></i>Save results to files</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#briefly-examine-the-top-over-expressed-genes"><i class="fa fa-check"></i>Briefly examine the top over-expressed genes</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#perform-some-preliminary-exploration-of-de-genes-using-webtools"><i class="fa fa-check"></i>Perform some preliminary exploration of DE genes using webtools</a></li>
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html"><i class="fa fa-check"></i>Appendices</a>
@@ -851,6 +867,404 @@ $RNA_HOME/ercc_spikein_analysis/</p>
 <ul>
 <li><a href="https://" class="uri">https://</a><strong>YOUR_PUBLIC_IPv4_ADDRESS</strong>/rnaseq/de/ercc_spikein_analysis/ERCC_Ballgown-DE_vs_SpikeInDE.pdf</li>
 </ul>
+<hr />
+<p><img src="assets/module_3/RNA-seq_Flowchart4-2.png" alt="RNA-seq_Flowchart4" /><br />
+</p>
+<hr />
+<p><font size="5"><b>Differential Expression with edgeR</b></font></p>
+</div>
+<div id="differential-expression-mini-lecture-1" class="section level3 hasAnchor">
+<h3>Differential Expression mini lecture<a href="module-3.html#differential-expression-mini-lecture-1" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>If you would like a brief refresher on differential expression analysis, please refer to the <a href="https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2026/mini/RNASeq_MiniLecture_03_03_DifferentialExpression.pdf">mini lecture</a>.</p>
+</div>
+<div id="edger-de-analysis" class="section level3 hasAnchor">
+<h3>edgeR DE Analysis<a href="module-3.html#edger-de-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In this tutorial you will:</p>
+<ul>
+<li>Make use of the raw counts you generated previously using htseq-count</li>
+<li>edgeR is a bioconductor package designed specifically for differential expression of count-based RNA-seq data</li>
+<li>This is an alternative to using stringtie/ballgown to find differentially expressed genes</li>
+</ul>
+<p>First, create a directory for results:</p>
+<div class="sourceCode" id="cb94"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb94-1"><a href="module-3.html#cb94-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/</span>
+<span id="cb94-2"><a href="module-3.html#cb94-2" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> de/htseq_counts/edgeR</span>
+<span id="cb94-3"><a href="module-3.html#cb94-3" tabindex="-1"></a><span class="bu">cd</span> de/htseq_counts/edgeR</span></code></pre></div>
+<p>Launch R:</p>
+<div class="sourceCode" id="cb95"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb95-1"><a href="module-3.html#cb95-1" tabindex="-1"></a><span class="ex">R</span></span></code></pre></div>
+<p>R code has been provided below. If you wish to have a script with all of the code, it can be found <a href="https://github.com/griffithlab/rnabio.org/blob/master/assets/scripts/Tutorial_edgeR.R">here</a>. Run the R commands below.</p>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="module-3.html#cb96-1" tabindex="-1"></a></span>
+<span id="cb96-2"><a href="module-3.html#cb96-2" tabindex="-1"></a><span class="co"># set working directory where output will go</span></span>
+<span id="cb96-3"><a href="module-3.html#cb96-3" tabindex="-1"></a>working_dir <span class="ot">=</span> <span class="st">&quot;~/workspace/rnaseq/de/htseq_counts/edgeR&quot;</span></span>
+<span id="cb96-4"><a href="module-3.html#cb96-4" tabindex="-1"></a><span class="fu">setwd</span>(working_dir)</span>
+<span id="cb96-5"><a href="module-3.html#cb96-5" tabindex="-1"></a></span>
+<span id="cb96-6"><a href="module-3.html#cb96-6" tabindex="-1"></a><span class="co"># read in gene mapping</span></span>
+<span id="cb96-7"><a href="module-3.html#cb96-7" tabindex="-1"></a>mapping <span class="ot">=</span> <span class="fu">read.table</span>(<span class="st">&quot;~/workspace/rnaseq/de/htseq_counts/ENSG_ID2Name.txt&quot;</span>, <span class="at">header =</span> <span class="cn">FALSE</span>, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>, <span class="at">row.names =</span> <span class="dv">1</span>)</span>
+<span id="cb96-8"><a href="module-3.html#cb96-8" tabindex="-1"></a></span>
+<span id="cb96-9"><a href="module-3.html#cb96-9" tabindex="-1"></a><span class="co"># read in count matrix</span></span>
+<span id="cb96-10"><a href="module-3.html#cb96-10" tabindex="-1"></a>rawdata <span class="ot">=</span> <span class="fu">read.table</span>(<span class="st">&quot;~/workspace/rnaseq/expression/htseq_counts/gene_read_counts_table_all_final.tsv&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span>, <span class="at">row.names =</span> <span class="dv">1</span>)</span>
+<span id="cb96-11"><a href="module-3.html#cb96-11" tabindex="-1"></a></span>
+<span id="cb96-12"><a href="module-3.html#cb96-12" tabindex="-1"></a><span class="co"># Check dimensions</span></span>
+<span id="cb96-13"><a href="module-3.html#cb96-13" tabindex="-1"></a><span class="fu">dim</span>(rawdata)</span>
+<span id="cb96-14"><a href="module-3.html#cb96-14" tabindex="-1"></a></span>
+<span id="cb96-15"><a href="module-3.html#cb96-15" tabindex="-1"></a><span class="co"># Require at least 1/6 of samples to have expressed count &gt;= 10</span></span>
+<span id="cb96-16"><a href="module-3.html#cb96-16" tabindex="-1"></a>sample_cutoff <span class="ot">=</span> (<span class="dv">1</span><span class="sc">/</span><span class="dv">6</span>)</span>
+<span id="cb96-17"><a href="module-3.html#cb96-17" tabindex="-1"></a>count_cutoff <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb96-18"><a href="module-3.html#cb96-18" tabindex="-1"></a></span>
+<span id="cb96-19"><a href="module-3.html#cb96-19" tabindex="-1"></a><span class="co">#Define a function to calculate the fraction of values expressed above the count cutoff</span></span>
+<span id="cb96-20"><a href="module-3.html#cb96-20" tabindex="-1"></a>getFE <span class="ot">=</span> <span class="cf">function</span>(data,count_cutoff){</span>
+<span id="cb96-21"><a href="module-3.html#cb96-21" tabindex="-1"></a> FE <span class="ot">=</span> (<span class="fu">sum</span>(data <span class="sc">&gt;=</span> count_cutoff) <span class="sc">/</span> <span class="fu">length</span>(data))</span>
+<span id="cb96-22"><a href="module-3.html#cb96-22" tabindex="-1"></a> <span class="fu">return</span>(FE)</span>
+<span id="cb96-23"><a href="module-3.html#cb96-23" tabindex="-1"></a>}</span>
+<span id="cb96-24"><a href="module-3.html#cb96-24" tabindex="-1"></a></span>
+<span id="cb96-25"><a href="module-3.html#cb96-25" tabindex="-1"></a><span class="co">#Apply the function to all genes, and filter out genes not meeting the sample cutoff</span></span>
+<span id="cb96-26"><a href="module-3.html#cb96-26" tabindex="-1"></a>fraction_expressed <span class="ot">=</span> <span class="fu">apply</span>(rawdata, <span class="dv">1</span>, getFE, count_cutoff)</span>
+<span id="cb96-27"><a href="module-3.html#cb96-27" tabindex="-1"></a>keep <span class="ot">=</span> <span class="fu">which</span>(fraction_expressed <span class="sc">&gt;=</span> sample_cutoff)</span>
+<span id="cb96-28"><a href="module-3.html#cb96-28" tabindex="-1"></a>rawdata <span class="ot">=</span> rawdata[keep, ]</span>
+<span id="cb96-29"><a href="module-3.html#cb96-29" tabindex="-1"></a></span>
+<span id="cb96-30"><a href="module-3.html#cb96-30" tabindex="-1"></a><span class="co"># Check dimensions again to see effect of filtering</span></span>
+<span id="cb96-31"><a href="module-3.html#cb96-31" tabindex="-1"></a><span class="fu">dim</span>(rawdata)</span>
+<span id="cb96-32"><a href="module-3.html#cb96-32" tabindex="-1"></a></span>
+<span id="cb96-33"><a href="module-3.html#cb96-33" tabindex="-1"></a><span class="do">#################</span></span>
+<span id="cb96-34"><a href="module-3.html#cb96-34" tabindex="-1"></a><span class="co"># Running edgeR #</span></span>
+<span id="cb96-35"><a href="module-3.html#cb96-35" tabindex="-1"></a><span class="do">#################</span></span>
+<span id="cb96-36"><a href="module-3.html#cb96-36" tabindex="-1"></a></span>
+<span id="cb96-37"><a href="module-3.html#cb96-37" tabindex="-1"></a><span class="co"># load edgeR</span></span>
+<span id="cb96-38"><a href="module-3.html#cb96-38" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;edgeR&quot;</span>)</span>
+<span id="cb96-39"><a href="module-3.html#cb96-39" tabindex="-1"></a></span>
+<span id="cb96-40"><a href="module-3.html#cb96-40" tabindex="-1"></a><span class="co"># make class labels</span></span>
+<span id="cb96-41"><a href="module-3.html#cb96-41" tabindex="-1"></a>class <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&quot;UHR&quot;</span>, <span class="dv">3</span>), <span class="fu">rep</span>(<span class="st">&quot;HBR&quot;</span>, <span class="dv">3</span>))</span>
+<span id="cb96-42"><a href="module-3.html#cb96-42" tabindex="-1"></a></span>
+<span id="cb96-43"><a href="module-3.html#cb96-43" tabindex="-1"></a><span class="co"># Get common gene names</span></span>
+<span id="cb96-44"><a href="module-3.html#cb96-44" tabindex="-1"></a>Gene <span class="ot">=</span> <span class="fu">rownames</span>(rawdata)</span>
+<span id="cb96-45"><a href="module-3.html#cb96-45" tabindex="-1"></a>Symbol <span class="ot">=</span> mapping[Gene, <span class="dv">1</span>]</span>
+<span id="cb96-46"><a href="module-3.html#cb96-46" tabindex="-1"></a>gene_annotations <span class="ot">=</span> <span class="fu">cbind</span>(Gene, Symbol)</span>
+<span id="cb96-47"><a href="module-3.html#cb96-47" tabindex="-1"></a></span>
+<span id="cb96-48"><a href="module-3.html#cb96-48" tabindex="-1"></a><span class="co"># Make DGEList object</span></span>
+<span id="cb96-49"><a href="module-3.html#cb96-49" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">DGEList</span>(<span class="at">counts =</span> rawdata, <span class="at">genes =</span> gene_annotations, <span class="at">group =</span> class)</span>
+<span id="cb96-50"><a href="module-3.html#cb96-50" tabindex="-1"></a><span class="fu">nrow</span>(y)</span>
+<span id="cb96-51"><a href="module-3.html#cb96-51" tabindex="-1"></a></span>
+<span id="cb96-52"><a href="module-3.html#cb96-52" tabindex="-1"></a><span class="co"># TMM Normalization</span></span>
+<span id="cb96-53"><a href="module-3.html#cb96-53" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">calcNormFactors</span>(y)</span>
+<span id="cb96-54"><a href="module-3.html#cb96-54" tabindex="-1"></a></span>
+<span id="cb96-55"><a href="module-3.html#cb96-55" tabindex="-1"></a><span class="co"># Estimate dispersion</span></span>
+<span id="cb96-56"><a href="module-3.html#cb96-56" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">estimateCommonDisp</span>(y, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb96-57"><a href="module-3.html#cb96-57" tabindex="-1"></a>y <span class="ot">=</span> <span class="fu">estimateTagwiseDisp</span>(y)</span>
+<span id="cb96-58"><a href="module-3.html#cb96-58" tabindex="-1"></a></span>
+<span id="cb96-59"><a href="module-3.html#cb96-59" tabindex="-1"></a><span class="co"># Differential expression test</span></span>
+<span id="cb96-60"><a href="module-3.html#cb96-60" tabindex="-1"></a>et <span class="ot">=</span> <span class="fu">exactTest</span>(y)</span>
+<span id="cb96-61"><a href="module-3.html#cb96-61" tabindex="-1"></a></span>
+<span id="cb96-62"><a href="module-3.html#cb96-62" tabindex="-1"></a><span class="co"># Extract raw counts to add back onto DE results</span></span>
+<span id="cb96-63"><a href="module-3.html#cb96-63" tabindex="-1"></a>counts <span class="ot">=</span> <span class="fu">getCounts</span>(y)</span>
+<span id="cb96-64"><a href="module-3.html#cb96-64" tabindex="-1"></a></span>
+<span id="cb96-65"><a href="module-3.html#cb96-65" tabindex="-1"></a><span class="co"># Print top genes</span></span>
+<span id="cb96-66"><a href="module-3.html#cb96-66" tabindex="-1"></a><span class="fu">topTags</span>(et)</span>
+<span id="cb96-67"><a href="module-3.html#cb96-67" tabindex="-1"></a></span>
+<span id="cb96-68"><a href="module-3.html#cb96-68" tabindex="-1"></a><span class="co"># Print number of up/down significant genes at FDR = 0.05  significance level</span></span>
+<span id="cb96-69"><a href="module-3.html#cb96-69" tabindex="-1"></a><span class="fu">summary</span>(de <span class="ot">&lt;-</span> <span class="fu">decideTests</span>(et, <span class="at">adjust.method =</span> <span class="st">&quot;BH&quot;</span>, <span class="at">p =</span> <span class="fl">0.05</span>))</span>
+<span id="cb96-70"><a href="module-3.html#cb96-70" tabindex="-1"></a></span>
+<span id="cb96-71"><a href="module-3.html#cb96-71" tabindex="-1"></a><span class="co">#Get output with BH-adjusted FDR values - all genes, any p-value, unsorted</span></span>
+<span id="cb96-72"><a href="module-3.html#cb96-72" tabindex="-1"></a>out <span class="ot">=</span> <span class="fu">topTags</span>(et, <span class="at">n =</span> <span class="st">&quot;Inf&quot;</span>, <span class="at">adjust.method =</span> <span class="st">&quot;BH&quot;</span>, <span class="at">sort.by =</span> <span class="st">&quot;none&quot;</span>, <span class="at">p.value =</span> <span class="dv">1</span>)<span class="sc">$</span>table</span>
+<span id="cb96-73"><a href="module-3.html#cb96-73" tabindex="-1"></a></span>
+<span id="cb96-74"><a href="module-3.html#cb96-74" tabindex="-1"></a><span class="co">#Add raw counts back onto results for convenience (make sure sort and total number of elements allows proper join)</span></span>
+<span id="cb96-75"><a href="module-3.html#cb96-75" tabindex="-1"></a>out2 <span class="ot">=</span> <span class="fu">cbind</span>(out, counts)</span>
+<span id="cb96-76"><a href="module-3.html#cb96-76" tabindex="-1"></a></span>
+<span id="cb96-77"><a href="module-3.html#cb96-77" tabindex="-1"></a><span class="co">#Limit to significantly DE genes</span></span>
+<span id="cb96-78"><a href="module-3.html#cb96-78" tabindex="-1"></a>out3 <span class="ot">=</span> out2[<span class="fu">as.logical</span>(de), ]</span>
+<span id="cb96-79"><a href="module-3.html#cb96-79" tabindex="-1"></a></span>
+<span id="cb96-80"><a href="module-3.html#cb96-80" tabindex="-1"></a><span class="co"># Order by p-value</span></span>
+<span id="cb96-81"><a href="module-3.html#cb96-81" tabindex="-1"></a>o <span class="ot">=</span> <span class="fu">order</span>(et<span class="sc">$</span>table<span class="sc">$</span>PValue[<span class="fu">as.logical</span>(de)], <span class="at">decreasing=</span><span class="cn">FALSE</span>)</span>
+<span id="cb96-82"><a href="module-3.html#cb96-82" tabindex="-1"></a>out4 <span class="ot">=</span> out3[o, ]</span>
+<span id="cb96-83"><a href="module-3.html#cb96-83" tabindex="-1"></a></span>
+<span id="cb96-84"><a href="module-3.html#cb96-84" tabindex="-1"></a><span class="co"># Save table</span></span>
+<span id="cb96-85"><a href="module-3.html#cb96-85" tabindex="-1"></a><span class="fu">write.table</span>(out4, <span class="at">file =</span> <span class="st">&quot;DE_sig_genes_edgeR.tsv&quot;</span>, <span class="at">quote =</span> <span class="cn">FALSE</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>)</span>
+<span id="cb96-86"><a href="module-3.html#cb96-86" tabindex="-1"></a></span>
+<span id="cb96-87"><a href="module-3.html#cb96-87" tabindex="-1"></a><span class="co">#To exit R type the following</span></span>
+<span id="cb96-88"><a href="module-3.html#cb96-88" tabindex="-1"></a><span class="fu">quit</span>(<span class="at">save =</span> <span class="st">&quot;no&quot;</span>)</span></code></pre></div>
+<hr />
+<p><img src="assets/module_3/RNA-seq_Flowchart4-2.png" alt="RNA-seq_Flowchart4" /><br />
+</p>
+<hr />
+<p><font size="5"><b>Differential Expression with DESeq2</b></font></p>
+</div>
+<div id="differential-expression-mini-lecture-2" class="section level3 hasAnchor">
+<h3>Differential Expression mini lecture<a href="module-3.html#differential-expression-mini-lecture-2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>If you would like a brief refresher on differential expression analysis, please refer to the <a href="https://github.com/griffithlab/rnabio.org/blob/master/assets/lectures/cbw/2026/mini/RNASeq_MiniLecture_03_03_DifferentialExpression.pdf">mini lecture</a>.</p>
+</div>
+<div id="deseq2-de-analysis" class="section level3 hasAnchor">
+<h3>DESeq2 DE Analysis<a href="module-3.html#deseq2-de-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In this tutorial you will:</p>
+<ul>
+<li>Make use of the raw counts you generated previously using htseq-count</li>
+<li>DESeq2 is a bioconductor package designed specifically for differential expression of count-based RNA-seq data</li>
+<li>This is an alternative to using stringtie/ballgown to find differentially expressed genes</li>
+</ul>
+</div>
+<div id="setup" class="section level3 hasAnchor">
+<h3>Setup<a href="module-3.html#setup" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Here we start from within an R session, relevant packages should already be installed so we will load the libraries, set working directories and read in the raw read counts data. Two pieces of information are required to perform analysis with DESeq2. A matrix of raw counts, such as was generated previously while running <a href="https://htseq.readthedocs.io/en/release_0.9.0/">HTseq</a> previously in this course. This is important as DESeq2 normalizes the data, correcting for differences in library size using using this type of data. DESeq2 also requires the experimental design which can be supplied as a data.frame, detailing the samples and conditions.</p>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb97-1"><a href="module-3.html#cb97-1" tabindex="-1"></a><span class="co"># define working dir paths</span></span>
+<span id="cb97-2"><a href="module-3.html#cb97-2" tabindex="-1"></a>datadir <span class="ot">=</span> <span class="st">&quot;/home/ubuntu/workspace/rnaseq/expression/htseq_counts/&quot;</span></span>
+<span id="cb97-3"><a href="module-3.html#cb97-3" tabindex="-1"></a>outdir <span class="ot">=</span> <span class="st">&quot;/home/ubuntu/workspace/rnaseq/de/htseq_counts/deseq2/&quot;</span></span>
+<span id="cb97-4"><a href="module-3.html#cb97-4" tabindex="-1"></a></span>
+<span id="cb97-5"><a href="module-3.html#cb97-5" tabindex="-1"></a><span class="co"># load R libraries we will use in this section - suppress some harmless warnings from the data.table package</span></span>
+<span id="cb97-6"><a href="module-3.html#cb97-6" tabindex="-1"></a><span class="fu">library</span>(DESeq2)</span>
+<span id="cb97-7"><a href="module-3.html#cb97-7" tabindex="-1"></a><span class="fu">suppressPackageStartupMessages</span>(<span class="fu">library</span>(data.table))</span>
+<span id="cb97-8"><a href="module-3.html#cb97-8" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb97-9"><a href="module-3.html#cb97-9" tabindex="-1"></a></span>
+<span id="cb97-10"><a href="module-3.html#cb97-10" tabindex="-1"></a><span class="co"># set working directory to data dir</span></span>
+<span id="cb97-11"><a href="module-3.html#cb97-11" tabindex="-1"></a><span class="fu">setwd</span>(datadir)</span>
+<span id="cb97-12"><a href="module-3.html#cb97-12" tabindex="-1"></a></span>
+<span id="cb97-13"><a href="module-3.html#cb97-13" tabindex="-1"></a><span class="co"># create our output directory, if it doesn&#39;t already exist</span></span>
+<span id="cb97-14"><a href="module-3.html#cb97-14" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(outdir)) <span class="fu">dir.create</span>(outdir)</span>
+<span id="cb97-15"><a href="module-3.html#cb97-15" tabindex="-1"></a></span>
+<span id="cb97-16"><a href="module-3.html#cb97-16" tabindex="-1"></a><span class="co"># read in the RNAseq read counts for each gene (produced by htseq-count)</span></span>
+<span id="cb97-17"><a href="module-3.html#cb97-17" tabindex="-1"></a>htseqCounts <span class="ot">=</span> <span class="fu">fread</span>(<span class="st">&quot;gene_read_counts_table_all_final.tsv&quot;</span>)</span></code></pre></div>
+<p>Once we start from R, the relevant packages should already be installed. We will load the libraries, set working directories, and read in the raw read counts data. Two pieces of information are required to perform analysis with DESeq2. A matrix of raw counts, such as was generated previously while running <a href="https://htseq.readthedocs.io/en/release_0.9.0/">HTseq</a> previously in this course. This is important as DESeq2 normalizes the data, correcting for differences in library size using using this type of data. DESeq2 also requires the experimental design which can be supplied as a data.frame, detailing the samples and conditions.</p>
+</div>
+<div id="format-htseq-counts-data-to-work-with-deseq2" class="section level3 hasAnchor">
+<h3>Format htseq counts data to work with DESeq2<a href="module-3.html#format-htseq-counts-data-to-work-with-deseq2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>DESeq2 has a number of options for data import and has a function to read HTseq output files directly. Here the most universal option is used, reading in raw counts from a matrix in simple TSV format (one row per gene, one column per sample). The HTseq count data that was read in above is stored as an object of class “data.table”, this can be verified with the <code>class()</code> function. Before use in this exercise it is required to convert this object to an appropriate matrix format with gene names as rows and samples as columns.</p>
+<p>It should be noted that while the replicate samples are technical replicates (i.e. the same library was sequenced), herein they are treated as biological replicates for illustrative purposes. DESeq2 does have a function to collapse technical replicates though.</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="module-3.html#cb98-1" tabindex="-1"></a></span>
+<span id="cb98-2"><a href="module-3.html#cb98-2" tabindex="-1"></a><span class="co"># view the class of the data</span></span>
+<span id="cb98-3"><a href="module-3.html#cb98-3" tabindex="-1"></a><span class="fu">class</span>(htseqCounts)</span>
+<span id="cb98-4"><a href="module-3.html#cb98-4" tabindex="-1"></a></span>
+<span id="cb98-5"><a href="module-3.html#cb98-5" tabindex="-1"></a><span class="co"># convert the data.table to matrix format</span></span>
+<span id="cb98-6"><a href="module-3.html#cb98-6" tabindex="-1"></a>htseqCounts <span class="ot">=</span> <span class="fu">as.matrix</span>(htseqCounts)</span>
+<span id="cb98-7"><a href="module-3.html#cb98-7" tabindex="-1"></a><span class="fu">class</span>(htseqCounts)</span>
+<span id="cb98-8"><a href="module-3.html#cb98-8" tabindex="-1"></a></span>
+<span id="cb98-9"><a href="module-3.html#cb98-9" tabindex="-1"></a><span class="co"># set the gene ID values to be the row names for the matrix</span></span>
+<span id="cb98-10"><a href="module-3.html#cb98-10" tabindex="-1"></a><span class="fu">rownames</span>(htseqCounts) <span class="ot">=</span> htseqCounts[, <span class="st">&quot;GeneID&quot;</span>]</span>
+<span id="cb98-11"><a href="module-3.html#cb98-11" tabindex="-1"></a></span>
+<span id="cb98-12"><a href="module-3.html#cb98-12" tabindex="-1"></a><span class="co"># now that the gene IDs are the row names, remove the redundant column that contains them</span></span>
+<span id="cb98-13"><a href="module-3.html#cb98-13" tabindex="-1"></a>htseqCounts <span class="ot">=</span> htseqCounts[, <span class="fu">colnames</span>(htseqCounts) <span class="sc">!=</span> <span class="st">&quot;GeneID&quot;</span>]</span>
+<span id="cb98-14"><a href="module-3.html#cb98-14" tabindex="-1"></a></span>
+<span id="cb98-15"><a href="module-3.html#cb98-15" tabindex="-1"></a><span class="co"># convert the count values from strings (with spaces) to integers, because originally the gene column contained characters, the entire matrix was set to character</span></span>
+<span id="cb98-16"><a href="module-3.html#cb98-16" tabindex="-1"></a><span class="fu">class</span>(htseqCounts) <span class="ot">=</span> <span class="st">&quot;integer&quot;</span></span>
+<span id="cb98-17"><a href="module-3.html#cb98-17" tabindex="-1"></a></span>
+<span id="cb98-18"><a href="module-3.html#cb98-18" tabindex="-1"></a><span class="co"># view the first few lines of the gene count matrix</span></span>
+<span id="cb98-19"><a href="module-3.html#cb98-19" tabindex="-1"></a><span class="fu">head</span>(htseqCounts)</span></code></pre></div>
+</div>
+<div id="filter-raw-counts" class="section level3 hasAnchor">
+<h3>Filter raw counts<a href="module-3.html#filter-raw-counts" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Before running DESeq2 (or any differential expression analysis) it is useful and common practice to pre-filter the data. There are computational benefits to doing this as the memory size of the objects within R will decrease and DESeq2 will have less data to work through and will be faster. More importantly, by removing “low quality” data, it is also reduces the number of statistical tests that will be performed, which in turn reduces the impact of multiple test correction and can lead to more significant genes.</p>
+<p>The amount of pre-filtering is up to the analyst. However, it must be done in an unbiased way (i.e. you can NOT remove genes that don’t have a difference between conditions of interest, or that show an unexpected pattern).</p>
+<p>DESeq2 recommends removing any gene with less than 10 reads across all samples. Below, we filter a gene if at least 1 sample does not have at least 10 reads. Either way, mostly what is being removed here are genes with very little evidence for expression in any sample (in many cases genes with 0 counts in all samples).</p>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb99-1"><a href="module-3.html#cb99-1" tabindex="-1"></a><span class="co"># run a filtering step</span></span>
+<span id="cb99-2"><a href="module-3.html#cb99-2" tabindex="-1"></a><span class="co"># i.e. require that for every gene: at least 1 of 6 samples must have counts greater than 10</span></span>
+<span id="cb99-3"><a href="module-3.html#cb99-3" tabindex="-1"></a><span class="co"># get the index of rows that meet this criterion and use that to create a subset of the matrix</span></span>
+<span id="cb99-4"><a href="module-3.html#cb99-4" tabindex="-1"></a><span class="co"># note the dimensions of the matrix before and after filtering with dim()</span></span>
+<span id="cb99-5"><a href="module-3.html#cb99-5" tabindex="-1"></a></span>
+<span id="cb99-6"><a href="module-3.html#cb99-6" tabindex="-1"></a><span class="co"># breaking apart the command below to understand it&#39;s outcome</span></span>
+<span id="cb99-7"><a href="module-3.html#cb99-7" tabindex="-1"></a><span class="fu">tail</span>(htseqCounts) <span class="co"># look at the raw counts</span></span>
+<span id="cb99-8"><a href="module-3.html#cb99-8" tabindex="-1"></a><span class="fu">tail</span>(htseqCounts <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="co"># determine which cells have counts greater than 10</span></span>
+<span id="cb99-9"><a href="module-3.html#cb99-9" tabindex="-1"></a><span class="fu">tail</span>(<span class="fu">rowSums</span>(htseqCounts <span class="sc">&gt;=</span> <span class="dv">10</span>)) <span class="co"># for each gene row, count how many samples have a count greater than 10</span></span>
+<span id="cb99-10"><a href="module-3.html#cb99-10" tabindex="-1"></a><span class="fu">tail</span>(<span class="fu">rowSums</span>(htseqCounts <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="sc">&gt;=</span> <span class="dv">1</span>) <span class="co"># filter to those genes where at least one sample has a count greater than 10</span></span>
+<span id="cb99-11"><a href="module-3.html#cb99-11" tabindex="-1"></a><span class="fu">tail</span>(<span class="fu">which</span>(<span class="fu">rowSums</span>(htseqCounts <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="sc">&gt;=</span> <span class="dv">1</span>)) <span class="co">#obtain the index for rows that meet the above filter criteria</span></span>
+<span id="cb99-12"><a href="module-3.html#cb99-12" tabindex="-1"></a></span>
+<span id="cb99-13"><a href="module-3.html#cb99-13" tabindex="-1"></a><span class="fu">dim</span>(htseqCounts)</span>
+<span id="cb99-14"><a href="module-3.html#cb99-14" tabindex="-1"></a>htseqCounts <span class="ot">=</span> htseqCounts[<span class="fu">which</span>(<span class="fu">rowSums</span>(htseqCounts <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="sc">&gt;=</span> <span class="dv">1</span>), ]</span>
+<span id="cb99-15"><a href="module-3.html#cb99-15" tabindex="-1"></a><span class="fu">dim</span>(htseqCounts)</span></code></pre></div>
+</div>
+<div id="specifying-the-experimental-design" class="section level3 hasAnchor">
+<h3>Specifying the experimental design<a href="module-3.html#specifying-the-experimental-design" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>As mentioned above DESeq2 also needs to know the experimental design. In our experimental design this means which samples belong to which condition. The experimental design for the example dataset is quite simple as there are 6 samples with two conditions to compare (UHR vs HBR). We can create the experimental design right within R. There is one important thing to note, DESeq2 does not check sample names, it expects that the column names in the counts matrix we created correspond exactly to the row names we specify in the experimental design.</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="module-3.html#cb100-1" tabindex="-1"></a><span class="co"># construct a mapping of the meta data for our experiment (comparing UHR cell lines to HBR brain tissues)</span></span>
+<span id="cb100-2"><a href="module-3.html#cb100-2" tabindex="-1"></a><span class="co"># this is defining the biological condition/label for each experimental replicate</span></span>
+<span id="cb100-3"><a href="module-3.html#cb100-3" tabindex="-1"></a><span class="co"># create a simple one column dataframe to start</span></span>
+<span id="cb100-4"><a href="module-3.html#cb100-4" tabindex="-1"></a>metaData <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="st">&quot;Condition&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;HBR&quot;</span>))</span>
+<span id="cb100-5"><a href="module-3.html#cb100-5" tabindex="-1"></a></span>
+<span id="cb100-6"><a href="module-3.html#cb100-6" tabindex="-1"></a><span class="co"># convert the &quot;Condition&quot; column to a factor data type</span></span>
+<span id="cb100-7"><a href="module-3.html#cb100-7" tabindex="-1"></a><span class="co"># the arbitrary order of these factors will determine the direction of log2 fold-changes for the genes (i.e. up or down regulated)</span></span>
+<span id="cb100-8"><a href="module-3.html#cb100-8" tabindex="-1"></a><span class="co"># the condition that is listed second here will correspond to a +ve log2 fold change</span></span>
+<span id="cb100-9"><a href="module-3.html#cb100-9" tabindex="-1"></a><span class="co"># genes with counts higher in UHR will have a fold change &gt; 1, or +ve log2 fold change</span></span>
+<span id="cb100-10"><a href="module-3.html#cb100-10" tabindex="-1"></a><span class="co"># genes with counts higher in HBR will have a fold change &lt; 1 (fractions), or -ve log2 fold change</span></span>
+<span id="cb100-11"><a href="module-3.html#cb100-11" tabindex="-1"></a></span>
+<span id="cb100-12"><a href="module-3.html#cb100-12" tabindex="-1"></a>metaData<span class="sc">$</span>Condition <span class="ot">=</span> <span class="fu">factor</span>(metaData<span class="sc">$</span>Condition, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;UHR&quot;</span>))</span>
+<span id="cb100-13"><a href="module-3.html#cb100-13" tabindex="-1"></a></span>
+<span id="cb100-14"><a href="module-3.html#cb100-14" tabindex="-1"></a><span class="co"># set the row names of the metaData dataframe to be the names of our sample replicates from the read counts matrix</span></span>
+<span id="cb100-15"><a href="module-3.html#cb100-15" tabindex="-1"></a><span class="fu">rownames</span>(metaData) <span class="ot">=</span> <span class="fu">colnames</span>(htseqCounts)</span>
+<span id="cb100-16"><a href="module-3.html#cb100-16" tabindex="-1"></a></span>
+<span id="cb100-17"><a href="module-3.html#cb100-17" tabindex="-1"></a><span class="co"># view the metadata dataframe</span></span>
+<span id="cb100-18"><a href="module-3.html#cb100-18" tabindex="-1"></a><span class="fu">head</span>(metaData)</span>
+<span id="cb100-19"><a href="module-3.html#cb100-19" tabindex="-1"></a></span>
+<span id="cb100-20"><a href="module-3.html#cb100-20" tabindex="-1"></a><span class="co"># check that names of htseq count columns match the names of the meta data rows</span></span>
+<span id="cb100-21"><a href="module-3.html#cb100-21" tabindex="-1"></a><span class="co"># use the &quot;all&quot; function which tests whether an entire logical vector is TRUE</span></span>
+<span id="cb100-22"><a href="module-3.html#cb100-22" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">rownames</span>(metaData) <span class="sc">==</span> <span class="fu">colnames</span>(htseqCounts))</span></code></pre></div>
+</div>
+<div id="construct-the-deseq2-object-piecing-all-the-data-together" class="section level3 hasAnchor">
+<h3>Construct the DESeq2 object piecing all the data together<a href="module-3.html#construct-the-deseq2-object-piecing-all-the-data-together" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>With all the data properly formatted it is now possible to combine all the information required and run the differental expression analysis in one object. This object will hold the input data, and intermediary calculations. It is also where the condition to test is specified.</p>
+<div class="sourceCode" id="cb101"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb101-1"><a href="module-3.html#cb101-1" tabindex="-1"></a><span class="co"># make deseq2 data sets</span></span>
+<span id="cb101-2"><a href="module-3.html#cb101-2" tabindex="-1"></a><span class="co"># here we are setting up our experiment by supplying: (1) the gene counts matrix, (2) the sample/replicate for each column, and (3) the biological conditions we wish to compare.</span></span>
+<span id="cb101-3"><a href="module-3.html#cb101-3" tabindex="-1"></a><span class="co"># this is a simple example that works for many experiments but these can also get more complex</span></span>
+<span id="cb101-4"><a href="module-3.html#cb101-4" tabindex="-1"></a><span class="co"># for example, including designs with multiple variables such as &quot;~ group + condition&quot;,</span></span>
+<span id="cb101-5"><a href="module-3.html#cb101-5" tabindex="-1"></a><span class="co"># and designs with interactions such as &quot;~ genotype + treatment + genotype:treatment&quot;.</span></span>
+<span id="cb101-6"><a href="module-3.html#cb101-6" tabindex="-1"></a></span>
+<span id="cb101-7"><a href="module-3.html#cb101-7" tabindex="-1"></a>dds <span class="ot">=</span> <span class="fu">DESeqDataSetFromMatrix</span>(<span class="at">countData =</span> htseqCounts, <span class="at">colData =</span> metaData, <span class="at">design =</span> <span class="sc">~</span>Condition)</span>
+<span id="cb101-8"><a href="module-3.html#cb101-8" tabindex="-1"></a></span>
+<span id="cb101-9"><a href="module-3.html#cb101-9" tabindex="-1"></a><span class="co"># the design formula above is often a point of confusion, it is useful to put in words what is happening, when we specify &quot;design = ~Condition&quot; we are saying</span></span>
+<span id="cb101-10"><a href="module-3.html#cb101-10" tabindex="-1"></a><span class="co"># regress gene expression on condition, or put another way, model gene expression on condition</span></span>
+<span id="cb101-11"><a href="module-3.html#cb101-11" tabindex="-1"></a><span class="co"># gene expression is the response variable and condition is the explanatory variable</span></span>
+<span id="cb101-12"><a href="module-3.html#cb101-12" tabindex="-1"></a><span class="co"># you can put words to formulas using this [cheat sheet](https://www.econometrics.blog/post/the-r-formula-cheatsheet/)</span></span></code></pre></div>
+</div>
+<div id="running-deseq2" class="section level3 hasAnchor">
+<h3>Running DESeq2<a href="module-3.html#running-deseq2" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>With all the data now in place, DESeq2 can be run. Calling DESeq2 will perform the following actions:
+- Estimation of size factors. i.e. accounting for differences in sequencing depth (or library size) across samples.
+- Estimation of dispersion. i.e. estimate the biological variability (over and above the expected variation from sampling) in gene expression across biological replicates. This is needed to assess the significance of differences across conditions. Additional work is performed to correct for higher dispersion seen for genes with low expression.
+- Perform “independent filtering” to reduce the number of statistical tests performed (see <code>?results</code> and <a href="https://doi.org/10.1073/pnas.0914005107">this paper</a> for details)
+- Negative Binomial GLM fitting and performing the Wald statistical test
+- Correct p values for multiple testing using the Benjamini and Hochberg method</p>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="module-3.html#cb102-1" tabindex="-1"></a><span class="co"># run the DESeq2 analysis on the &quot;dds&quot; object</span></span>
+<span id="cb102-2"><a href="module-3.html#cb102-2" tabindex="-1"></a>dds <span class="ot">=</span> <span class="fu">DESeq</span>(dds)</span>
+<span id="cb102-3"><a href="module-3.html#cb102-3" tabindex="-1"></a></span>
+<span id="cb102-4"><a href="module-3.html#cb102-4" tabindex="-1"></a><span class="co"># view the first 5 lines of the DE results</span></span>
+<span id="cb102-5"><a href="module-3.html#cb102-5" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">results</span>(dds)</span>
+<span id="cb102-6"><a href="module-3.html#cb102-6" tabindex="-1"></a><span class="fu">head</span>(res, <span class="dv">5</span>)</span></code></pre></div>
+</div>
+<div id="log-fold-change-shrinkage" class="section level3 hasAnchor">
+<h3>Log-fold change shrinkage<a href="module-3.html#log-fold-change-shrinkage" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>It is good practice to shrink the log-fold change values, this does exactly what it sounds like, reducing the amount of log-fold change for genes where there are few counts which create huge variability that is not true biological signal. Consider for example a gene for two samples, one sample has 1 read, and and one sample has 6 reads, that is a 6 fold change, that is likely not accurate. There are a number of algorithms that can be used to shrink log2 fold change, here we will use the apeglm algorithm, which requires the apeglm package to be installed.</p>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="module-3.html#cb103-1" tabindex="-1"></a><span class="co"># shrink the log2 fold change estimates</span></span>
+<span id="cb103-2"><a href="module-3.html#cb103-2" tabindex="-1"></a><span class="co">#   shrinkage of effect size (log fold change estimates) is useful for visualization and ranking of genes</span></span>
+<span id="cb103-3"><a href="module-3.html#cb103-3" tabindex="-1"></a></span>
+<span id="cb103-4"><a href="module-3.html#cb103-4" tabindex="-1"></a><span class="co">#   In simplistic terms, the goal of calculating &quot;dispersion estimates&quot; and &quot;shrinkage&quot; is also to account for the problem that</span></span>
+<span id="cb103-5"><a href="module-3.html#cb103-5" tabindex="-1"></a><span class="co">#   genes with low mean counts across replicates tend to have higher variability than those with higher mean counts.</span></span>
+<span id="cb103-6"><a href="module-3.html#cb103-6" tabindex="-1"></a><span class="co">#   Shrinkage attempts to correct for this. For a more detailed discussion of shrinkage refer to the DESeq2 vignette</span></span>
+<span id="cb103-7"><a href="module-3.html#cb103-7" tabindex="-1"></a></span>
+<span id="cb103-8"><a href="module-3.html#cb103-8" tabindex="-1"></a><span class="co"># first get the name of the coefficient (log fold change) to shrink</span></span>
+<span id="cb103-9"><a href="module-3.html#cb103-9" tabindex="-1"></a><span class="fu">resultsNames</span>(dds)</span>
+<span id="cb103-10"><a href="module-3.html#cb103-10" tabindex="-1"></a></span>
+<span id="cb103-11"><a href="module-3.html#cb103-11" tabindex="-1"></a><span class="co"># now apply the shrinkage approach</span></span>
+<span id="cb103-12"><a href="module-3.html#cb103-12" tabindex="-1"></a>resLFC <span class="ot">=</span> <span class="fu">lfcShrink</span>(dds, <span class="at">coef =</span> <span class="st">&quot;Condition_UHR_vs_HBR&quot;</span>, <span class="at">type =</span> <span class="st">&quot;apeglm&quot;</span>)</span>
+<span id="cb103-13"><a href="module-3.html#cb103-13" tabindex="-1"></a></span>
+<span id="cb103-14"><a href="module-3.html#cb103-14" tabindex="-1"></a><span class="co"># make a copy of the shrinkage results to manipulate</span></span>
+<span id="cb103-15"><a href="module-3.html#cb103-15" tabindex="-1"></a>deGeneResult <span class="ot">=</span> resLFC</span>
+<span id="cb103-16"><a href="module-3.html#cb103-16" tabindex="-1"></a></span>
+<span id="cb103-17"><a href="module-3.html#cb103-17" tabindex="-1"></a><span class="co"># contrast the values before and after shrinkage</span></span>
+<span id="cb103-18"><a href="module-3.html#cb103-18" tabindex="-1"></a><span class="co"># create a temporary, simplified data structure with the values before/after shrinkage, and create a new column called &quot;group&quot; with this label</span></span>
+<span id="cb103-19"><a href="module-3.html#cb103-19" tabindex="-1"></a>res_before <span class="ot">=</span> res</span>
+<span id="cb103-20"><a href="module-3.html#cb103-20" tabindex="-1"></a>res_before<span class="sc">$</span>group <span class="ot">=</span> <span class="st">&quot;before shrinkage&quot;</span></span>
+<span id="cb103-21"><a href="module-3.html#cb103-21" tabindex="-1"></a>res_after <span class="ot">=</span> deGeneResult</span>
+<span id="cb103-22"><a href="module-3.html#cb103-22" tabindex="-1"></a>res_after<span class="sc">$</span>group <span class="ot">=</span> <span class="st">&quot;after shrinkage&quot;</span></span>
+<span id="cb103-23"><a href="module-3.html#cb103-23" tabindex="-1"></a>res_combined <span class="ot">=</span> <span class="fu">rbind</span>(res_before[,<span class="fu">c</span>(<span class="st">&quot;log2FoldChange&quot;</span>,<span class="st">&quot;group&quot;</span>)], res_after[,<span class="fu">c</span>(<span class="st">&quot;log2FoldChange&quot;</span>,<span class="st">&quot;group&quot;</span>)])</span>
+<span id="cb103-24"><a href="module-3.html#cb103-24" tabindex="-1"></a></span>
+<span id="cb103-25"><a href="module-3.html#cb103-25" tabindex="-1"></a><span class="co"># adjust the order so that the legend has &quot;before shrinkage&quot; listed first</span></span>
+<span id="cb103-26"><a href="module-3.html#cb103-26" tabindex="-1"></a>res_combined<span class="sc">$</span>group <span class="ot">=</span> <span class="fu">factor</span>(res_combined<span class="sc">$</span>group, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;before shrinkage&quot;</span>, <span class="st">&quot;after shrinkage&quot;</span>))</span>
+<span id="cb103-27"><a href="module-3.html#cb103-27" tabindex="-1"></a></span>
+<span id="cb103-28"><a href="module-3.html#cb103-28" tabindex="-1"></a><span class="co"># look at the fold change values</span></span>
+<span id="cb103-29"><a href="module-3.html#cb103-29" tabindex="-1"></a><span class="fu">head</span>(res_before)</span>
+<span id="cb103-30"><a href="module-3.html#cb103-30" tabindex="-1"></a><span class="fu">head</span>(res_after)</span>
+<span id="cb103-31"><a href="module-3.html#cb103-31" tabindex="-1"></a></span>
+<span id="cb103-32"><a href="module-3.html#cb103-32" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(res_combined, <span class="fu">aes</span>(<span class="at">x =</span> log2FoldChange, <span class="at">color =</span> group)) <span class="sc">+</span> <span class="fu">geom_density</span>() <span class="sc">+</span> <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb103-33"><a href="module-3.html#cb103-33" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">&quot;before shrinkage&quot;</span> <span class="ot">=</span> <span class="st">&quot;tomato4&quot;</span>, <span class="st">&quot;after shrinkage&quot;</span> <span class="ot">=</span> <span class="st">&quot;slategray&quot;</span>)) <span class="sc">+</span></span>
+<span id="cb103-34"><a href="module-3.html#cb103-34" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">color =</span> <span class="st">&quot;Shrinkage status&quot;</span>)</span>
+<span id="cb103-35"><a href="module-3.html#cb103-35" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">plot=</span>p, <span class="at">filename =</span> <span class="fu">paste0</span>(outdir, <span class="st">&quot;before_after_shrinkage.pdf&quot;</span>), <span class="at">device=</span><span class="st">&quot;pdf&quot;</span>, <span class="at">width=</span><span class="dv">6</span>, <span class="at">height=</span><span class="dv">4</span>, <span class="at">units=</span><span class="st">&quot;in&quot;</span>)</span></code></pre></div>
+<p>How did the results change before and after shinkage? What direction is each log2 fold change value moving?</p>
+<p>Note that for these data, the impact of shrinkage is very subtle but the pattern is that fold change values move towards 0.</p>
+</div>
+<div id="annotate-gene-symbols-onto-the-de-results" class="section level3 hasAnchor">
+<h3>Annotate gene symbols onto the DE results<a href="module-3.html#annotate-gene-symbols-onto-the-de-results" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>DESeq2 was run with ensembl gene IDs as identifiers, this is not the most human friendly way to interpret results. Here gene symbols are merged onto the differentially expressed gene list to make the results a bit more interpretable.</p>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="module-3.html#cb104-1" tabindex="-1"></a><span class="co"># read in gene ID to name mappings (using &quot;fread&quot; an alternative to &quot;read.table&quot;)</span></span>
+<span id="cb104-2"><a href="module-3.html#cb104-2" tabindex="-1"></a>gene_id_mapping <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">&quot;/home/ubuntu/workspace/rnaseq/de/htseq_counts/ENSG_ID2Name.txt&quot;</span>, <span class="at">header =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb104-3"><a href="module-3.html#cb104-3" tabindex="-1"></a></span>
+<span id="cb104-4"><a href="module-3.html#cb104-4" tabindex="-1"></a><span class="co"># add names to the columns in the &quot;gene_id_mapping&quot; dataframe</span></span>
+<span id="cb104-5"><a href="module-3.html#cb104-5" tabindex="-1"></a><span class="fu">setnames</span>(gene_id_mapping, <span class="fu">c</span>(<span class="st">&quot;ensemblID&quot;</span>, <span class="st">&quot;Symbol&quot;</span>))</span>
+<span id="cb104-6"><a href="module-3.html#cb104-6" tabindex="-1"></a></span>
+<span id="cb104-7"><a href="module-3.html#cb104-7" tabindex="-1"></a><span class="co"># view the first few lines of the gene ID to name mappings</span></span>
+<span id="cb104-8"><a href="module-3.html#cb104-8" tabindex="-1"></a><span class="fu">head</span>(gene_id_mapping)</span>
+<span id="cb104-9"><a href="module-3.html#cb104-9" tabindex="-1"></a></span>
+<span id="cb104-10"><a href="module-3.html#cb104-10" tabindex="-1"></a><span class="co"># merge on gene names</span></span>
+<span id="cb104-11"><a href="module-3.html#cb104-11" tabindex="-1"></a>deGeneResult<span class="sc">$</span>ensemblID <span class="ot">=</span> <span class="fu">rownames</span>(deGeneResult)</span>
+<span id="cb104-12"><a href="module-3.html#cb104-12" tabindex="-1"></a>deGeneResult <span class="ot">=</span> <span class="fu">as.data.table</span>(deGeneResult)</span>
+<span id="cb104-13"><a href="module-3.html#cb104-13" tabindex="-1"></a>deGeneResult <span class="ot">=</span> <span class="fu">merge</span>(deGeneResult, gene_id_mapping, <span class="at">by =</span> <span class="st">&quot;ensemblID&quot;</span>, <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb104-14"><a href="module-3.html#cb104-14" tabindex="-1"></a></span>
+<span id="cb104-15"><a href="module-3.html#cb104-15" tabindex="-1"></a><span class="co"># merge the original raw count values onto this final dataframe to aid interpretation</span></span>
+<span id="cb104-16"><a href="module-3.html#cb104-16" tabindex="-1"></a>original_counts <span class="ot">=</span> <span class="fu">as.data.frame</span>(htseqCounts)</span>
+<span id="cb104-17"><a href="module-3.html#cb104-17" tabindex="-1"></a>original_counts[,<span class="st">&quot;ensemblID&quot;</span>] <span class="ot">=</span> <span class="fu">rownames</span>(htseqCounts)</span>
+<span id="cb104-18"><a href="module-3.html#cb104-18" tabindex="-1"></a>deGeneResult <span class="ot">=</span> <span class="fu">merge</span>(deGeneResult, original_counts, <span class="at">by =</span> <span class="st">&#39;ensemblID&#39;</span>, <span class="at">all.x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb104-19"><a href="module-3.html#cb104-19" tabindex="-1"></a></span>
+<span id="cb104-20"><a href="module-3.html#cb104-20" tabindex="-1"></a><span class="co"># view the final merged dataframe</span></span>
+<span id="cb104-21"><a href="module-3.html#cb104-21" tabindex="-1"></a><span class="co"># based on the raw counts and fold change values what does a negative fold change mean with respect to our two conditions HBR and UHR?</span></span>
+<span id="cb104-22"><a href="module-3.html#cb104-22" tabindex="-1"></a><span class="fu">head</span>(deGeneResult)</span></code></pre></div>
+</div>
+<div id="data-manipulation" class="section level3 hasAnchor">
+<h3>Data manipulation<a href="module-3.html#data-manipulation" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>With the DE analysis complete it is useful to view and filter the data frames to only the relevant genes. Here some basic data manipulation is performed, filtering to significant genes at specific thresholds.</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="module-3.html#cb105-1" tabindex="-1"></a><span class="co"># view the top genes according to adjusted p-value</span></span>
+<span id="cb105-2"><a href="module-3.html#cb105-2" tabindex="-1"></a>deGeneResult[<span class="fu">order</span>(deGeneResult<span class="sc">$</span>padj), ]</span>
+<span id="cb105-3"><a href="module-3.html#cb105-3" tabindex="-1"></a></span>
+<span id="cb105-4"><a href="module-3.html#cb105-4" tabindex="-1"></a><span class="co"># view the top genes according to fold change</span></span>
+<span id="cb105-5"><a href="module-3.html#cb105-5" tabindex="-1"></a>deGeneResult[<span class="fu">order</span>(deGeneResult<span class="sc">$</span>log2FoldChange), ]</span>
+<span id="cb105-6"><a href="module-3.html#cb105-6" tabindex="-1"></a></span>
+<span id="cb105-7"><a href="module-3.html#cb105-7" tabindex="-1"></a><span class="co"># determine the number of up/down significant genes at FDR &lt; 0.05 significance level</span></span>
+<span id="cb105-8"><a href="module-3.html#cb105-8" tabindex="-1"></a><span class="fu">dim</span>(deGeneResult)[<span class="dv">1</span>] <span class="co"># number of genes tested</span></span>
+<span id="cb105-9"><a href="module-3.html#cb105-9" tabindex="-1"></a><span class="fu">dim</span>(deGeneResult[deGeneResult<span class="sc">$</span>padj <span class="sc">&lt;</span> <span class="fl">0.05</span>])[<span class="dv">1</span>] <span class="co">#number of significant genes</span></span>
+<span id="cb105-10"><a href="module-3.html#cb105-10" tabindex="-1"></a></span>
+<span id="cb105-11"><a href="module-3.html#cb105-11" tabindex="-1"></a><span class="co"># order the DE results by adjusted p-value</span></span>
+<span id="cb105-12"><a href="module-3.html#cb105-12" tabindex="-1"></a>deGeneResultSorted <span class="ot">=</span> deGeneResult[<span class="fu">order</span>(deGeneResult<span class="sc">$</span>padj), ]</span>
+<span id="cb105-13"><a href="module-3.html#cb105-13" tabindex="-1"></a></span>
+<span id="cb105-14"><a href="module-3.html#cb105-14" tabindex="-1"></a><span class="co"># create a filtered data frame that limits to only the significant DE genes (adjusted p.value &lt; 0.05)</span></span>
+<span id="cb105-15"><a href="module-3.html#cb105-15" tabindex="-1"></a>deGeneResultSignificant <span class="ot">=</span> deGeneResultSorted[deGeneResultSorted<span class="sc">$</span>padj <span class="sc">&lt;</span> <span class="fl">0.05</span>]</span></code></pre></div>
+</div>
+<div id="save-results-to-files" class="section level3 hasAnchor">
+<h3>Save results to files<a href="module-3.html#save-results-to-files" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The data generated will now be written out as tab separated files (.tsv). Some of the DESeq2 objects are also saved as serialized R (RDS) objects which can be quickly read back into R later for visualization.</p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="module-3.html#cb106-1" tabindex="-1"></a><span class="co"># set the working directory to the output dir where we will store any results files</span></span>
+<span id="cb106-2"><a href="module-3.html#cb106-2" tabindex="-1"></a><span class="fu">setwd</span>(outdir)</span>
+<span id="cb106-3"><a href="module-3.html#cb106-3" tabindex="-1"></a></span>
+<span id="cb106-4"><a href="module-3.html#cb106-4" tabindex="-1"></a><span class="co"># save the final DE result (all genes)  to an output file</span></span>
+<span id="cb106-5"><a href="module-3.html#cb106-5" tabindex="-1"></a><span class="fu">fwrite</span>(deGeneResultSorted, <span class="at">file=</span><span class="st">&quot;DE_all_genes_DESeq2.tsv&quot;</span>, <span class="at">sep=</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>)</span>
+<span id="cb106-6"><a href="module-3.html#cb106-6" tabindex="-1"></a></span>
+<span id="cb106-7"><a href="module-3.html#cb106-7" tabindex="-1"></a><span class="co"># save the final DE result (significant genes only)  to an output file</span></span>
+<span id="cb106-8"><a href="module-3.html#cb106-8" tabindex="-1"></a><span class="fu">fwrite</span>(deGeneResultSignificant, <span class="at">file=</span><span class="st">&quot;DE_sig_genes_DESeq2.tsv&quot;</span>, <span class="at">sep=</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>)</span>
+<span id="cb106-9"><a href="module-3.html#cb106-9" tabindex="-1"></a></span>
+<span id="cb106-10"><a href="module-3.html#cb106-10" tabindex="-1"></a><span class="co"># save the DESeq2 objects for the data visualization section</span></span>
+<span id="cb106-11"><a href="module-3.html#cb106-11" tabindex="-1"></a><span class="fu">saveRDS</span>(dds, <span class="st">&quot;dds.rds&quot;</span>)</span>
+<span id="cb106-12"><a href="module-3.html#cb106-12" tabindex="-1"></a><span class="fu">saveRDS</span>(res, <span class="st">&quot;res.rds&quot;</span>)</span>
+<span id="cb106-13"><a href="module-3.html#cb106-13" tabindex="-1"></a><span class="fu">saveRDS</span>(resLFC, <span class="st">&quot;resLFC.rds&quot;</span>)</span></code></pre></div>
+</div>
+<div id="briefly-examine-the-top-over-expressed-genes" class="section level3 hasAnchor">
+<h3>Briefly examine the top over-expressed genes<a href="module-3.html#briefly-examine-the-top-over-expressed-genes" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For both conditions (HBR and UHR) lets take a look at the top n genes but this time according to fold-change instead of p-value.</p>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb107-1"><a href="module-3.html#cb107-1" tabindex="-1"></a></span>
+<span id="cb107-2"><a href="module-3.html#cb107-2" tabindex="-1"></a><span class="co"># use the dplyr library to manipulate the dataframe</span></span>
+<span id="cb107-3"><a href="module-3.html#cb107-3" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb107-4"><a href="module-3.html#cb107-4" tabindex="-1"></a></span>
+<span id="cb107-5"><a href="module-3.html#cb107-5" tabindex="-1"></a><span class="co"># create a new copy of the data frame, sorted by log2 fold change</span></span>
+<span id="cb107-6"><a href="module-3.html#cb107-6" tabindex="-1"></a>deGeneResultSortedFoldchange <span class="ot">=</span> <span class="fu">arrange</span>(deGeneResultSignificant, log2FoldChange)</span>
+<span id="cb107-7"><a href="module-3.html#cb107-7" tabindex="-1"></a></span>
+<span id="cb107-8"><a href="module-3.html#cb107-8" tabindex="-1"></a><span class="co"># create a convenient data structure with just the top n genes from each condition</span></span>
+<span id="cb107-9"><a href="module-3.html#cb107-9" tabindex="-1"></a>top_bottom <span class="ot">=</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb107-10"><a href="module-3.html#cb107-10" tabindex="-1"></a>  <span class="fu">head</span>(deGeneResultSortedFoldchange, <span class="dv">10</span>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Set =</span> <span class="st">&quot;Bottom 10&quot;</span>),</span>
+<span id="cb107-11"><a href="module-3.html#cb107-11" tabindex="-1"></a>  <span class="fu">tail</span>(deGeneResultSortedFoldchange, <span class="dv">10</span>) <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">Set =</span> <span class="st">&quot;Top 10&quot;</span>)</span>
+<span id="cb107-12"><a href="module-3.html#cb107-12" tabindex="-1"></a>)</span>
+<span id="cb107-13"><a href="module-3.html#cb107-13" tabindex="-1"></a></span>
+<span id="cb107-14"><a href="module-3.html#cb107-14" tabindex="-1"></a><span class="co"># visualize data for the top n genes. Simplify the output a bit</span></span>
+<span id="cb107-15"><a href="module-3.html#cb107-15" tabindex="-1"></a><span class="fu">print</span>(top_bottom[,<span class="fu">c</span>(<span class="st">&quot;log2FoldChange&quot;</span>,<span class="st">&quot;padj&quot;</span>,<span class="st">&quot;Symbol&quot;</span>,<span class="st">&quot;UHR_Rep1&quot;</span>,<span class="st">&quot;UHR_Rep2&quot;</span>,<span class="st">&quot;UHR_Rep3&quot;</span>,<span class="st">&quot;HBR_Rep1&quot;</span>,<span class="st">&quot;HBR_Rep2&quot;</span>,<span class="st">&quot;HBR_Rep3&quot;</span>,<span class="st">&quot;Set&quot;</span>)])</span>
+<span id="cb107-16"><a href="module-3.html#cb107-16" tabindex="-1"></a></span>
+<span id="cb107-17"><a href="module-3.html#cb107-17" tabindex="-1"></a><span class="fu">quit</span>(<span class="at">save=</span><span class="st">&quot;no&quot;</span>)</span></code></pre></div>
+</div>
+<div id="perform-some-preliminary-exploration-of-de-genes-using-webtools" class="section level3 hasAnchor">
+<h3>Perform some preliminary exploration of DE genes using webtools<a href="module-3.html#perform-some-preliminary-exploration-of-de-genes-using-webtools" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Download the file: <code>outdir/DE_sig_genes_DESeq2.tsv</code>. Open this spreadsheet, sort on “log2FoldChange” column and find the top 100 significant genes with higher expression in HBR (brain). Also download the file: <code>outdir/DE_all_genes_DESeq2.tsv</code> (to be used as a list of background genes or where we want the fold-change value for every gene).</p>
+<ul>
+<li>Try querying with the top 100 HBR over-expressed genes using: <a href="https://biit.cs.ut.ee/gprofiler/gost">g:Profiler</a></li>
+<li>Try querying with the top 100 HBR over-expressed genes using: <a href="https://tissueenrich.gdcb.iastate.edu/">TissueEnrich</a>. Use the Tissue Enrichment tool. This tool also requires a Background Gene List. Use all genes in <code>DE_all_genes_DESeq2.tsv</code> for this purpose. You can also manually explore some individual genes over-expressed in UHR with the Tissue-Specific Genes tool. For example, try <em>PRAME</em> and <em>SERPIND1</em>, two of the top UHR genes.</li>
+</ul>
+<p><strong>g:Profiler example result</strong>
+{% include figure.html image=“/assets/module_3/Gprofiler-example.png” width=“1200” %}</p>
+<p><strong>TissueEnrich summary for top 100 HBR over-expressed genes</strong>
+{% include figure.html image=“assets/module_3/TissueEnrich-HBR-Genes-1.png” width=“1200” %}</p>
+<p><strong>TissueEnrich result for Cerebral Cortex tissue</strong>
+{% include figure.html image=“/assets/module_3/TissueEnrich-HBR-Genes-2.png” width=“1200” %}</p>
+<p><strong>TissueEnrich example for UHR over-expressed gene: <em>PRAME</em></strong>
+{% include figure.html image=“/assets/module_3/TissueEnrich-UHR-PRAME.png” width=“1200” %}</p>
+<p><strong>TissueEnrich example for UHR over-expressed gene: <em>SERPIND1</em></strong>
+{% include figure.html image=“/assets/module_3/TissueEnrich-UHR-SERPIND1.png” width=“1200” %}</p>
+<p>Does all of this make sense when we think about the makeup of the HBR and UHR samples? Refer back to the <a href="/module-01-inputs/0001/05/01/RNAseq_Data/">description of the samples</a>.</p>
 
 
 </div>
