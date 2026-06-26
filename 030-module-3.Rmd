@@ -1402,3 +1402,1062 @@ ggsave(plot=p, filename = "ERCC_DE_Gene_Method_Comparison.pdf", device="pdf", wi
 
 quit(save="no")
 ```
+
+***
+
+![RNA-seq_Flowchart4](assets/module_3/RNA-seq_Flowchart4.png)\
+
+***
+
+### Ballgown DE Visualization
+
+Navigate to the correct directory and then launch R:
+
+```bash
+cd $RNA_HOME/de/ballgown/ref_only
+R
+```
+
+A separate R tutorial file has been provided below. Run the R commands detailed in the R script. All results are directed to pdf file(s). The output pdf files can be viewed in your browser at the following urls. Note, you must replace **YOUR_PUBLIC_IPv4_ADDRESS** with your own amazon instance IP (e.g., 101.0.1.101)).
+
+* https://**YOUR_PUBLIC_IPv4_ADDRESS**/rnaseq/de/ballgown/ref_only/Tutorial_Part2_ballgown_output.pdf
+
+First you'll need to load the libraries needed for this analysis and define a path for the output PDF to be written.
+
+```R
+#load libraries
+library(ballgown)
+library(genefilter)
+library(dplyr)
+library(devtools)
+
+# set the working directory
+setwd("~/workspace/rnaseq/de/ballgown/ref_only")
+
+```
+
+Next we'll load our data into R.
+
+```R
+
+# Define the conditions being compared for use later
+condition = c("UHR", "UHR", "UHR", "HBR", "HBR", "HBR")
+
+# Load the ballgown object from file
+load("bg.rda")
+
+# The load command, loads an R object from a file into memory in our R session.
+# You can use ls() to view the names of variables that have been loaded
+ls()
+
+# Print a summary of the ballgown object
+bg
+
+# Load gene names for lookup later in the tutorial
+bg_table = texpr(bg, "all")
+bg_gene_names = unique(bg_table[, 9:10])
+
+# Pull the gene and transcript expression data frame from the ballgown object
+gene_expression = as.data.frame(gexpr(bg))
+transcript_expression = as.data.frame(texpr(bg))
+
+#View expression values for the transcripts of a particular gene symbol of chromosome 22.  e.g. 'TST'
+#First determine the transcript_ids in the data.frame that match 'TST', aka. ENSG00000128311, then display only those rows of the data.frame
+i = bg_table[, "gene_name"] == "TST"
+bg_table[i,]
+
+# Display the transcript ID for a single row of data
+ballgown::transcriptNames(bg)[2763]
+
+# Display the gene name for a single row of data
+ballgown::geneNames(bg)[2763]
+
+#What if we want to view values for a list of genes of interest all at once?
+genes_of_interest = c("TST", "MMP11", "LGALS2", "ISX")
+i = bg_table[, "gene_name"] %in% genes_of_interest
+
+bg_table[i,]
+
+# Load the transcript to gene index from the ballgown object
+transcript_gene_table = indexes(bg)$t2g
+head(transcript_gene_table)
+
+#Each row of data represents a transcript. Many of these transcripts represent the same gene. Determine the numbers of transcripts and unique genes
+length(unique(transcript_gene_table[, "t_id"])) #Transcript count
+length(unique(transcript_gene_table[, "g_id"])) #Unique Gene count
+
+# Extract FPKM values from the 'bg' object
+fpkm = texpr(bg, meas = "FPKM")
+
+# View the last several rows of the FPKM table
+tail(fpkm)
+
+# Transform the FPKM values by adding 1 and convert to a log2 scale
+fpkm = log2(fpkm + 1)
+
+# View the last several rows of the transformed FPKM table
+tail(fpkm)
+
+```
+
+Now we'll start to generate figures with the following R code.
+
+```R
+
+#### Plot #1 - the number of transcripts per gene.
+#Many genes will have only 1 transcript, some genes will have several transcripts
+#Use the 'table()' command to count the number of times each gene symbol occurs (i.e. the # of transcripts that have each gene symbol)
+#Then use the 'hist' command to create a histogram of these counts
+#How many genes have 1 transcript?  More than one transcript?  What is the maximum number of transcripts for a single gene?
+pdf(file="TranscriptCountDistribution.pdf")
+counts=table(transcript_gene_table[, "g_id"])
+c_one = length(which(counts == 1))
+c_more_than_one = length(which(counts > 1))
+c_max = max(counts)
+hist(counts, breaks = 50, col = "bisque4", xlab = "Transcripts per gene", main = "Distribution of transcript count per gene")
+legend_text = c(paste("Genes with one transcript =", c_one), paste("Genes with more than one transcript =", c_more_than_one), paste("Max transcripts for single gene = ", c_max))
+legend("topright", legend_text, lty = NULL)
+dev.off()
+
+#### Plot #2 - the distribution of transcript sizes as a histogram
+#In this analysis we supplied StringTie with transcript models so the lengths will be those of known transcripts
+#However, if we had used a de novo transcript discovery mode, this step would give us some idea of how well transcripts were being assembled
+#If we had a low coverage library, or other problems, we might get short "transcripts" that are actually only pieces of real transcripts
+pdf(file = "TranscriptLengthDistribution.pdf")
+hist(bg_table$length, breaks = 50, xlab = "Transcript length (bp)", main = "Distribution of transcript lengths", col = "steelblue")
+dev.off()
+
+#### Plot #3 - distribution of gene expression levels for each sample
+# Create boxplots to display summary statistics for the FPKM values for each sample
+# set color based on condition which is UHR vs. HBR
+# set labels perpendicular to axis (las=2)
+# set ylab to indicate that values are log2 transformed
+pdf(file = "All_samples_FPKM_boxplots.pdf")
+boxplot(fpkm, col = as.numeric(as.factor(condition)) + 1,las = 2,ylab = "log2(FPKM + 1)")
+dev.off()
+
+#### Plot 4 - BoxPlot comparing the expression of a single gene for all replicates of both conditions
+# set border color for each of the boxplots
+# set title (main) to gene : transcript
+# set x label to Type
+# set ylab to indicate that values are log2 transformed
+
+pdf(file = "TST_ENST00000249042_boxplot.pdf")
+transcript = which(ballgown::transcriptNames(bg) == "ENST00000249042")[[1]]
+boxplot(fpkm[transcript,] ~ condition, border = c(2, 3), main = paste(ballgown::geneNames(bg)[transcript],": ", ballgown::transcriptNames(bg)[transcript]), pch = 19, xlab = "Type", ylab = "log2(FPKM+1)")
+
+# Add the FPKM values for each sample onto the plot
+# set plot symbol to solid circle, default is empty circle
+points(fpkm[transcript,] ~ jitter(c(2,2,2,1,1,1)), col = c(2,2,2,1,1,1)+1, pch = 16)
+dev.off()
+
+
+#### Plot 5 - Plot of transcript structures observed and expression level for UHR vs HBR with representative replicate
+
+pdf(file = "TST_transcript_structures_expression.pdf")
+par(mfrow = c(2, 1))
+plotTranscripts(ballgown::geneIDs(bg)[transcript], bg, main = c("TST in HBR"), sample = c("HBR_Rep1"), labelTranscripts = TRUE)
+plotTranscripts(ballgown::geneIDs(bg)[transcript], bg, main = c("TST in UHR"), sample = c("UHR_Rep1"), labelTranscripts = TRUE)
+dev.off()
+
+# Exit the R session
+quit(save = "no")
+```
+
+Remember that you can view the output graphs of this step on your instance by navigating to this location in a web browser window:
+
+https://**YOUR_PUBLIC_IPv4_ADDRESS**/rnaseq/de/ballgown/ref_only/Tutorial_Part2_ballgown_output.pdf
+
+
+
+
+
+***
+
+![RNA-seq_Flowchart4](assets/module_3/RNA-seq_Flowchart4-2.png)\
+
+***
+
+
+### Differential Expression Visualization
+In this section we will be going over some basic visualizations of the DESeq2 results generated in the "Differential Expression with DESeq2" section of this course. Our goal is to quickly obtain some interpretable results using built-in visualization functions from DESeq2 or recommended packages. For a very extensive overview of DESeq2 and how to visualize and interpret the results, refer to the DESeq2 vignette.
+
+#### Setup
+If it is not already in your R environment, load the DESeqDataSet object and the results table into the R environment.
+
+```R
+# set the working directory
+setwd("~/workspace/rnaseq/de/htseq_counts/deseq2/")
+
+# view the contents of this directory
+dir()
+
+# load libs
+library(DESeq2)
+library(data.table)
+library(pheatmap)
+
+# Load in the DESeqDataSet object (https://genomedata.org/cri-workshop/deseq2/dds.rds)
+dds = readRDS("dds.rds")
+
+# Load in the results object before shrinkage (https://genomedata.org/cri-workshop/deseq2/res.rds)
+res = readRDS("res.rds")
+
+# Load in the results object after shrinkage (https://genomedata.org/cri-workshop/deseq2/resLFC.rds)
+resLFC = readRDS("resLFC.rds")
+
+# Load in the final results file with all sorted DE results (https://genomedata.org/cri-workshop/deseq2/DE_all_genes_DESeq2.tsv)
+deGeneResultSorted = fread("DE_all_genes_DESeq2.tsv") 
+```
+
+#### MA-plot before LFC shrinkage
+MA-plots were originally used to evaluate microarray expression data where M is the log ratio and A is the mean intensity for a gene (both based on scanned intensity measurements from the microarray). 
+
+These types of plots are still usefull in RNAseq DE experiments with two conditions, as they can immediately give us information on the number of signficantly differentially expressed genes, the ratio of up vs down regulated genes, and any outliers. To interpret these plots it is important to keep a couple of things in mind. The Y axis (M) is the log2 fold change between the two conditions tested, a higher fold-change indicates greater difference between condition A and condition B. The X axis (A) is a measure of read alignment to a gene, so as you go higher on on the X axis you are looking at regions which have higher totals of aligned reads, in other words the gene is "more" expressed overall (with the caveat that gene length is not being taken into account by raw read counts here). 
+
+Using the built-in `plotMA` function from DESeq2 we also see that the genes are color coded by a significance threshold (e.g., adjusted p-value < 0.1). Genes with higher expression values and higher fold-changes are more often significant as one would expect.
+})
+
+```R
+# use DESeq2 built in MA-plot function
+pdf("maplot_preShrink.pdf")
+plotMA(res, alpha = 0.1, ylim=c(-2, 2), cex=1.5, main = "MA-plot before LFC shrinkage")
+dev.off()
+
+```
+
+#### MA-plot after LFC shrinkage
+When we ran DESeq2 we obtained two results, one with and one without log-fold change shrinkage. When you have genes with low hits you can get some very large fold changes. For example 1 hit on a gene vs 6 hits on a gene is a 6x fold change. This high level of variance though is probably quantifying noise instead of real biology. Running `plotMA` on our results where we applied an algorithm for log fold change shrinkage we can see that this "effect" is somewhat controlled for. I do want to note that while shrinking LFC is part of a typical DE workflow there are cases where you would not want to perform this, namely when there is already low variation amongst samples (i.e. from technical replicates) as most shrinkage algorithms rely on some variability to build a prior distribution.
+```R
+# use DESeq2 built in MA-plot function
+pdf("maplot_postShrink.pdf")
+plotMA(resLFC, alpha = 0.1, ylim = c(-2, 2), cex=1.5, main = "MA-plot after LFC shrinkage")
+dev.off()
+```
+
+The effect is very subtle here due to the focused nature of our dataset (chr22 genes only), but if you toggle between the two plots and look in the upper left and bottom left corners you can see some fold change values are moving closer to 0.
+
+#### Viewing individual gene counts between two conditions
+Often it may be useful to view the normalized counts for a gene amongst our samples. DESeq2 provides a built in function for that which works off of the dds object. Here we view SEPT3 which we can see in our DE output is significantly higher in the HBR cohort and PRAME which is significantly higher in the UHR cohort. This is useful as we can see the per-sample distribution of our corrected counts, we can immediately determine if there are any outliers within each group and investigate further if need be.
+
+```R
+
+# hint! you defined intgroup when creating the dds object, you can view the name by printing the dds objct in your R session
+# dds
+
+pdf("normalized_count_examples.pdf")
+
+# view SEPT3 normalized counts
+plotCounts(dds, gene = "ENSG00000100167", intgroup = "Condition", main = "SEPT3")
+
+# view PRAME normalized counts
+plotCounts(dds, gene = "ENSG00000185686", intgroup = "Condition", main = "PRAME")
+
+dev.off()
+
+```
+
+# Viewing pairwise sample clustering
+It may often be useful to view inter-sample relatedness. In other words, how similar or disimilar samples are to one another overall. While not part of the DESeq2 package, there is a convenient library that can easily construct a hierarchically clustered heatmap from our DESeq2 data. It should be noted that when doing a distance calculation using "raw count" data is not ideal, the count data should be transformed using `vst()` or `rlog()` which can be performed directly on the dds object. The reason for this is described in detail in the DESeq2 manuscript, suffice it to say that transforming gene variance to be more homoskedastic will make inferences of sample relatedness more interpretable. 
+
+```R
+# note that we use rlog because we don't have a large number of genes, for a typical DE experiment with 1000's of genes use the vst() function
+rld <- rlog(dds, blind = FALSE)
+
+# view the structure of this object
+rld
+
+# compute sample distances (the dist function uses the euclidean distance metric by default)
+# in this command we will pull the rlog transformed data ("regularized" log2 transformed, see ?rlog for details) using "assay"
+# then we transpose that data using t()
+# then we calculate distance values using dist() 
+# the distance is calculated for each vector of sample gene values, in a pairwise fashion comparing all samples
+
+# view the first few lines of raw data
+head(assay(dds))
+
+# see the rlog transformed data
+head(assay(rld))
+
+# see the impact of transposing the matrix
+t(assay(rld))[1:6, 1:5]
+
+# see the distance values
+dist(t(assay(rld)))
+
+# put it all together and store the result
+sampleDists <- dist(t(assay(rld)))
+
+# convert the distance result to a matrix
+sampleDistMatrix <- as.matrix(sampleDists)
+
+# view the distance numbers directly in the pairwise distance matrix
+head(sampleDistMatrix)
+
+pdf("distance_sample_heatmap.pdf", width = 8, height = 8)
+
+# construct clustered heatmap, important to use the computed sample distances for clustering
+pheatmap(sampleDistMatrix, clustering_distance_rows = sampleDists, clustering_distance_cols = sampleDists)
+
+dev.off()
+```
+
+Instead of a distance metric we could also use a similarity metric such as a Peason correlation
+
+There are many correlation and distance options:
+
+ - Similarity metrics: "pearson", "kendall", "spearman"
+ - Distance metrics: "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski"
+
+```R
+sampleCorrs = cor(assay(rld), method = "pearson")
+sampleCorrMatrix = as.matrix(sampleCorrs)
+head(sampleCorrMatrix)
+
+pdf("similarity_sample_heatmap.pdf", width = 8, height = 8)
+
+pheatmap(sampleCorrMatrix)
+
+dev.off()
+
+``` 
+
+Instead of boiling all the gene count data for each sample down to a distance metric you can 
+get a similar sense of the pattern by just visualizing all the genes and their expression at once
+
+```R
+
+pdf("all_gene_heatmap.pdf", width = 10, height = 10)
+
+# because there are so many gene we choose not to display them
+
+pheatmap(mat = t(assay(rld)), show_colnames = FALSE)
+
+dev.off()
+
+```
+
+Make a heatmap for just significant genes (e.g, FC >=3 and padj<0.001). Note, we chose these cutoffs arbitrarily to result in a number of genes that can be legibly labeled
+
+```R
+
+#First, get a list of just significant genes
+deGeneSigResult=deGeneResultSorted[(deGeneResultSorted$padj<0.001 & (deGeneResultSorted$log2FoldChange>=3 | deGeneResultSorted$log2FoldChange<=-3)),]
+SigGenes=deGeneSigResult$ensemblID
+SigGeneSymbols=deGeneSigResult$Symbol
+
+#extract expression data
+expression_data=assay(rld)
+
+#Limit to significant genes
+expression_data=expression_data[SigGenes,]
+
+#Create a heatmap as before
+pdf("sig_gene_heatmap.pdf", width = 10, height = 10)
+pheatmap(mat = t(expression_data), show_colnames = TRUE, labels_col=SigGeneSymbols)
+dev.off()
+
+quit(save="no")
+
+```
+
+
+***
+
+![RNA-seq_Flowchart4](assets/module_3/RNA-seq_Flowchart4-2.png)\
+
+***
+
+### Supplementary R DE Visualization
+
+Occasionally you may wish to reformat and work with expression estimates in R in an ad hoc way. Here, we provide an optional/advanced tutorial on how to visualize your results for R and perform "old school" (non-ballgown, non-DESeq2) visualization of your data.
+
+In this tutorial you will:
+
+* Learn basic R usage and commands (common plots, and data manipulation tasks)
+* Examine the expression estimates
+* Create an MDS plot to visualize the differences between/among replicates, library prep methods and UHR versus HBR
+* Examine the differential expression estimates
+* Visualize the expression estimates and highlight those genes that appear to be differentially expressed
+* Ask how reproducible technical replicates are.
+
+Expression and differential expression files will be read into R. The R analysis will make use of the gene-level expression estimates from HISAT2/Stringtie (TPM values) and differential expression results from HISAT2/htseq-count/DESeq2 (fold-changes and p-values).
+
+Start RStudio, or launch a posit Cloud session, or if you are using AWS, navigate to the correct directory and then launch R:
+
+First you'll load your libraries and your data.
+
+```R
+#Load your libraries
+library(ggplot2)
+library(gplots)
+library(GenomicRanges)
+library(ggrepel)
+
+#Set a base working directory
+setwd("~/workspace/rnaseq/")
+#setwd("/cloud/project/")
+
+
+#Import expression results (TPM values) from the HISAT2/Stringtie pipeline (https://genomedata.org/cri-workshop/gene_tpm_all_samples.tsv)
+gene_expression = read.table("~/workspace/rnaseq/expression/stringtie/ref_only/gene_tpm_all_samples.tsv", header = TRUE, stringsAsFactors = FALSE, row.names = 1)
+# gene_expression = read.table("data/bulk_rna/gene_tpm_all_samples.tsv", header = TRUE, stringsAsFactors = FALSE, row.names = 1)
+
+#Import gene name mapping file (https://genomedata.org/cri-workshop/ENSG_ID2Name.txt)
+gene_names=read.table("~/workspace/rnaseq/de/htseq_counts/ENSG_ID2Name.txt", header = FALSE, stringsAsFactors = FALSE)
+# gene_names=read.table("data/bulk_rna/ENSG_ID2Name.txt.gz", header = FALSE, stringsAsFactors = FALSE)
+
+colnames(gene_names) = c("gene_id", "gene_name")
+
+#Import DE results from the HISAT2/htseq-count/DESeq2 pipeline (https://genomedata.org/cri-workshop/deseq2/DE_all_genes_DESeq2.tsv)
+results_genes = read.table("~/workspace/rnaseq/de/htseq_counts/deseq2/DE_all_genes_DESeq2.tsv", sep = "\t", header = TRUE, stringsAsFactors = FALSE)
+# results_genes = read.table("outdir/DE_all_genes_DESeq2.tsv", sep = "\t", header = TRUE, stringsAsFactors = FALSE)
+
+#Set a directory for the output to go to
+# output_dir = "/cloud/project/outdir/visualization_advanced/"
+output_dir = "~/workspace/rnaseq/visualization_advanced/"
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+setwd(output_dir)
+
+```
+
+Let's briefly explore the imported data
+
+```R
+
+#### Working with 'dataframes'
+#View the first five rows of data (all columns) in the gene_expression (Stringtie TPM) dataframe
+head(gene_expression)
+
+#View the column names
+colnames(gene_expression)
+
+#View the row names
+row.names(gene_expression)
+
+#Determine the dimensions of the dataframe.  'dim()' will return the number of rows and columns
+dim(gene_expression)
+
+#Get the first 3 rows of data and a selection of columns
+gene_expression[1:3, c(1:3, 6)]
+
+#Do the same thing, but using the column names instead of numbers
+gene_expression[1:3, c("HBR_Rep1", "HBR_Rep2", "HBR_Rep3", "UHR_Rep3")]
+
+#Now, exlore the differential expression (DESeq2 results) 
+head(results_genes)
+dim(results_genes)
+
+#Assign some colors for use later.  You can specify color by RGB, Hex code, or name
+#To get a list of color names:
+colours()
+data_colors = c("tomato1", "tomato2", "tomato3", "royalblue1", "royalblue2", "royalblue3")
+
+```
+
+The following code blocks are to generate various plots using the above data set.
+
+```R
+
+#### Plot #1 - View the range of values and general distribution of TPM values for all 6 libraries
+#Create boxplots for this purpose
+#Display on a log2 scale and set a minimum non-zero value to avoid log2(0)
+min_nonzero = 1
+
+# Set the columns for finding TPM and create shorter names for figures
+data_columns = c(1:6)
+short_names = c("HBR_1", "HBR_2", "HBR_3", "UHR_1", "UHR_2", "UHR_3")
+
+pdf(file = "All_samples_TPM_boxplots.pdf")
+boxplot(log2(gene_expression[, data_columns] + min_nonzero), col = data_colors, names = short_names, las = 2, ylab = "log2(TPM)", main = "Distribution of TPMs for all 6 libraries")
+#Note that the bold horizontal line on each boxplot is the median
+dev.off()
+
+#### Plot #2 - plot a pair of replicates to assess reproducibility of technical replicates
+#Tranform the data by converting to log2 scale after adding an arbitrary small value to avoid log2(0)
+x = gene_expression[, "UHR_Rep1"]
+y = gene_expression[, "UHR_Rep2"]
+pdf(file = "UHR_Rep1_vs_Rep2_scatter.pdf")
+plot(x = log2(x + min_nonzero), y = log2(y + min_nonzero), pch = 16, col = "blue", cex = 0.25, xlab = "TPM (UHR, Replicate 1)", ylab = "TPM (UHR, Replicate 2)", main = "Comparison of expression values for a pair of replicates")
+
+#Add a straight line of slope 1, and intercept 0
+abline(a = 0, b = 1)
+
+#Calculate the correlation coefficient and display in a legend
+rs = cor(x, y)^2
+legend("topleft", paste("R squared = ", round(rs, digits = 3), sep = ""), lwd = 1, col = "black")
+dev.off()
+
+#### Plot #3 - Scatter plots with a large number of data points can be misleading ... regenerate this figure as a density scatter plot
+pdf(file = "UHR_Rep1_vs_Rep2_SmoothScatter.pdf")
+colors = colorRampPalette(c("white", "blue", "#007FFF", "cyan","#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
+smoothScatter(x = log2(x + min_nonzero), y = log2(y + min_nonzero), xlab = "TPM (UHR, Replicate 1)", ylab = "TPM (UHR, Replicate 2)", main = "Comparison of expression values for a pair of replicates", colramp = colors, nbin = 200)
+dev.off()
+
+#### Plot #4 - Scatter plots of all sets of replicates on a single plot
+#Create a function that generates an R plot.  This function will take as input the two libraries to be compared and a plot name
+plotCor = function(lib1, lib2, name){
+	x = gene_expression[, lib1]
+	y = gene_expression[, lib2]
+	colors = colorRampPalette(c("white", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
+	smoothScatter(x = log2(x + min_nonzero), y = log2(y + min_nonzero), xlab = lib1, ylab = lib2, main = name, colramp = colors, nbin = 275)
+	abline(a = 0, b = 1)
+        zero_count = length(which(x == 0)) + length(which(y == 0))
+	rs = cor(x, y, method = "pearson")^2
+	legend_text = c(paste("R squared = ", round(rs, digits = 3), sep=""), paste("Zero count = ", zero_count, sep = ""))
+	legend("topleft", legend_text, lwd = c(1, NA), col = "black", bg = "white", cex = 0.8)
+}
+
+#Now make a call to our custom function created above, once for each library comparison
+pdf(file = "UHR_All_Reps_SmoothScatter.pdf")
+par(mfrow = c(1, 3))
+plotCor("UHR_Rep1", "UHR_Rep2", "UHR_1 vs UHR_2")
+plotCor("UHR_Rep2", "UHR_Rep3", "UHR_2 vs UHR_3")
+plotCor("UHR_Rep1", "UHR_Rep3", "UHR_1 vs UHR_3")
+
+dev.off()
+
+#### Compare the correlation between all replicates
+#Do we see the expected pattern for all eight libraries (i.e. replicates most similar, then tumor vs. normal)?
+
+#Calculate the TPM sum for all 6 libraries
+gene_expression[,"sum"] = apply(gene_expression[,data_columns], 1, sum)
+
+#Identify the genes with a grand sum TPM of at least 5 - we will filter out the genes with very low expression across the board
+i = which(gene_expression[,"sum"] > 5)
+
+#Calculate the correlation between all pairs of data
+r = cor(gene_expression[i,data_columns], use = "pairwise.complete.obs", method = "pearson")
+
+#Print out these correlation values
+r
+
+
+#### Plot #5 - Convert correlation to 'distance', and use 'multi-dimensional scaling' to display the relative differences between libraries
+#This step calculates 2-dimensional coordinates to plot points for each library
+#Libraries with similar expression patterns (highly correlated to each other) should group together
+#What pattern do we expect to see, given the types of libraries we have (technical replicates, biologal replicates, tumor/normal)?
+pdf(file = "UHR_vs_HBR_MDS.pdf")
+d = 1 - r
+mds = cmdscale(d, k = 2, eig = TRUE)
+par(mfrow = c(1,1))
+plot(mds$points, type = "n", xlab = "", ylab = "", main = "MDS distance plot (all non-zero genes)", xlim = c(-0.12, 0.12), ylim = c(-0.12, 0.12))
+points(mds$points[, 1], mds$points[, 2], col = "grey", cex = 2, pch = 16)
+text(mds$points[, 1], mds$points[, 2], short_names, col = data_colors)
+dev.off()
+
+
+#### Plot #6 - View the distribution of differential expression values as a histogram
+#Display only those results that are significant according to DESeq2 (loaded above)
+pdf(file = "UHR_vs_HBR_DE_FC_distribution.pdf")
+sig = which(results_genes$pvalue < 0.05)
+hist(results_genes[sig, "log2FoldChange"], breaks = 50, col = "seagreen", xlab = "log2(Fold change) UHR vs HBR", main = "Distribution of differential expression values")
+abline(v = -2, col = "black", lwd = 2, lty = 2)
+abline(v = 2, col = "black", lwd = 2, lty = 2)
+legend("topleft", "Fold-change > 2", lwd = 2, lty = 2)
+dev.off()
+
+#### Plot #7 - Display the mean expression values from UHR and HBR and mark those that are significantly differentially expressed
+pdf(file="UHR_vs_HBR_mean_TPM_scatter.pdf")
+
+gene_expression[, "HBR_mean"] = apply(gene_expression[,c(1:3)], 1, mean)
+gene_expression[, "UHR_mean"] = apply(gene_expression[,c(4:6)], 1, mean)
+
+x = log2(gene_expression[, "UHR_mean"] + min_nonzero)
+y = log2(gene_expression[, "HBR_mean"] + min_nonzero)
+plot(x = x, y = y, pch = 16, cex = 0.25, xlab = "UHR TPM (log2)", ylab = "HBR TPM (log2)", main = "UHR vs HBR TPMs")
+abline(a = 0, b = 1)
+xsig = x[sig]
+ysig = y[sig]
+points(x = xsig, y = ysig, col = "magenta", pch = 16, cex = 0.5)
+legend("topleft", "Significant", col = "magenta", pch = 16)
+
+#Get the gene symbols for the top N (according to corrected p-value) and display them on the plot
+topn = order(results_genes[sig,"padj"])[1:25]
+text(x[topn], y[topn], results_genes[topn, "Symbol"], col = "black", cex = 0.75, srt = 45)
+
+dev.off()
+
+#### Plot #8 - Create a heatmap to vizualize expression differences between the six samples
+#Define custom dist and hclust functions for use with heatmaps
+mydist = function(c) {dist(c, method = "euclidian")}
+myclust = function(c) {hclust(c, method = "average")}
+
+#Create a subset of significant genes with p-value<0.05 and log2 fold-change >= 2
+sigpi = which(results_genes[, "pvalue"] < 0.05)
+sigp = results_genes[sigpi, ]
+sigfc = which(abs(sigp[, "log2FoldChange"]) >= 2)
+sigDE = sigp[sigfc, ]
+
+pdf(file = "UHR_vs_HBR_heatmap.pdf")
+main_title = "sig DE Genes"
+par(cex.main = 0.8)
+sigDE_genes = sigDE[, "ensemblID"]
+sigDE_genenames = sigDE[, "Symbol"]
+
+data = log2(as.matrix(gene_expression[as.vector(sigDE_genes), data_columns]) + 1)
+heatmap.2(data, hclustfun = myclust, distfun = mydist, na.rm = TRUE, scale = "none", dendrogram = "both", margins = c(10,4), Rowv = TRUE, Colv = TRUE, symbreaks = FALSE, key = TRUE, symkey = FALSE, density.info = "none", trace = "none", main = main_title, cexRow = 0.3, cexCol = 1, labRow = sigDE_genenames, col = rev(heat.colors(75)))
+dev.off()
+
+#### Plot #9 - Volcano plot
+
+# Set differential expression status for each gene - default all genes to "no change"
+results_genes$diffexpressed = "No"
+
+# if log2Foldchange > 2 and padj < 0.05, set as "Up regulated"
+results_genes$diffexpressed[results_genes$log2FoldChange >= 2 & results_genes$padj < 0.05] = "Higher in UHR"
+
+# if log2Foldchange < -2 and padj < 0.05, set as "Down regulated"
+results_genes$diffexpressed[results_genes$log2FoldChange <= -2 & results_genes$padj < 0.05] = "Higher in HBR"
+
+# write the gene names of those significantly upregulated/downregulated to a new column
+results_genes$gene_label = NA
+results_genes$gene_label[results_genes$diffexpressed != "No"] = results_genes$Symbol[results_genes$diffexpressed != "No"]
+
+pdf(file = "UHR_vs_HBR_volcano.pdf")
+
+ggplot(data = results_genes[results_genes$diffexpressed != "No",], aes(x = log2FoldChange, y = -log10(padj), label = gene_label, color = diffexpressed)) +
+  xlab("log2Foldchange") +
+  scale_color_manual(name = "Differentially expressed", values=c("blue", "red")) +
+  geom_point() +
+  theme_minimal() +
+  geom_text_repel() +
+  geom_vline(xintercept = c(-2.0, 2.0), col = "black", linetype = "dotted") +
+  geom_hline(yintercept = -log10(0.05), col = "black", linetype = "dotted") +
+  guides(colour = guide_legend(override.aes = list(size=5))) +
+  geom_point(data = results_genes[results_genes$diffexpressed == "No",], aes(x = log2FoldChange, y = -log10(padj)), colour = "black")
+
+dev.off()
+
+#To exit R type:
+quit(save = "no")
+
+```
+
+The output file can be viewed in your browser at the following url. Note, you must replace **YOUR_PUBLIC_IPv4_ADDRESS** with your own amazon instance IP (e.g., 101.0.1.101)).
+
+* https://**YOUR_PUBLIC_IPv4_ADDRESS**/rnaseq/de/ballgown/ref_only/Tutorial_Part3_Supplementary_R_output.pdf
+
+### Visual comparison of example genes from the volcano plot
+One can manually explore interesting looking genes from the volcano plot. In this case our analysis involves comparison of RNA isolated from tissues of different types (HBR -> brain tissue, UHR -> a collection of cancer cell lines).  So, in this analysis it might make sense to explore candidates in a tissue expression atlas such as [GTEX](https://www.gtexportal.org/).
+
+Looking at our gene plot, two example genes we could look at are: SEPT3 (significantly higher in HBR) and PRAME (significantly higher in UHR).
+
+*Expression of SEPT3 across tissues according to GTEX*
+![SEPT3](assets/module_3/SEPT3.png)\
+Note that this gene appears to be highly expressed in brain tissues.
+
+*Expression of PRAME across tissues according to GTEX*
+![PRAME](assets/module_3/PRAME.png)\
+Note that this gene appears to be almost uniquely expressed in testis tissue. Since one of the cell lines in the UHR sample is a testicular cancer cell line, this makes sense.
+
+***
+
+### PRACTICAL EXERCISE 10 (ADVANCED)
+Assignment: Use R to create a volcano plot for the differentially expressed genes you identified with Ballgown in Practical Exercise 9.
+
+* Hint: Follow the example R code above.
+* Hint: You could import the ballgown data object (e.g., `bg.rda`) that you should have saved in Practical Exercise 9 as a source of DE results.
+ 
+Solution: When you are ready you can check your approach against the [Solutions](/module-09-appendix/0009/05/01/Practical_Exercise_Solutions/#practical-exercise-10---volcano-plot)
+
+***
+
+
+
+***
+
+![RNA-seq_Flowchart4](assets/module_3/RNA-seq_Flowchart4-2.png)\
+
+***
+
+In this section we will use the GAGE tool in R to test for significantly enriched sets of genes within those genes found to be significantly "up" and "down" in our UHR vs HBR differential gene expression analysis. Do we see enrichment for genes associated with brain related cell types and processes in the list of DE genes that have significant differential expression beween the UHR samples compared to the HBR samples?
+
+### What is gage?
+The Generally Applicable Gene-set Enrichment tool ([GAGE](https://bioconductor.org/packages/release/bioc/html/gage.html)) is a popular bioconductor package used to  perform gene-set enrichment and pathway analysis. The package works independent of sample sizes, experimental designs, assay platforms, and is applicable to both microarray and RNAseq data sets. In this section we will use [GAGE](https://bioconductor.org/packages/release/bioc/html/gage.html) and gene sets from the "Gene Ontology" ([GO](https://www.geneontology.org/)) and the [MSigDB](https://www.gsea-msigdb.org/gsea/msigdb) databases to perform pathway analysis. 
+
+### Importing DE results for gage
+Before we perform the pathway analysis we need to read in our differential expression results from the previous DE analysis.
+
+```R
+
+# Define working dir paths and load in data
+datadir = "/workspace/rnaseq/de/htseq_counts/deseq2"
+# datadir = "/cloud/project/outdir/"
+
+setwd(datadir)
+
+# Load in the DE results file with only significant genes (e.g., https://genomedata.org/cri-workshop/deseq2/DE_sig_genes_DESeq2.tsv)
+DE_genes = read.table("DE_sig_genes_DESeq2.tsv", sep = "\t", header = TRUE, stringsAsFactors = FALSE)
+
+output_dir = "/workspace/rnaseq/de/htseq_counts/deseq2/pathway/"
+# output_dir = "/cloud/project/outdir/pathway/"
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+
+setwd(output_dir)
+
+```
+
+Now let's go ahead and load [GAGE](https://bioconductor.org/packages/release/bioc/html/gage.html) and some other useful packages. 
+
+```R
+library(AnnotationDbi)
+library(org.Hs.eg.db)
+library(GO.db)
+library(gage)
+
+```
+
+### Setting up gene set databases
+In order to perform our pathway analysis we need a list of pathways and their respective genes. There are many databases that contain collections of genes (or gene sets) that can be used to understand whether a set of mutated or differentially expressed genes are functionally related.  Some of these resources include: [GO](https://www.geneontology.org/), [KEGG](https://www.kegg.jp), [MSigDB](https://www.gsea-msigdb.org/gsea/msigdb), and [WikiPathways](https://www.wikipathways.org/index.php/WikiPathways). For this exercise we are going to investigate [GO](https://www.geneontology.org/) and [MSigDB](https://www.gsea-msigdb.org/gsea/msigdb).  The [GAGE](https://bioconductor.org/packages/release/bioc/html/gage.html) package has a function for querying [GO](https://www.geneontology.org/) in real time: [go.gsets()](https://www.rdocumentation.org/packages/gage/versions/2.22.0/topics/go.gsets). This function takes a species as an argument and will return a list of gene sets and some helpful meta information for subsetting these lists. If you are unfamiliar with [GO](https://www.geneontology.org/), it is helpful to know that GO terms are categorized into three gene ontologies: "Biological Process", "Molecular Function", and "Cellular Component". This information will come in handy later in our exercise. GAGE does not provide a similar tool to investigate the gene sets available in MSigDB. Fortunately, MSigDB provides a  download-able `.gmt` file for all gene sets. This format is easily read into GAGE using a function called [readList()](https://www.rdocumentation.org/packages/gage/versions/2.22.0/topics/readList). If you check out [MSigDB](https://www.gsea-msigdb.org/gsea/msigdb) you will see that there are 8 unique gene set collections, each with slightly different features. For this exercise we will use the [C8 - cell type signature gene sets collection](https://www.gsea-msigdb.org/gsea/msigdb/collection_details.jsp#C8), which is a collection of gene sets that contain cluster markers for cell types identified from single-cell sequencing studies of human tissue.
+
+```R
+# Set up go database
+go.hs = go.gsets(species = "human")
+go.bp.gs = go.hs$go.sets[go.hs$go.subs$BP]
+go.mf.gs = go.hs$go.sets[go.hs$go.subs$MF]
+go.cc.gs = go.hs$go.sets[go.hs$go.subs$CC]
+
+# Here we will read in an MSigDB gene set that was selected for this exercise and saved to the course website. 
+c8 = "https://genomedata.org/rnaseq-tutorial/c8.all.v7.2.entrez.gmt"
+all_cell_types = readList(c8)
+
+```
+
+### Annotating genes
+OK, so we have our differentially expressed genes and we have our gene sets. However, if you look at one of the objects containing the gene sets you'll notice that each gene set contains a series of integers. These integers are [Entrez](https://www.ncbi.nlm.nih.gov/gquery/) gene identifiers. But do we have comparable information in our DE gene list? Right now, no. Our previous results use Ensembl IDs as gene identifiers. We will need to convert our gene identifiers to the format used in the GO and MSigDB gene sets before we can perform the pathway analysis. Fortunately, Bioconductor maintains genome wide annotation data for many species, you can view these species with the [OrgDb bioc view](https://bioconductor.org/packages/release/BiocViews.html#___OrgDb). This makes converting the gene identifiers relatively straightforward, below we use the [mapIds()](https://www.rdocumentation.org/packages/OrganismDbi/versions/1.14.1/topics/MultiDb-class) function to query the OrganismDb object for the Entrez id based on the Ensembl id. Because there might not be a one-to-one relationship with these identifiers we also use `multiVals="first"` to specify that only the first identifier should be returned. Another option would be to use `multiVals="asNA"` to ignore one-to-many mappings.
+
+```R
+DE_genes$entrez = mapIds(org.Hs.eg.db, column = "ENTREZID", keys = DE_genes$ensemblID, keytype = "ENSEMBL", multiVals = "first")
+```
+
+### Some clean-up and identifier mapping
+After completing the annotation above you will notice that some of our Ensembl gene IDs were not mapped to an Entrez gene ID. Why did this happen?  Well, this is actually a complicated point and gets at some nuanced concepts of how to define and annotate a gene. The short answer is that we are using two different resources that have annotated the human genome and there are some differences in how these resources have completed this task. Therefore, it is expected that there are some discrepencies. In the next few steps we will clean up what we can by first removing the ERCC spike-in genes and then will use a different identifier for futher mapping.  
+
+```R
+#Remove spike-in
+DE_genes_clean = DE_genes[!grepl("ERCC", DE_genes$ensemblID), ]
+
+##Just so we know what we have removed 
+ERCC_gene_count = nrow(DE_genes[grepl("ERCC", DE_genes$ensemblID), ])
+ERCC_gene_count
+
+###Deal with genes that we do not have an Entrez ID for 
+missing_ensembl_key = DE_genes_clean[is.na(DE_genes_clean$entrez), ]
+DE_genes_clean = DE_genes_clean[!DE_genes_clean$ensemblID %in% missing_ensembl_key$ensemblID, ]
+
+###Try mapping using a different key
+missing_ensembl_key$entrez = mapIds(org.Hs.eg.db, column = "ENTREZID", keys = missing_ensembl_key$Symbol, keytype = "SYMBOL", multiVal = "first")
+
+#Remove remaining genes 
+missing_ensembl_key_update = missing_ensembl_key[!is.na(missing_ensembl_key$entrez),]
+
+#Create a Final Gene list of all genes where we were able to find an Entrez ID (using two approaches)
+DE_genes_clean = rbind(DE_genes_clean, missing_ensembl_key_update)
+
+#Reduce to only the unique set of entrez genes in case different genes were mapped to the same entrez ID using the two approaches
+DE_genes_clean=DE_genes_clean[!duplicated(DE_genes_clean$entrez),]
+```
+
+### Final preparation of DESeq2 results for gage
+OK, last step.  Let's format the differential expression results into a format suitable for the [GAGE](https://bioconductor.org/packages/release/bioc/html/gage.html) package. Basically this means obtaining the log2 fold change values and assigning entrez gene identifiers to these values.
+
+```R
+# grab the log fold changes for everything
+De_gene.fc = DE_genes_clean$log2FoldChange
+
+# set the name for each row to be the Entrez Gene ID
+names(De_gene.fc) = DE_genes_clean$entrez
+```
+
+### Running pathway analysis
+We can now use the [gage()](https://www.rdocumentation.org/packages/gage/versions/2.22.0/topics/gage) function to obtain the significantly perturbed pathways from our differential expression experiment. 
+
+Note on the abbreviations below: "bp" refers to biological process, "mf" refers to molecular function, and "cc" refers to cellular process. These are the three main categories of gene ontology terms/annotations that were mentioned above. 
+
+```R
+#Run GAGE
+#go 
+fc.go.bp.p = gage(De_gene.fc, gsets = go.bp.gs)
+fc.go.mf.p = gage(De_gene.fc, gsets = go.mf.gs)
+fc.go.cc.p = gage(De_gene.fc, gsets = go.cc.gs)
+
+#msigdb
+fc.c8.p = gage(De_gene.fc, gsets = all_cell_types)
+
+###Convert to dataframes 
+#Results for testing for GO terms which are up-regulated
+fc.go.bp.p.up = as.data.frame(fc.go.bp.p$greater)
+fc.go.mf.p.up = as.data.frame(fc.go.mf.p$greater)
+fc.go.cc.p.up = as.data.frame(fc.go.cc.p$greater)
+
+#Results for testing for GO terms which are down-regulated
+fc.go.bp.p.down = as.data.frame(fc.go.bp.p$less)
+fc.go.mf.p.down = as.data.frame(fc.go.mf.p$less)
+fc.go.cc.p.down = as.data.frame(fc.go.cc.p$less)
+
+#Results for testing for MSigDB C8 gene sets which are up-regulated
+fc.c8.p.up = as.data.frame(fc.c8.p$greater)
+
+#Results for testing for MSigDB C8 gene sets which are down-regulated
+fc.c8.p.down = as.data.frame(fc.c8.p$less)
+```
+
+### Explore significant results
+Alright, now we have results with accompanying p-values (yay!). 
+
+What does "up-" or "down-regulated" mean here, in the context of our UHR vs HBR comparison? It may help to open and review the data in your DE_genes_DESeq2.tsv file. 
+
+Look at the cellular process results from our GO analysis. Do the results match your expectation?
+
+```R
+
+#Try doing something like this to find some significant results:
+#View the top 20 significantly up- or down-regulated GO terms from the Cellular Component Ontology
+head(fc.go.cc.p.up[order(fc.go.cc.p.up$p.val),], n = 20)
+head(fc.go.cc.p.down[order(fc.go.cc.p.down$p.val),], n = 20)
+
+#You can do the same thing with your results from MSigDB
+head(fc.c8.p.up)
+head(fc.c8.p.down)
+
+#What if we want to know which specific genes from our DE gene result were found in a specific significant pathway?
+#For example, one significant pathway from fc.go.cc.p.down was "GO:0045202 synapse" with set.size = 22 genes.
+#Let's extract the postsynapse DE gene results
+synapse = DE_genes_clean[which(DE_genes_clean$entrez %in% go.cc.gs$`GO:0045202 synapse`),]
+
+#How many total synapse genes are there in GO? How many total DE genes? How many overlap?
+length(go.cc.gs$`GO:0045202 synapse`)
+length(DE_genes_clean$entrez)
+length(synapse$entrez)
+
+#Are the synapse DE genes consistently down-regulated? Let's print out a subset of columns from the DE result for synapse genes
+synapse[,c("Symbol", "entrez", "log2FoldChange", "padj", "UHR_Rep1", "UHR_Rep2", "UHR_Rep3", "HBR_Rep1", "HBR_Rep2", "HBR_Rep3")]
+
+```
+
+### More exploration
+At this point, it will be helpful to move out of R and further explore our results locally. We will use an online tool to visualize how the GO terms we uncovered are related to each other. 
+
+```R
+write.table(fc.go.cc.p.up, "fc.go.cc.p.up.tsv", quote = FALSE, sep = "\t", col.names = TRUE, row.names = TRUE)
+write.table(fc.go.cc.p.down, "fc.go.cc.p.down.tsv", quote = FALSE, sep = "\t", col.names = TRUE, row.names = TRUE)
+```
+
+### Visualize
+For this next step we will do a very brief introduction to visualizing our results. We will use a tool called [GOView](https://2019.webgestalt.org/2017/GOView/), which is part of the [WEB-based Gene Set Ananlysis ToolKit (WebGestalt)](https://www.webgestalt.org/) suite of tools. 
+
+**Step One**
+ * Use a web browser to download your results
+
+ * For AWS: Navigate to the URL below replacing YOUR_IP_ADDRESS with your amazon instance IP address:
+     https://**YOUR_IP_ADDRESS**/rnaseq/de/htseq_counts/deseq2/pathway
+
+ * Download the linked files by right clicking on the two saved result files: `fc.go.cc.p.up.tsv` and `fc.go.cc.p.down.tsv`.
+
+ * For posit Cloud: Navigate to the `outdir/pathway` folder in the 'Files' pane. Select `fc.go.cc.p.up.tsv` and `fc.go.cc.p.down.tsv` then 'More' -> 'Export...'. You may need to unzip the downloaded files. 
+
+ * Open the result file in your text editor of choice. We like [text wrangler](https://www.barebones.com/products/textwrangler/).
+   You should also be able to open the file in excel, google sheets, or another spreadsheet tool. This might help you visualize the data in rows and columns (NB: There might be a small amount of formatting necessary to get the header to line up properly).
+  
+  * You can either create an input file using [this file](https://genomedata.org/rnaseq-tutorial/fc.go.cc.p.down_web_ges.tsv) as a guide, or you can simply use your downloaded data to cut and paste your GO terms of interest directly into GOView.
+ 
+**Step Two**
+
+* Navigate to the [WEB-based Gene Set Analysis ToolKit (WebGestalt)](https://www.webgestalt.org/) 
+
+**Step Three**
+
+* Navigate to the [GOView](https://www.webgestalt.org/2017/GOView/) tool 
+
+* Then, input the GO terms you would like to explore into the [GOView](https://www.webgestalt.org/2017/GOView/) interface by following the steps described in the "Beginning an analysis" section of the webpage.  We will walk through a sample analysis. 
+
+* Explore the outputs! 
+
+### Alternative Pathway analysis tools and strategies!
+At this point, to generate additional visualizations and gain more insight from our enrichment analysis, we can turn to two powerful functions in the clusterProfiler package: gseGO and enrichKEGG. These tools allow us to go beyond simply identifying enriched pathways and give us the ability to visualize and explore these pathways in a much more detailed way.
+
+First, to use gseGO and enrichKEGG effectively, we need a ranked list of DE genes based on their log2 fold change values. This ranked list allows us to analyze and visualize enrichment based on the degree of differential expression, rather than just a binary presence or absence in a pathway.
+
+```R
+# Create a named vector of log2 fold changes with Entrez IDs as names
+ranked_genes <- setNames(DE_genes_clean$log2FoldChange, DE_genes_clean$entrez)
+
+# Sort the genes by log2 fold change
+ranked_genes <- sort(ranked_genes, decreasing = TRUE)
+```
+Using gseGO, we can analyze the ranked DE genes list to create classic GSEA enrichment plots. These plots help us see how gene expression levels are distributed across the pathways that were identified as significant in our initial analysis. By examining the ranking of gene expression within these pathways, we can get a clearer picture of how specific pathways are activated or suppressed in our data set.
+```R
+# Install a package missing from the template
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager", quiet = TRUE)
+#BiocManager::install("pathview", update = FALSE, ask = FALSE, quiet = TRUE)
+
+# Load relevant packages
+library(enrichplot)
+library(clusterProfiler)
+library(pathview)
+library(ggnewscale)
+library(ggplot2)
+
+gsea_res <- gseGO(
+  geneList = ranked_genes,       # Ranked list of genes
+  OrgDb = org.Hs.eg.db,          # Specify organism database
+  ont = "CC",                    # Use "BP" for Biological Process, "MF" for Molecular Function, "CC" for Cellular Component
+  keyType = "ENTREZID",          # Ensure your gene IDs match the key type in OrgDb
+  pvalueCutoff = 0.05,           # Set a p-value cutoff for significant pathways
+  verbose = TRUE
+)
+```
+Generate the classic GSEA enrichment plot
+```R
+# Plot the enrichment plot for a specific GO term or pathway - Synapse
+gsea_plot <- gseaplot(gsea_res, geneSetID = "GO:0045202", title = "Enrichment Plot for Synapse")
+ggsave("gsea_go_synapse_plot.pdf", plot=gsea_plot, width = 8, height = 8)
+
+```
+We can use additional visualizations, such as dot plots, ridge plots, and concept network plots, to gain further insights into the enriched pathways.
+```R
+# Dotplot for top GO pathways enriched with DE genes
+gsea_dot_plot <- dotplot(gsea_res, showCategory = 30) + ggtitle("GSEA Dotplot - Top 30 GO Categories")
+ggsave("gsea_dot_plot.pdf", plot=gsea_dot_plot, width = 8, height = 8)
+
+#Ridgeplot for top GO pathways enriched with DE genes
+gsea_ridge_plot <-ridgeplot(gsea_res)
+ggsave("gsea_ridge_plot.pdf", plot=gsea_ridge_plot, width = 8, height = 8)
+
+# Concept network plot to illustrate relationships between the top enriched GO terms and DE genes
+gsea_cnetplot <- cnetplot(gsea_res, foldChange = ranked_genes, showCategory = 10)
+ggsave("gsea_cnetplot.pdf", plot=gsea_cnetplot, width = 8, height = 6)
+```
+
+The enrichKEGG function can be used to visualize KEGG pathways, showing detailed diagrams with our DE genes highlighted. This approach is especially useful for understanding the biological roles of up- and down-regulated genes within specific metabolic or signaling pathways. By using the pathview package, we can generate pathway diagrams where each DE gene is displayed in its functional context and color-coded by expression level. This makes it easy to see which parts of a pathway are impacted and highlights any potential regulatory or metabolic shifts in a clear, intuitive format. We will start by downloading and installing the KEGG database and then run the `enrichKEGG` function.
+```R
+# Download KEGG DB file and install
+download.file('https://www.bioconductor.org/packages/3.11/data/annotation/src/contrib/KEGG.db_3.2.4.tar.gz', destfile='KEGG.db_3.2.4.tar.gz')
+install.packages("KEGG.db_3.2.4.tar.gz", repos = NULL, type = "source")
+
+# Run enrichKEGG with local database option
+pathways <- enrichKEGG(gene = names(ranked_genes), organism = "hsa", keyType = "kegg", use_internal_data=TRUE)
+head(pathways@result)
+```
+Let's choose one of the pathways above, for example `hsa04010 - MAPK signaling pathway` to visualize.
+```R
+# Define the KEGG pathway ID based on above, and run pathview (note this automatically generates and saves plots to your current directory)
+pathway_id <- "hsa04010"  # Replace with the KEGG pathway ID of interest
+pathview(
+  gene.data = ranked_genes,    # DE gene data with Entrez IDs
+  pathway.id = pathway_id,  # KEGG pathway ID
+  species = "hsa",          # Species code for human
+  limit = list(gene = c(-2, 2)),  # Set color scale limits for log2 fold changes
+  low = "blue",             # Color for down-regulated genes
+  mid = "white",            # Color for neutral genes
+  high = "red"              # Color for up-regulated genes
+)
+
+#To exit R type:
+quit(save = "no")
+```
+
+
+
+
+
+***
+
+![RNA-seq_Flowchart4](assets/module_3/RNA-seq_Flowchart4-2.png)\
+
+***
+
+<font size="5"><b>Batch Correction - Preparation</b></font>
+
+In this section we will obtain a dataset to allow demonstration of batch correction using the ComBat-Seq tool in R (Bioconductor).
+
+### Download and prepare some test data where some batch effects are expected
+
+For this exercise we will obtain public RNA-seq data from an extensive multi-platform comparison of sequencing platforms that also examined the impact of generating data at multiple sites, using polyA vs ribo-reduction for enrichment, and the impact of RNA degradation ([PMID: 25150835](https://pubmed.ncbi.nlm.nih.gov/25150835/)): "Multi-platform and cross-methodological reproducibility of transcriptome profiling by RNA-seq in the ABRF Next-Generation Sequencing Study".
+
+This publication used the same UHR (cancer cell lines) and HBR (brain tissue) samples we have been using throughout this course. To examine a strong batch effect, we will consider a DE analysis of UHR vs HBR where we compare Ribo-depleted ("Ribo") and polyA-enriched ("Poly") samples.
+
+The entire RNA-seq dataset [PMID: 25150835](https://pubmed.ncbi.nlm.nih.gov/25150835/) used for this module has been deposited in GEO. In GEO, these data are organized as a `superseries`: [GSE46876](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE46876) which has data for several sequencing platforms. The data from the Illumina Platform are part of this `subseries`: [GSE48035](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE48035).
+
+To do this analysis quickly, we will download pre-computed raw read counts for this dataset: [GSE48035_ILMN.counts.txt.gz](https://www.ncbi.nlm.nih.gov/geo/download/?acc=GSE48035&format=file&file=GSE48035%5FILMN%2Ecounts%2Etxt%2Egz)
+
+Set up a working directory and download the RNA-seq counts file needed for the following exercise as follows:
+
+```bash
+cd $RNA_HOME
+mkdir batch_correction
+cd batch_correction
+wget https://genomedata.org/rnaseq-tutorial/batch_correction/GSE48035_ILMN.counts.txt.gz
+
+```
+
+Create a simplified version of this file that has only the counts for the samples we wish to use for this analysis as follows:
+
+```bash
+cd $RNA_HOME/batch_correction
+
+#remove all quotes from file
+zcat GSE48035_ILMN.counts.txt.gz | tr -d '"' > GSE48035_ILMN.counts.tmp.txt
+
+#create a fixed version of the header and store for later
+(echo -e "Gene\tChr\t"; head -n 1 GSE48035_ILMN.counts.tmp.txt) | tr -d '\n' > header.txt
+
+#split the chromosome and gene names on each line, sort the file by gene name
+#ensure input and output are interpreted as tab separated. 
+#Split the first entry on "!", replace with a new first entry the reverses chr and gene name
+awk -F'\t' 'BEGIN { OFS="\t" } {
+    split($1, a, "!");
+    $1 = a[2] OFS a[1];
+    print
+}' GSE48035_ILMN.counts.tmp.txt | sort > GSE48035_ILMN.counts.tmp2.txt
+
+#remove the old header line
+grep -v --color=never ABRF GSE48035_ILMN.counts.tmp2.txt > GSE48035_ILMN.counts.clean.txt
+
+#cut out only the columns for the UHR (A) and HBR (B) samples, replicates 1-4, and PolyA vs Enrichment 
+cut -f 1-2,3-6,7-10,19-22,23-26 GSE48035_ILMN.counts.clean.txt > GSE48035_ILMN.Counts.SampleSubset.txt
+cut -f 1-2,3-6,7-10,19-22,23-26 header.txt > header.SampleSubset.txt
+
+#how many gene lines are we starting with?
+wc -l GSE48035_ILMN.Counts.SampleSubset.txt
+
+#cleanup intermediate files created above
+rm -f GSE48035_ILMN.counts.txt.gz GSE48035_ILMN.counts.tmp.txt GSE48035_ILMN.counts.tmp2.txt GSE48035_ILMN.counts.clean.txt header.txt
+
+```
+
+Further limit these counts to those that correspond to **known protein coding genes**:
+
+```bash
+cd $RNA_HOME/batch_correction
+
+#download complete Ensembl GTF file
+wget ftp://ftp.ensembl.org/pub/release-101/gtf/homo_sapiens/Homo_sapiens.GRCh38.101.gtf.gz
+
+#grab all the gene records, limit to gene with "protein_coding" biotype, create unique gene name list
+zcat Homo_sapiens.GRCh38.101.gtf.gz | grep -w gene | grep "gene_biotype \"protein_coding\"" | cut -f 9 | cut -d ";" -f 3 | tr -d " gene_name " | tr -d '"' | sort | uniq > Ensembl101_ProteinCodingGeneNames.txt
+
+#how many unique protein coding genes names does Ensembl have?
+wc -l Ensembl101_ProteinCodingGeneNames.txt
+
+#filter our gene count matrix down to only the protein coding genes
+join -j 1 -t $'\t' Ensembl101_ProteinCodingGeneNames.txt GSE48035_ILMN.Counts.SampleSubset.txt | cat header.SampleSubset.txt - > GSE48035_ILMN.Counts.SampleSubset.ProteinCodingGenes.tsv
+
+#how many lines of RNA-seq counts do we still have?
+wc -l GSE48035_ILMN.Counts.SampleSubset.ProteinCodingGenes.tsv
+
+#clean up 
+rm -f header.SampleSubset.txt GSE48035_ILMN.Counts.SampleSubset.txt
+
+#take a look at the final filtered read count matrix to be used for the following analysis
+column -t GSE48035_ILMN.Counts.SampleSubset.ProteinCodingGenes.tsv | less -S
+
+```
+
+Note that filtering gene lists by gene name as we have done above is generally not advised as we usually can't guarantee that gene names from two different lists are compatible. Mapping between unique identifiers would be preferable.  But for demonstrating the batch analysis below this should be fine...

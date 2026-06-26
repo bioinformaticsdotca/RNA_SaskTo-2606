@@ -30,7 +30,7 @@
   
   <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
 <link rel="prev" href="module-2.html"/>
-<link rel="next" href="appendices.html"/>
+<link rel="next" href="viewing-pairwise-sample-clustering.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -294,7 +294,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#further-reading-and-exploration"><i class="fa fa-check"></i>6. Further reading and exploration</a></li>
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#visualize-overlap-with-a-venn-diagram.-this-can-be-done-with-simple-web-tools-like"><i class="fa fa-check"></i>Visualize overlap with a venn diagram. This can be done with simple web tools like:</a></li>
 <li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#compare-the-ercc-genes-detected-as-significant-by-each-de-method"><i class="fa fa-check"></i>Compare the ERCC genes detected as significant by each DE method</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#ballgown-de-visualization"><i class="fa fa-check"></i>Ballgown DE Visualization</a></li>
+<li class="chapter" data-level="" data-path="module-3.html"><a href="module-3.html#differential-expression-visualization"><i class="fa fa-check"></i>Differential Expression Visualization</a></li>
 </ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html"><i class="fa fa-check"></i>Viewing pairwise sample clustering</a>
+<ul>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#supplementary-r-de-visualization"><i class="fa fa-check"></i>Supplementary R DE Visualization</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#visual-comparison-of-example-genes-from-the-volcano-plot"><i class="fa fa-check"></i>Visual comparison of example genes from the volcano plot</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#practical-exercise-10-advanced"><i class="fa fa-check"></i>PRACTICAL EXERCISE 10 (ADVANCED)</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#what-is-gage"><i class="fa fa-check"></i>What is gage?</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#importing-de-results-for-gage"><i class="fa fa-check"></i>Importing DE results for gage</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#setting-up-gene-set-databases"><i class="fa fa-check"></i>Setting up gene set databases</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#annotating-genes"><i class="fa fa-check"></i>Annotating genes</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#some-clean-up-and-identifier-mapping"><i class="fa fa-check"></i>Some clean-up and identifier mapping</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#final-preparation-of-deseq2-results-for-gage"><i class="fa fa-check"></i>Final preparation of DESeq2 results for gage</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#running-pathway-analysis"><i class="fa fa-check"></i>Running pathway analysis</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#explore-significant-results"><i class="fa fa-check"></i>Explore significant results</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#more-exploration"><i class="fa fa-check"></i>More exploration</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#alternative-pathway-analysis-tools-and-strategies"><i class="fa fa-check"></i>Alternative Pathway analysis tools and strategies!</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#download-and-prepare-some-test-data-where-some-batch-effects-are-expected"><i class="fa fa-check"></i>Download and prepare some test data where some batch effects are expected</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html"><i class="fa fa-check"></i>Appendices</a>
 <ul>
@@ -1563,8 +1583,221 @@ $RNA_HOME/ercc_spikein_analysis/</p>
 <span id="cb112-39"><a href="module-3.html#cb112-39" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="at">plot=</span>p, <span class="at">filename =</span> <span class="st">&quot;ERCC_DE_Gene_Method_Comparison.pdf&quot;</span>, <span class="at">device=</span><span class="st">&quot;pdf&quot;</span>, <span class="at">width=</span><span class="dv">6</span>, <span class="at">height=</span><span class="dv">4</span>, <span class="at">units=</span><span class="st">&quot;in&quot;</span>)</span>
 <span id="cb112-40"><a href="module-3.html#cb112-40" tabindex="-1"></a></span>
 <span id="cb112-41"><a href="module-3.html#cb112-41" tabindex="-1"></a><span class="fu">quit</span>(<span class="at">save=</span><span class="st">&quot;no&quot;</span>)</span></code></pre></div>
-
-
+<hr />
+<p><img src="assets/module_3/RNA-seq_Flowchart4.png" alt="RNA-seq_Flowchart4" /><br />
+</p>
+<hr />
+</div>
+<div id="ballgown-de-visualization" class="section level3 hasAnchor">
+<h3>Ballgown DE Visualization<a href="module-3.html#ballgown-de-visualization" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Navigate to the correct directory and then launch R:</p>
+<div class="sourceCode" id="cb113"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb113-1"><a href="module-3.html#cb113-1" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/de/ballgown/ref_only</span>
+<span id="cb113-2"><a href="module-3.html#cb113-2" tabindex="-1"></a><span class="ex">R</span></span></code></pre></div>
+<p>A separate R tutorial file has been provided below. Run the R commands detailed in the R script. All results are directed to pdf file(s). The output pdf files can be viewed in your browser at the following urls. Note, you must replace <strong>YOUR_PUBLIC_IPv4_ADDRESS</strong> with your own amazon instance IP (e.g., 101.0.1.101)).</p>
+<ul>
+<li><a href="https://" class="uri">https://</a><strong>YOUR_PUBLIC_IPv4_ADDRESS</strong>/rnaseq/de/ballgown/ref_only/Tutorial_Part2_ballgown_output.pdf</li>
+</ul>
+<p>First you’ll need to load the libraries needed for this analysis and define a path for the output PDF to be written.</p>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="module-3.html#cb114-1" tabindex="-1"></a><span class="co">#load libraries</span></span>
+<span id="cb114-2"><a href="module-3.html#cb114-2" tabindex="-1"></a><span class="fu">library</span>(ballgown)</span>
+<span id="cb114-3"><a href="module-3.html#cb114-3" tabindex="-1"></a><span class="fu">library</span>(genefilter)</span>
+<span id="cb114-4"><a href="module-3.html#cb114-4" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb114-5"><a href="module-3.html#cb114-5" tabindex="-1"></a><span class="fu">library</span>(devtools)</span>
+<span id="cb114-6"><a href="module-3.html#cb114-6" tabindex="-1"></a></span>
+<span id="cb114-7"><a href="module-3.html#cb114-7" tabindex="-1"></a><span class="co"># set the working directory</span></span>
+<span id="cb114-8"><a href="module-3.html#cb114-8" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&quot;~/workspace/rnaseq/de/ballgown/ref_only&quot;</span>)</span></code></pre></div>
+<p>Next we’ll load our data into R.</p>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb115-1"><a href="module-3.html#cb115-1" tabindex="-1"></a></span>
+<span id="cb115-2"><a href="module-3.html#cb115-2" tabindex="-1"></a><span class="co"># Define the conditions being compared for use later</span></span>
+<span id="cb115-3"><a href="module-3.html#cb115-3" tabindex="-1"></a>condition <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;HBR&quot;</span>)</span>
+<span id="cb115-4"><a href="module-3.html#cb115-4" tabindex="-1"></a></span>
+<span id="cb115-5"><a href="module-3.html#cb115-5" tabindex="-1"></a><span class="co"># Load the ballgown object from file</span></span>
+<span id="cb115-6"><a href="module-3.html#cb115-6" tabindex="-1"></a><span class="fu">load</span>(<span class="st">&quot;bg.rda&quot;</span>)</span>
+<span id="cb115-7"><a href="module-3.html#cb115-7" tabindex="-1"></a></span>
+<span id="cb115-8"><a href="module-3.html#cb115-8" tabindex="-1"></a><span class="co"># The load command, loads an R object from a file into memory in our R session.</span></span>
+<span id="cb115-9"><a href="module-3.html#cb115-9" tabindex="-1"></a><span class="co"># You can use ls() to view the names of variables that have been loaded</span></span>
+<span id="cb115-10"><a href="module-3.html#cb115-10" tabindex="-1"></a><span class="fu">ls</span>()</span>
+<span id="cb115-11"><a href="module-3.html#cb115-11" tabindex="-1"></a></span>
+<span id="cb115-12"><a href="module-3.html#cb115-12" tabindex="-1"></a><span class="co"># Print a summary of the ballgown object</span></span>
+<span id="cb115-13"><a href="module-3.html#cb115-13" tabindex="-1"></a>bg</span>
+<span id="cb115-14"><a href="module-3.html#cb115-14" tabindex="-1"></a></span>
+<span id="cb115-15"><a href="module-3.html#cb115-15" tabindex="-1"></a><span class="co"># Load gene names for lookup later in the tutorial</span></span>
+<span id="cb115-16"><a href="module-3.html#cb115-16" tabindex="-1"></a>bg_table <span class="ot">=</span> <span class="fu">texpr</span>(bg, <span class="st">&quot;all&quot;</span>)</span>
+<span id="cb115-17"><a href="module-3.html#cb115-17" tabindex="-1"></a>bg_gene_names <span class="ot">=</span> <span class="fu">unique</span>(bg_table[, <span class="dv">9</span><span class="sc">:</span><span class="dv">10</span>])</span>
+<span id="cb115-18"><a href="module-3.html#cb115-18" tabindex="-1"></a></span>
+<span id="cb115-19"><a href="module-3.html#cb115-19" tabindex="-1"></a><span class="co"># Pull the gene and transcript expression data frame from the ballgown object</span></span>
+<span id="cb115-20"><a href="module-3.html#cb115-20" tabindex="-1"></a>gene_expression <span class="ot">=</span> <span class="fu">as.data.frame</span>(<span class="fu">gexpr</span>(bg))</span>
+<span id="cb115-21"><a href="module-3.html#cb115-21" tabindex="-1"></a>transcript_expression <span class="ot">=</span> <span class="fu">as.data.frame</span>(<span class="fu">texpr</span>(bg))</span>
+<span id="cb115-22"><a href="module-3.html#cb115-22" tabindex="-1"></a></span>
+<span id="cb115-23"><a href="module-3.html#cb115-23" tabindex="-1"></a><span class="co">#View expression values for the transcripts of a particular gene symbol of chromosome 22.  e.g. &#39;TST&#39;</span></span>
+<span id="cb115-24"><a href="module-3.html#cb115-24" tabindex="-1"></a><span class="co">#First determine the transcript_ids in the data.frame that match &#39;TST&#39;, aka. ENSG00000128311, then display only those rows of the data.frame</span></span>
+<span id="cb115-25"><a href="module-3.html#cb115-25" tabindex="-1"></a>i <span class="ot">=</span> bg_table[, <span class="st">&quot;gene_name&quot;</span>] <span class="sc">==</span> <span class="st">&quot;TST&quot;</span></span>
+<span id="cb115-26"><a href="module-3.html#cb115-26" tabindex="-1"></a>bg_table[i,]</span>
+<span id="cb115-27"><a href="module-3.html#cb115-27" tabindex="-1"></a></span>
+<span id="cb115-28"><a href="module-3.html#cb115-28" tabindex="-1"></a><span class="co"># Display the transcript ID for a single row of data</span></span>
+<span id="cb115-29"><a href="module-3.html#cb115-29" tabindex="-1"></a>ballgown<span class="sc">::</span><span class="fu">transcriptNames</span>(bg)[<span class="dv">2763</span>]</span>
+<span id="cb115-30"><a href="module-3.html#cb115-30" tabindex="-1"></a></span>
+<span id="cb115-31"><a href="module-3.html#cb115-31" tabindex="-1"></a><span class="co"># Display the gene name for a single row of data</span></span>
+<span id="cb115-32"><a href="module-3.html#cb115-32" tabindex="-1"></a>ballgown<span class="sc">::</span><span class="fu">geneNames</span>(bg)[<span class="dv">2763</span>]</span>
+<span id="cb115-33"><a href="module-3.html#cb115-33" tabindex="-1"></a></span>
+<span id="cb115-34"><a href="module-3.html#cb115-34" tabindex="-1"></a><span class="co">#What if we want to view values for a list of genes of interest all at once?</span></span>
+<span id="cb115-35"><a href="module-3.html#cb115-35" tabindex="-1"></a>genes_of_interest <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;TST&quot;</span>, <span class="st">&quot;MMP11&quot;</span>, <span class="st">&quot;LGALS2&quot;</span>, <span class="st">&quot;ISX&quot;</span>)</span>
+<span id="cb115-36"><a href="module-3.html#cb115-36" tabindex="-1"></a>i <span class="ot">=</span> bg_table[, <span class="st">&quot;gene_name&quot;</span>] <span class="sc">%in%</span> genes_of_interest</span>
+<span id="cb115-37"><a href="module-3.html#cb115-37" tabindex="-1"></a></span>
+<span id="cb115-38"><a href="module-3.html#cb115-38" tabindex="-1"></a>bg_table[i,]</span>
+<span id="cb115-39"><a href="module-3.html#cb115-39" tabindex="-1"></a></span>
+<span id="cb115-40"><a href="module-3.html#cb115-40" tabindex="-1"></a><span class="co"># Load the transcript to gene index from the ballgown object</span></span>
+<span id="cb115-41"><a href="module-3.html#cb115-41" tabindex="-1"></a>transcript_gene_table <span class="ot">=</span> <span class="fu">indexes</span>(bg)<span class="sc">$</span>t2g</span>
+<span id="cb115-42"><a href="module-3.html#cb115-42" tabindex="-1"></a><span class="fu">head</span>(transcript_gene_table)</span>
+<span id="cb115-43"><a href="module-3.html#cb115-43" tabindex="-1"></a></span>
+<span id="cb115-44"><a href="module-3.html#cb115-44" tabindex="-1"></a><span class="co">#Each row of data represents a transcript. Many of these transcripts represent the same gene. Determine the numbers of transcripts and unique genes</span></span>
+<span id="cb115-45"><a href="module-3.html#cb115-45" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(transcript_gene_table[, <span class="st">&quot;t_id&quot;</span>])) <span class="co">#Transcript count</span></span>
+<span id="cb115-46"><a href="module-3.html#cb115-46" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(transcript_gene_table[, <span class="st">&quot;g_id&quot;</span>])) <span class="co">#Unique Gene count</span></span>
+<span id="cb115-47"><a href="module-3.html#cb115-47" tabindex="-1"></a></span>
+<span id="cb115-48"><a href="module-3.html#cb115-48" tabindex="-1"></a><span class="co"># Extract FPKM values from the &#39;bg&#39; object</span></span>
+<span id="cb115-49"><a href="module-3.html#cb115-49" tabindex="-1"></a>fpkm <span class="ot">=</span> <span class="fu">texpr</span>(bg, <span class="at">meas =</span> <span class="st">&quot;FPKM&quot;</span>)</span>
+<span id="cb115-50"><a href="module-3.html#cb115-50" tabindex="-1"></a></span>
+<span id="cb115-51"><a href="module-3.html#cb115-51" tabindex="-1"></a><span class="co"># View the last several rows of the FPKM table</span></span>
+<span id="cb115-52"><a href="module-3.html#cb115-52" tabindex="-1"></a><span class="fu">tail</span>(fpkm)</span>
+<span id="cb115-53"><a href="module-3.html#cb115-53" tabindex="-1"></a></span>
+<span id="cb115-54"><a href="module-3.html#cb115-54" tabindex="-1"></a><span class="co"># Transform the FPKM values by adding 1 and convert to a log2 scale</span></span>
+<span id="cb115-55"><a href="module-3.html#cb115-55" tabindex="-1"></a>fpkm <span class="ot">=</span> <span class="fu">log2</span>(fpkm <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb115-56"><a href="module-3.html#cb115-56" tabindex="-1"></a></span>
+<span id="cb115-57"><a href="module-3.html#cb115-57" tabindex="-1"></a><span class="co"># View the last several rows of the transformed FPKM table</span></span>
+<span id="cb115-58"><a href="module-3.html#cb115-58" tabindex="-1"></a><span class="fu">tail</span>(fpkm)</span></code></pre></div>
+<p>Now we’ll start to generate figures with the following R code.</p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="module-3.html#cb116-1" tabindex="-1"></a></span>
+<span id="cb116-2"><a href="module-3.html#cb116-2" tabindex="-1"></a><span class="do">#### Plot #1 - the number of transcripts per gene.</span></span>
+<span id="cb116-3"><a href="module-3.html#cb116-3" tabindex="-1"></a><span class="co">#Many genes will have only 1 transcript, some genes will have several transcripts</span></span>
+<span id="cb116-4"><a href="module-3.html#cb116-4" tabindex="-1"></a><span class="co">#Use the &#39;table()&#39; command to count the number of times each gene symbol occurs (i.e. the # of transcripts that have each gene symbol)</span></span>
+<span id="cb116-5"><a href="module-3.html#cb116-5" tabindex="-1"></a><span class="co">#Then use the &#39;hist&#39; command to create a histogram of these counts</span></span>
+<span id="cb116-6"><a href="module-3.html#cb116-6" tabindex="-1"></a><span class="co">#How many genes have 1 transcript?  More than one transcript?  What is the maximum number of transcripts for a single gene?</span></span>
+<span id="cb116-7"><a href="module-3.html#cb116-7" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file=</span><span class="st">&quot;TranscriptCountDistribution.pdf&quot;</span>)</span>
+<span id="cb116-8"><a href="module-3.html#cb116-8" tabindex="-1"></a>counts<span class="ot">=</span><span class="fu">table</span>(transcript_gene_table[, <span class="st">&quot;g_id&quot;</span>])</span>
+<span id="cb116-9"><a href="module-3.html#cb116-9" tabindex="-1"></a>c_one <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">which</span>(counts <span class="sc">==</span> <span class="dv">1</span>))</span>
+<span id="cb116-10"><a href="module-3.html#cb116-10" tabindex="-1"></a>c_more_than_one <span class="ot">=</span> <span class="fu">length</span>(<span class="fu">which</span>(counts <span class="sc">&gt;</span> <span class="dv">1</span>))</span>
+<span id="cb116-11"><a href="module-3.html#cb116-11" tabindex="-1"></a>c_max <span class="ot">=</span> <span class="fu">max</span>(counts)</span>
+<span id="cb116-12"><a href="module-3.html#cb116-12" tabindex="-1"></a><span class="fu">hist</span>(counts, <span class="at">breaks =</span> <span class="dv">50</span>, <span class="at">col =</span> <span class="st">&quot;bisque4&quot;</span>, <span class="at">xlab =</span> <span class="st">&quot;Transcripts per gene&quot;</span>, <span class="at">main =</span> <span class="st">&quot;Distribution of transcript count per gene&quot;</span>)</span>
+<span id="cb116-13"><a href="module-3.html#cb116-13" tabindex="-1"></a>legend_text <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">paste</span>(<span class="st">&quot;Genes with one transcript =&quot;</span>, c_one), <span class="fu">paste</span>(<span class="st">&quot;Genes with more than one transcript =&quot;</span>, c_more_than_one), <span class="fu">paste</span>(<span class="st">&quot;Max transcripts for single gene = &quot;</span>, c_max))</span>
+<span id="cb116-14"><a href="module-3.html#cb116-14" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">&quot;topright&quot;</span>, legend_text, <span class="at">lty =</span> <span class="cn">NULL</span>)</span>
+<span id="cb116-15"><a href="module-3.html#cb116-15" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb116-16"><a href="module-3.html#cb116-16" tabindex="-1"></a></span>
+<span id="cb116-17"><a href="module-3.html#cb116-17" tabindex="-1"></a><span class="do">#### Plot #2 - the distribution of transcript sizes as a histogram</span></span>
+<span id="cb116-18"><a href="module-3.html#cb116-18" tabindex="-1"></a><span class="co">#In this analysis we supplied StringTie with transcript models so the lengths will be those of known transcripts</span></span>
+<span id="cb116-19"><a href="module-3.html#cb116-19" tabindex="-1"></a><span class="co">#However, if we had used a de novo transcript discovery mode, this step would give us some idea of how well transcripts were being assembled</span></span>
+<span id="cb116-20"><a href="module-3.html#cb116-20" tabindex="-1"></a><span class="co">#If we had a low coverage library, or other problems, we might get short &quot;transcripts&quot; that are actually only pieces of real transcripts</span></span>
+<span id="cb116-21"><a href="module-3.html#cb116-21" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file =</span> <span class="st">&quot;TranscriptLengthDistribution.pdf&quot;</span>)</span>
+<span id="cb116-22"><a href="module-3.html#cb116-22" tabindex="-1"></a><span class="fu">hist</span>(bg_table<span class="sc">$</span>length, <span class="at">breaks =</span> <span class="dv">50</span>, <span class="at">xlab =</span> <span class="st">&quot;Transcript length (bp)&quot;</span>, <span class="at">main =</span> <span class="st">&quot;Distribution of transcript lengths&quot;</span>, <span class="at">col =</span> <span class="st">&quot;steelblue&quot;</span>)</span>
+<span id="cb116-23"><a href="module-3.html#cb116-23" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb116-24"><a href="module-3.html#cb116-24" tabindex="-1"></a></span>
+<span id="cb116-25"><a href="module-3.html#cb116-25" tabindex="-1"></a><span class="do">#### Plot #3 - distribution of gene expression levels for each sample</span></span>
+<span id="cb116-26"><a href="module-3.html#cb116-26" tabindex="-1"></a><span class="co"># Create boxplots to display summary statistics for the FPKM values for each sample</span></span>
+<span id="cb116-27"><a href="module-3.html#cb116-27" tabindex="-1"></a><span class="co"># set color based on condition which is UHR vs. HBR</span></span>
+<span id="cb116-28"><a href="module-3.html#cb116-28" tabindex="-1"></a><span class="co"># set labels perpendicular to axis (las=2)</span></span>
+<span id="cb116-29"><a href="module-3.html#cb116-29" tabindex="-1"></a><span class="co"># set ylab to indicate that values are log2 transformed</span></span>
+<span id="cb116-30"><a href="module-3.html#cb116-30" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file =</span> <span class="st">&quot;All_samples_FPKM_boxplots.pdf&quot;</span>)</span>
+<span id="cb116-31"><a href="module-3.html#cb116-31" tabindex="-1"></a><span class="fu">boxplot</span>(fpkm, <span class="at">col =</span> <span class="fu">as.numeric</span>(<span class="fu">as.factor</span>(condition)) <span class="sc">+</span> <span class="dv">1</span>,<span class="at">las =</span> <span class="dv">2</span>,<span class="at">ylab =</span> <span class="st">&quot;log2(FPKM + 1)&quot;</span>)</span>
+<span id="cb116-32"><a href="module-3.html#cb116-32" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb116-33"><a href="module-3.html#cb116-33" tabindex="-1"></a></span>
+<span id="cb116-34"><a href="module-3.html#cb116-34" tabindex="-1"></a><span class="do">#### Plot 4 - BoxPlot comparing the expression of a single gene for all replicates of both conditions</span></span>
+<span id="cb116-35"><a href="module-3.html#cb116-35" tabindex="-1"></a><span class="co"># set border color for each of the boxplots</span></span>
+<span id="cb116-36"><a href="module-3.html#cb116-36" tabindex="-1"></a><span class="co"># set title (main) to gene : transcript</span></span>
+<span id="cb116-37"><a href="module-3.html#cb116-37" tabindex="-1"></a><span class="co"># set x label to Type</span></span>
+<span id="cb116-38"><a href="module-3.html#cb116-38" tabindex="-1"></a><span class="co"># set ylab to indicate that values are log2 transformed</span></span>
+<span id="cb116-39"><a href="module-3.html#cb116-39" tabindex="-1"></a></span>
+<span id="cb116-40"><a href="module-3.html#cb116-40" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file =</span> <span class="st">&quot;TST_ENST00000249042_boxplot.pdf&quot;</span>)</span>
+<span id="cb116-41"><a href="module-3.html#cb116-41" tabindex="-1"></a>transcript <span class="ot">=</span> <span class="fu">which</span>(ballgown<span class="sc">::</span><span class="fu">transcriptNames</span>(bg) <span class="sc">==</span> <span class="st">&quot;ENST00000249042&quot;</span>)[[<span class="dv">1</span>]]</span>
+<span id="cb116-42"><a href="module-3.html#cb116-42" tabindex="-1"></a><span class="fu">boxplot</span>(fpkm[transcript,] <span class="sc">~</span> condition, <span class="at">border =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>), <span class="at">main =</span> <span class="fu">paste</span>(ballgown<span class="sc">::</span><span class="fu">geneNames</span>(bg)[transcript],<span class="st">&quot;: &quot;</span>, ballgown<span class="sc">::</span><span class="fu">transcriptNames</span>(bg)[transcript]), <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">xlab =</span> <span class="st">&quot;Type&quot;</span>, <span class="at">ylab =</span> <span class="st">&quot;log2(FPKM+1)&quot;</span>)</span>
+<span id="cb116-43"><a href="module-3.html#cb116-43" tabindex="-1"></a></span>
+<span id="cb116-44"><a href="module-3.html#cb116-44" tabindex="-1"></a><span class="co"># Add the FPKM values for each sample onto the plot</span></span>
+<span id="cb116-45"><a href="module-3.html#cb116-45" tabindex="-1"></a><span class="co"># set plot symbol to solid circle, default is empty circle</span></span>
+<span id="cb116-46"><a href="module-3.html#cb116-46" tabindex="-1"></a><span class="fu">points</span>(fpkm[transcript,] <span class="sc">~</span> <span class="fu">jitter</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)), <span class="at">col =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">1</span>)<span class="sc">+</span><span class="dv">1</span>, <span class="at">pch =</span> <span class="dv">16</span>)</span>
+<span id="cb116-47"><a href="module-3.html#cb116-47" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb116-48"><a href="module-3.html#cb116-48" tabindex="-1"></a></span>
+<span id="cb116-49"><a href="module-3.html#cb116-49" tabindex="-1"></a></span>
+<span id="cb116-50"><a href="module-3.html#cb116-50" tabindex="-1"></a><span class="do">#### Plot 5 - Plot of transcript structures observed and expression level for UHR vs HBR with representative replicate</span></span>
+<span id="cb116-51"><a href="module-3.html#cb116-51" tabindex="-1"></a></span>
+<span id="cb116-52"><a href="module-3.html#cb116-52" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file =</span> <span class="st">&quot;TST_transcript_structures_expression.pdf&quot;</span>)</span>
+<span id="cb116-53"><a href="module-3.html#cb116-53" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb116-54"><a href="module-3.html#cb116-54" tabindex="-1"></a><span class="fu">plotTranscripts</span>(ballgown<span class="sc">::</span><span class="fu">geneIDs</span>(bg)[transcript], bg, <span class="at">main =</span> <span class="fu">c</span>(<span class="st">&quot;TST in HBR&quot;</span>), <span class="at">sample =</span> <span class="fu">c</span>(<span class="st">&quot;HBR_Rep1&quot;</span>), <span class="at">labelTranscripts =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb116-55"><a href="module-3.html#cb116-55" tabindex="-1"></a><span class="fu">plotTranscripts</span>(ballgown<span class="sc">::</span><span class="fu">geneIDs</span>(bg)[transcript], bg, <span class="at">main =</span> <span class="fu">c</span>(<span class="st">&quot;TST in UHR&quot;</span>), <span class="at">sample =</span> <span class="fu">c</span>(<span class="st">&quot;UHR_Rep1&quot;</span>), <span class="at">labelTranscripts =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb116-56"><a href="module-3.html#cb116-56" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb116-57"><a href="module-3.html#cb116-57" tabindex="-1"></a></span>
+<span id="cb116-58"><a href="module-3.html#cb116-58" tabindex="-1"></a><span class="co"># Exit the R session</span></span>
+<span id="cb116-59"><a href="module-3.html#cb116-59" tabindex="-1"></a><span class="fu">quit</span>(<span class="at">save =</span> <span class="st">&quot;no&quot;</span>)</span></code></pre></div>
+<p>Remember that you can view the output graphs of this step on your instance by navigating to this location in a web browser window:</p>
+<p><a href="https://" class="uri">https://</a><strong>YOUR_PUBLIC_IPv4_ADDRESS</strong>/rnaseq/de/ballgown/ref_only/Tutorial_Part2_ballgown_output.pdf</p>
+<hr />
+<p><img src="assets/module_3/RNA-seq_Flowchart4-2.png" alt="RNA-seq_Flowchart4" /><br />
+</p>
+<hr />
+</div>
+<div id="differential-expression-visualization" class="section level3 hasAnchor">
+<h3>Differential Expression Visualization<a href="module-3.html#differential-expression-visualization" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In this section we will be going over some basic visualizations of the DESeq2 results generated in the “Differential Expression with DESeq2” section of this course. Our goal is to quickly obtain some interpretable results using built-in visualization functions from DESeq2 or recommended packages. For a very extensive overview of DESeq2 and how to visualize and interpret the results, refer to the DESeq2 vignette.</p>
+<div id="setup-1" class="section level4 hasAnchor">
+<h4>Setup<a href="module-3.html#setup-1" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>If it is not already in your R environment, load the DESeqDataSet object and the results table into the R environment.</p>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb117-1"><a href="module-3.html#cb117-1" tabindex="-1"></a><span class="co"># set the working directory</span></span>
+<span id="cb117-2"><a href="module-3.html#cb117-2" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">&quot;~/workspace/rnaseq/de/htseq_counts/deseq2/&quot;</span>)</span>
+<span id="cb117-3"><a href="module-3.html#cb117-3" tabindex="-1"></a></span>
+<span id="cb117-4"><a href="module-3.html#cb117-4" tabindex="-1"></a><span class="co"># view the contents of this directory</span></span>
+<span id="cb117-5"><a href="module-3.html#cb117-5" tabindex="-1"></a><span class="fu">dir</span>()</span>
+<span id="cb117-6"><a href="module-3.html#cb117-6" tabindex="-1"></a></span>
+<span id="cb117-7"><a href="module-3.html#cb117-7" tabindex="-1"></a><span class="co"># load libs</span></span>
+<span id="cb117-8"><a href="module-3.html#cb117-8" tabindex="-1"></a><span class="fu">library</span>(DESeq2)</span>
+<span id="cb117-9"><a href="module-3.html#cb117-9" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb117-10"><a href="module-3.html#cb117-10" tabindex="-1"></a><span class="fu">library</span>(pheatmap)</span>
+<span id="cb117-11"><a href="module-3.html#cb117-11" tabindex="-1"></a></span>
+<span id="cb117-12"><a href="module-3.html#cb117-12" tabindex="-1"></a><span class="co"># Load in the DESeqDataSet object (https://genomedata.org/cri-workshop/deseq2/dds.rds)</span></span>
+<span id="cb117-13"><a href="module-3.html#cb117-13" tabindex="-1"></a>dds <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;dds.rds&quot;</span>)</span>
+<span id="cb117-14"><a href="module-3.html#cb117-14" tabindex="-1"></a></span>
+<span id="cb117-15"><a href="module-3.html#cb117-15" tabindex="-1"></a><span class="co"># Load in the results object before shrinkage (https://genomedata.org/cri-workshop/deseq2/res.rds)</span></span>
+<span id="cb117-16"><a href="module-3.html#cb117-16" tabindex="-1"></a>res <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;res.rds&quot;</span>)</span>
+<span id="cb117-17"><a href="module-3.html#cb117-17" tabindex="-1"></a></span>
+<span id="cb117-18"><a href="module-3.html#cb117-18" tabindex="-1"></a><span class="co"># Load in the results object after shrinkage (https://genomedata.org/cri-workshop/deseq2/resLFC.rds)</span></span>
+<span id="cb117-19"><a href="module-3.html#cb117-19" tabindex="-1"></a>resLFC <span class="ot">=</span> <span class="fu">readRDS</span>(<span class="st">&quot;resLFC.rds&quot;</span>)</span>
+<span id="cb117-20"><a href="module-3.html#cb117-20" tabindex="-1"></a></span>
+<span id="cb117-21"><a href="module-3.html#cb117-21" tabindex="-1"></a><span class="co"># Load in the final results file with all sorted DE results (https://genomedata.org/cri-workshop/deseq2/DE_all_genes_DESeq2.tsv)</span></span>
+<span id="cb117-22"><a href="module-3.html#cb117-22" tabindex="-1"></a>deGeneResultSorted <span class="ot">=</span> <span class="fu">fread</span>(<span class="st">&quot;DE_all_genes_DESeq2.tsv&quot;</span>) </span></code></pre></div>
+</div>
+<div id="ma-plot-before-lfc-shrinkage" class="section level4 hasAnchor">
+<h4>MA-plot before LFC shrinkage<a href="module-3.html#ma-plot-before-lfc-shrinkage" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>MA-plots were originally used to evaluate microarray expression data where M is the log ratio and A is the mean intensity for a gene (both based on scanned intensity measurements from the microarray).</p>
+<p>These types of plots are still usefull in RNAseq DE experiments with two conditions, as they can immediately give us information on the number of signficantly differentially expressed genes, the ratio of up vs down regulated genes, and any outliers. To interpret these plots it is important to keep a couple of things in mind. The Y axis (M) is the log2 fold change between the two conditions tested, a higher fold-change indicates greater difference between condition A and condition B. The X axis (A) is a measure of read alignment to a gene, so as you go higher on on the X axis you are looking at regions which have higher totals of aligned reads, in other words the gene is “more” expressed overall (with the caveat that gene length is not being taken into account by raw read counts here).</p>
+<p>Using the built-in <code>plotMA</code> function from DESeq2 we also see that the genes are color coded by a significance threshold (e.g., adjusted p-value &lt; 0.1). Genes with higher expression values and higher fold-changes are more often significant as one would expect.
+})</p>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="module-3.html#cb118-1" tabindex="-1"></a><span class="co"># use DESeq2 built in MA-plot function</span></span>
+<span id="cb118-2"><a href="module-3.html#cb118-2" tabindex="-1"></a><span class="fu">pdf</span>(<span class="st">&quot;maplot_preShrink.pdf&quot;</span>)</span>
+<span id="cb118-3"><a href="module-3.html#cb118-3" tabindex="-1"></a><span class="fu">plotMA</span>(res, <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">ylim=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>), <span class="at">cex=</span><span class="fl">1.5</span>, <span class="at">main =</span> <span class="st">&quot;MA-plot before LFC shrinkage&quot;</span>)</span>
+<span id="cb118-4"><a href="module-3.html#cb118-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+</div>
+<div id="ma-plot-after-lfc-shrinkage" class="section level4 hasAnchor">
+<h4>MA-plot after LFC shrinkage<a href="module-3.html#ma-plot-after-lfc-shrinkage" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>When we ran DESeq2 we obtained two results, one with and one without log-fold change shrinkage. When you have genes with low hits you can get some very large fold changes. For example 1 hit on a gene vs 6 hits on a gene is a 6x fold change. This high level of variance though is probably quantifying noise instead of real biology. Running <code>plotMA</code> on our results where we applied an algorithm for log fold change shrinkage we can see that this “effect” is somewhat controlled for. I do want to note that while shrinking LFC is part of a typical DE workflow there are cases where you would not want to perform this, namely when there is already low variation amongst samples (i.e. from technical replicates) as most shrinkage algorithms rely on some variability to build a prior distribution.</p>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb119-1"><a href="module-3.html#cb119-1" tabindex="-1"></a><span class="co"># use DESeq2 built in MA-plot function</span></span>
+<span id="cb119-2"><a href="module-3.html#cb119-2" tabindex="-1"></a><span class="fu">pdf</span>(<span class="st">&quot;maplot_postShrink.pdf&quot;</span>)</span>
+<span id="cb119-3"><a href="module-3.html#cb119-3" tabindex="-1"></a><span class="fu">plotMA</span>(resLFC, <span class="at">alpha =</span> <span class="fl">0.1</span>, <span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">2</span>), <span class="at">cex=</span><span class="fl">1.5</span>, <span class="at">main =</span> <span class="st">&quot;MA-plot after LFC shrinkage&quot;</span>)</span>
+<span id="cb119-4"><a href="module-3.html#cb119-4" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<p>The effect is very subtle here due to the focused nature of our dataset (chr22 genes only), but if you toggle between the two plots and look in the upper left and bottom left corners you can see some fold change values are moving closer to 0.</p>
+</div>
+<div id="viewing-individual-gene-counts-between-two-conditions" class="section level4 hasAnchor">
+<h4>Viewing individual gene counts between two conditions<a href="module-3.html#viewing-individual-gene-counts-between-two-conditions" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>Often it may be useful to view the normalized counts for a gene amongst our samples. DESeq2 provides a built in function for that which works off of the dds object. Here we view SEPT3 which we can see in our DE output is significantly higher in the HBR cohort and PRAME which is significantly higher in the UHR cohort. This is useful as we can see the per-sample distribution of our corrected counts, we can immediately determine if there are any outliers within each group and investigate further if need be.</p>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="module-3.html#cb120-1" tabindex="-1"></a></span>
+<span id="cb120-2"><a href="module-3.html#cb120-2" tabindex="-1"></a><span class="co"># hint! you defined intgroup when creating the dds object, you can view the name by printing the dds objct in your R session</span></span>
+<span id="cb120-3"><a href="module-3.html#cb120-3" tabindex="-1"></a><span class="co"># dds</span></span>
+<span id="cb120-4"><a href="module-3.html#cb120-4" tabindex="-1"></a></span>
+<span id="cb120-5"><a href="module-3.html#cb120-5" tabindex="-1"></a><span class="fu">pdf</span>(<span class="st">&quot;normalized_count_examples.pdf&quot;</span>)</span>
+<span id="cb120-6"><a href="module-3.html#cb120-6" tabindex="-1"></a></span>
+<span id="cb120-7"><a href="module-3.html#cb120-7" tabindex="-1"></a><span class="co"># view SEPT3 normalized counts</span></span>
+<span id="cb120-8"><a href="module-3.html#cb120-8" tabindex="-1"></a><span class="fu">plotCounts</span>(dds, <span class="at">gene =</span> <span class="st">&quot;ENSG00000100167&quot;</span>, <span class="at">intgroup =</span> <span class="st">&quot;Condition&quot;</span>, <span class="at">main =</span> <span class="st">&quot;SEPT3&quot;</span>)</span>
+<span id="cb120-9"><a href="module-3.html#cb120-9" tabindex="-1"></a></span>
+<span id="cb120-10"><a href="module-3.html#cb120-10" tabindex="-1"></a><span class="co"># view PRAME normalized counts</span></span>
+<span id="cb120-11"><a href="module-3.html#cb120-11" tabindex="-1"></a><span class="fu">plotCounts</span>(dds, <span class="at">gene =</span> <span class="st">&quot;ENSG00000185686&quot;</span>, <span class="at">intgroup =</span> <span class="st">&quot;Condition&quot;</span>, <span class="at">main =</span> <span class="st">&quot;PRAME&quot;</span>)</span>
+<span id="cb120-12"><a href="module-3.html#cb120-12" tabindex="-1"></a></span>
+<span id="cb120-13"><a href="module-3.html#cb120-13" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -1574,7 +1807,7 @@ $RNA_HOME/ercc_spikein_analysis/</p>
         </div>
       </div>
 <a href="module-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="appendices.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="viewing-pairwise-sample-clustering.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
