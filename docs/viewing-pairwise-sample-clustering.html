@@ -315,6 +315,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#visualize"><i class="fa fa-check"></i>Visualize</a></li>
 <li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#alternative-pathway-analysis-tools-and-strategies"><i class="fa fa-check"></i>Alternative Pathway analysis tools and strategies!</a></li>
 <li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#download-and-prepare-some-test-data-where-some-batch-effects-are-expected"><i class="fa fa-check"></i>Download and prepare some test data where some batch effects are expected</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#introduction-to-batch-correction"><i class="fa fa-check"></i>Introduction to batch correction</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#introduction-to-this-demonstration-of-a-batch-correction-approach"><i class="fa fa-check"></i>Introduction to this demonstration of a batch correction approach</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#samples-abbreviations-used-in-the-following-analysis"><i class="fa fa-check"></i>Samples abbreviations used in the following analysis</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#perform-principal-component-analysis-pca-on-the-uncorrected-counts"><i class="fa fa-check"></i>Perform principal component analysis (PCA) on the uncorrected counts</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#introduction-to-bioconductor-sva-and-combat-seq-in-r"><i class="fa fa-check"></i>Introduction to Bioconductor SVA and ComBat-Seq in R</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#demonstration-of-combat-seq-on-the-uhrhbr-data-with-two-library-types-ribopoly"><i class="fa fa-check"></i>Demonstration of ComBat-Seq on the UHR/HBR data with two library types (Ribo/Poly)</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#perform-pca-analysis-on-the-batch-corrected-data-and-contrast-with-the-uncorrected-data"><i class="fa fa-check"></i>Perform PCA analysis on the batch corrected data and contrast with the uncorrected data</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#perform-differential-expression-analysis-of-the-corrected-and-uncorrected-data"><i class="fa fa-check"></i>Perform differential expression analysis of the corrected and uncorrected data</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#visualize-and-interpret-the-impact-of-batch-correction-on-differential-expression-results"><i class="fa fa-check"></i>Visualize and interpret the impact of batch correction on differential expression results</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#part-i---expression-estimation"><i class="fa fa-check"></i>Part I - Expression Estimation</a>
+<ul>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#remember-to-do-this-in-a-new-directory-under-team_exercises"><i class="fa fa-check"></i>Remember to do this in a new directory under team_exercises</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#part-ii---differential-expression"><i class="fa fa-check"></i>Part II - Differential Expression</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#presenting-your-results-1"><i class="fa fa-check"></i>Presenting Your Results</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#part-0-obtaining-data-and-references"><i class="fa fa-check"></i>PART 0 : Obtaining Data and References</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#part-1-data-preprocessing"><i class="fa fa-check"></i>Part 1 : Data preprocessing</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#part-2-data-alignment"><i class="fa fa-check"></i>Part 2: Data alignment</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#part-3-expression-estimation"><i class="fa fa-check"></i>Part 3: Expression Estimation</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#part-4-differential-expression-analysis"><i class="fa fa-check"></i>Part 4: Differential Expression Analysis</a></li>
+<li class="chapter" data-level="" data-path="viewing-pairwise-sample-clustering.html"><a href="viewing-pairwise-sample-clustering.html#part-5-differential-expression-analysis-visualization"><i class="fa fa-check"></i>Part 5: Differential Expression Analysis Visualization</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendices.html"><a href="appendices.html"><i class="fa fa-check"></i>Appendices</a>
 <ul>
@@ -1047,6 +1068,564 @@ You should also be able to open the file in excel, google sheets, or another spr
 <span id="cb145-21"><a href="viewing-pairwise-sample-clustering.html#cb145-21" tabindex="-1"></a><span class="co">#take a look at the final filtered read count matrix to be used for the following analysis</span></span>
 <span id="cb145-22"><a href="viewing-pairwise-sample-clustering.html#cb145-22" tabindex="-1"></a><span class="ex">column</span> <span class="at">-t</span> GSE48035_ILMN.Counts.SampleSubset.ProteinCodingGenes.tsv <span class="kw">|</span> <span class="fu">less</span> <span class="at">-S</span></span></code></pre></div>
 <p>Note that filtering gene lists by gene name as we have done above is generally not advised as we usually can’t guarantee that gene names from two different lists are compatible. Mapping between unique identifiers would be preferable. But for demonstrating the batch analysis below this should be fine…</p>
+<hr />
+<p><img src="assets/module_3/RNA-seq_Flowchart4-2.png" alt="RNA-seq_Flowchart4" /><br />
+</p>
+<hr />
+<p><font size="5"><b>Batch Correction - Analysis</b></font></p>
+<p>In this section we will use the ComBat-Seq tool in R (Bioconductor) to demonstrate the principles and application of batch correction. Due to the way our test data was generated (at a single center, at one time, with consistent methodology) we do NOT expect batch effects in these data. Therefore we will use a different (but highly related) dataset to demonstrate the impact of Batch correction in this module.</p>
+</div>
+<div id="introduction-to-batch-correction" class="section level3 hasAnchor">
+<h3>Introduction to batch correction<a href="viewing-pairwise-sample-clustering.html#introduction-to-batch-correction" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>We highly recommend reading the entire <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7518324/">ComBat-Seq manuscript</a> by Yuqing Zhang, Giovanni Parmigiani, and W Evan Johnson. This manuscript does a beautiful job of briefly introducing the concept of batch correction and the differences between <code>normalization</code> and <code>batch correction</code>. If you find this exercise helpful in your research, please cite the ComBat-Seq paper (<a href="https://pubmed.ncbi.nlm.nih.gov/33015620/">PMID: 33015620</a>).</p>
+<p>In particular, this excerpt covers the basics:
+&gt; Genomic data are often produced in batches due to logistical or practical restrictions, but technical variation and differences across batches, often called batch effects, can cause significant heterogeneity across batches of data. Batch effects often result in discrepancies in the statistical distributions across data from different technical processing batches, and can have unfavorable impact on downstream biological analysis … Batch effects often cannot be fully addressed by normalization methods and procedures. The differences in the overall expression distribution of each sample across batch may be corrected by normalization methods, such as transforming the raw counts to (logarithms of) CPM, TPM or RPKM/FPKM, the trimmed mean of M values (TMM), or relative log expression (RLE). However, batch effects in composition, i.e. the level of expression of genes scaled by the total expression (coverage) in each sample, cannot be fully corrected with normalization. … While the overall distribution of samples may be normalized to the same level across batches, individual genes may still be affected by batch-level bias.</p>
+</div>
+<div id="introduction-to-this-demonstration-of-a-batch-correction-approach" class="section level3 hasAnchor">
+<h3>Introduction to this demonstration of a batch correction approach<a href="viewing-pairwise-sample-clustering.html#introduction-to-this-demonstration-of-a-batch-correction-approach" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For this exercise we have obtained public RNA-seq data from an extensive multi-platform comparison of sequencing platforms that also examined the impact of: (1) generating data at multiple sites, (2) using polyA vs ribo-reduction for enrichment, and (3) different levels of RNA degradation (<a href="https://pubmed.ncbi.nlm.nih.gov/25150835/">PMID: 25150835</a>): “Multi-platform and cross-methodological reproducibility of transcriptome profiling by RNA-seq in the ABRF Next-Generation Sequencing Study”.</p>
+<p>This publication used the same UHR (cancer cell lines) and HBR (brain tissue) samples we have been using throughout this course. To examine a strong batch effect, we will consider a DE analysis of UHR vs HBR where we compare Ribo-depleted (“Ribo”) and polyA-enriched (“Poly”) samples.</p>
+<p><strong>Questions</strong>
+If we do DE analysis of UHR vs. HBR for replicates that are consistent with respect to Ribo-depletion or PolyA-enrichment, how does the result compare to when we mix the Ribo-depleted data and PolyA-enriched data together?</p>
+<p>If you do batch correction and redo these comparisons does it make the results more comparable? i.e. can we correct for the technical differences introduced by the library construction approach and see the same biological differences? Can we improve our statistical power by then benefitting from more samples?</p>
+<p>This is a bit contrived because there really are true biological differences expected for polyA vs. Ribo-depleted data. To counter this, we will limit the analysis to only know protein coding genes. For those genes we expect essentially the same biological answer when comparing UHR vs HBR expression patterns.</p>
+<p>This exercise is also a bit simplistic in the sense that we have perfectly balanced conditions and batches. Our conditions of interest are: HBR (brain) vs. UHR (cancer cell line) expression patterns. Our batches are the two methods of processing: Riboreduction and PolyA enrichment. And we have 4 replicates of both conditions in both batches. To perform this kind of batch correction you need at least some representation of each of your conditions of interest in each batch. So, for example, if we processed all the HBR samples with Riboreduction and all the UHR samples with PolyA enrichment, we would be unable to model the batch effect vs the condition effect.</p>
+<p>There are also other experiments from this published dataset we could use instead. For example, different levels of degradation?, data generated by different labs? <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4167418/">Figure 1</a> and <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4167418/">Figure 2</a> give a nice high level summary of all the data generated. We chose the Ribo-reduction and PolyA enrichment data for this exercise because we expect this would introduce a very strong batch effect. It is also the kind of thing that one could imagine really coming up in a meta-analysis where one you are pooling data from multiple studies. For example, imagine we find three published studies from three labs that all assayed some number of normal breast tissue and breast tumor. Each used a different approach to generate their data but they all involved this same biological comparison and by combining the three datasets we hope to substantially increase our power. If we can correct for batch effects arising from the three labs, this may be successful.</p>
+</div>
+<div id="samples-abbreviations-used-in-the-following-analysis" class="section level3 hasAnchor">
+<h3>Samples abbreviations used in the following analysis<a href="viewing-pairwise-sample-clustering.html#samples-abbreviations-used-in-the-following-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>HBR -&gt; Human Brain Reference, Biological condition (pool of adult brain tissues)</li>
+<li>UHR -&gt; Universal Human Reference, Biological condition (pool of cancer cell lines)</li>
+<li>Ribo -&gt; Library preparation method using ribosomal reduction, Batch group</li>
+<li>Poly -&gt; Library preparation method using polyA enrichment, Batch group</li>
+<li>1-4 -&gt; Replicate number: 1, 2, 3, 4.</li>
+</ul>
+</div>
+<div id="perform-principal-component-analysis-pca-on-the-uncorrected-counts" class="section level3 hasAnchor">
+<h3>Perform principal component analysis (PCA) on the uncorrected counts<a href="viewing-pairwise-sample-clustering.html#perform-principal-component-analysis-pca-on-the-uncorrected-counts" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>PCA analysis can be used to identify potential batch effects in your data. The general strategy is to use PCA to identify patterns of similarity/difference in the expression signatures of your samples and to ask whether it appears to be driven by the expected biological conditions of interest. The PCA plot can be labeled with the biological conditions and also with potential sources of batch effects such as: sequencing source, date of data generation, lab technician, library construction kit batches, matrigel batches, mouse litters, software or instrumentation versions, etc.</p>
+<p><a href="https://en.wikipedia.org/wiki/Principal_component_analysis">Principal component analysis</a> is a <a href="https://en.wikipedia.org/wiki/Dimensionality_reduction">dimensionality-reduction</a> method that can be applied to large datasets (e.g. thousands of gene expression values for many samples). PCA tries to represent a large set of variables as a smaller set of variables that maximally capture the information content of the larger set. PCA is a general exploratory data analysis approach with many applications and nuances, the details of which are beyond the scope of this demonstration of batch effect correction. However, in the context of this module, PCA provides a way to visualize samples as “clusters” based on their overall pattern of gene expression values. The composition and arrangement of these clusters (usually visualized in 2D or interactive 3D plots) can be helpful in interpreting high level differences between samples and testing prior expectations about the similarity between conditions, replicates, etc.</p>
+<p>We will perform PCA analysis before AND after batch correction. Samples will be labelled according to biological condition (UHR vs HBR) and library preparation type (Ribo vs PolyA).</p>
+<p>Does the analysis below suggest that sample grouping according to PCA is being influenced by batch?</p>
+<p>Perform the following analyses in <code>R</code>:</p>
+<div class="sourceCode" id="cb146"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="viewing-pairwise-sample-clustering.html#cb146-1" tabindex="-1"></a></span>
+<span id="cb146-2"><a href="viewing-pairwise-sample-clustering.html#cb146-2" tabindex="-1"></a><span class="co">#Define working dir paths</span></span>
+<span id="cb146-3"><a href="viewing-pairwise-sample-clustering.html#cb146-3" tabindex="-1"></a><span class="co"># datadir = &quot;/cloud/project/data/bulk_rna&quot;</span></span>
+<span id="cb146-4"><a href="viewing-pairwise-sample-clustering.html#cb146-4" tabindex="-1"></a><span class="co"># outdir = &quot;/cloud/project/outdir&quot;</span></span>
+<span id="cb146-5"><a href="viewing-pairwise-sample-clustering.html#cb146-5" tabindex="-1"></a></span>
+<span id="cb146-6"><a href="viewing-pairwise-sample-clustering.html#cb146-6" tabindex="-1"></a>datadir <span class="ot">=</span> <span class="st">&quot;~/workspace/rnaseq/batch_correction&quot;</span></span>
+<span id="cb146-7"><a href="viewing-pairwise-sample-clustering.html#cb146-7" tabindex="-1"></a>outdir <span class="ot">=</span> <span class="st">&quot;~/workspace/rnaseq/batch_correction/outputs&quot;</span></span>
+<span id="cb146-8"><a href="viewing-pairwise-sample-clustering.html#cb146-8" tabindex="-1"></a></span>
+<span id="cb146-9"><a href="viewing-pairwise-sample-clustering.html#cb146-9" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">dir.exists</span>(outdir)) <span class="fu">dir.create</span>(outdir)</span>
+<span id="cb146-10"><a href="viewing-pairwise-sample-clustering.html#cb146-10" tabindex="-1"></a></span>
+<span id="cb146-11"><a href="viewing-pairwise-sample-clustering.html#cb146-11" tabindex="-1"></a><span class="co">#load neccessary libraries</span></span>
+<span id="cb146-12"><a href="viewing-pairwise-sample-clustering.html#cb146-12" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;sva&quot;</span>) <span class="co">#Note this exercise requires sva (&gt;= v3.36.0) which is only available for R (&gt;= v4.x)</span></span>
+<span id="cb146-13"><a href="viewing-pairwise-sample-clustering.html#cb146-13" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;ggplot2&quot;</span>)</span>
+<span id="cb146-14"><a href="viewing-pairwise-sample-clustering.html#cb146-14" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;gridExtra&quot;</span>)</span>
+<span id="cb146-15"><a href="viewing-pairwise-sample-clustering.html#cb146-15" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;edgeR&quot;</span>)</span>
+<span id="cb146-16"><a href="viewing-pairwise-sample-clustering.html#cb146-16" tabindex="-1"></a><span class="fu">library</span>(<span class="st">&quot;UpSetR&quot;</span>)</span>
+<span id="cb146-17"><a href="viewing-pairwise-sample-clustering.html#cb146-17" tabindex="-1"></a><span class="fu">library</span>(grid)</span>
+<span id="cb146-18"><a href="viewing-pairwise-sample-clustering.html#cb146-18" tabindex="-1"></a></span>
+<span id="cb146-19"><a href="viewing-pairwise-sample-clustering.html#cb146-19" tabindex="-1"></a><span class="co">#load in the uncorrected data as raw counts</span></span>
+<span id="cb146-20"><a href="viewing-pairwise-sample-clustering.html#cb146-20" tabindex="-1"></a><span class="fu">setwd</span>(datadir)</span>
+<span id="cb146-21"><a href="viewing-pairwise-sample-clustering.html#cb146-21" tabindex="-1"></a>uncorrected_data <span class="ot">=</span> <span class="fu">read.table</span>(<span class="st">&quot;GSE48035_ILMN.Counts.SampleSubset.ProteinCodingGenes.tsv&quot;</span>, <span class="at">header =</span> <span class="cn">TRUE</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>, <span class="at">as.is =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</span>
+<span id="cb146-22"><a href="viewing-pairwise-sample-clustering.html#cb146-22" tabindex="-1"></a><span class="fu">setwd</span>(outdir)</span>
+<span id="cb146-23"><a href="viewing-pairwise-sample-clustering.html#cb146-23" tabindex="-1"></a></span>
+<span id="cb146-24"><a href="viewing-pairwise-sample-clustering.html#cb146-24" tabindex="-1"></a><span class="co">#simplify the names of the data columns</span></span>
+<span id="cb146-25"><a href="viewing-pairwise-sample-clustering.html#cb146-25" tabindex="-1"></a><span class="co"># (A = Universal Human Reference RNA and B = Human Brain Reference RNA)</span></span>
+<span id="cb146-26"><a href="viewing-pairwise-sample-clustering.html#cb146-26" tabindex="-1"></a><span class="co"># RNA = polyA enrichment and RIBO = ribosomal RNA depletion</span></span>
+<span id="cb146-27"><a href="viewing-pairwise-sample-clustering.html#cb146-27" tabindex="-1"></a><span class="co"># 1, 2, 3, 4 are replicates</span></span>
+<span id="cb146-28"><a href="viewing-pairwise-sample-clustering.html#cb146-28" tabindex="-1"></a><span class="fu">names</span>(uncorrected_data) <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;Gene&quot;</span>, <span class="st">&quot;Chr&quot;</span>, <span class="st">&quot;UHR_Ribo_1&quot;</span>, <span class="st">&quot;UHR_Ribo_2&quot;</span>, <span class="st">&quot;UHR_Ribo_3&quot;</span>, <span class="st">&quot;UHR_Ribo_4&quot;</span>, <span class="st">&quot;HBR_Ribo_1&quot;</span>, <span class="st">&quot;HBR_Ribo_2&quot;</span>, <span class="st">&quot;HBR_Ribo_3&quot;</span>, <span class="st">&quot;HBR_Ribo_4&quot;</span>, </span>
+<span id="cb146-29"><a href="viewing-pairwise-sample-clustering.html#cb146-29" tabindex="-1"></a>                            <span class="st">&quot;UHR_Poly_1&quot;</span>, <span class="st">&quot;UHR_Poly_2&quot;</span>, <span class="st">&quot;UHR_Poly_3&quot;</span>, <span class="st">&quot;UHR_Poly_4&quot;</span>, <span class="st">&quot;HBR_Poly_1&quot;</span>, <span class="st">&quot;HBR_Poly_2&quot;</span>, <span class="st">&quot;HBR_Poly_3&quot;</span>, <span class="st">&quot;HBR_Poly_4&quot;</span>)</span>
+<span id="cb146-30"><a href="viewing-pairwise-sample-clustering.html#cb146-30" tabindex="-1"></a>sample_names <span class="ot">=</span> <span class="fu">names</span>(uncorrected_data)[<span class="dv">3</span><span class="sc">:</span><span class="fu">length</span>(<span class="fu">names</span>(uncorrected_data))]</span>
+<span id="cb146-31"><a href="viewing-pairwise-sample-clustering.html#cb146-31" tabindex="-1"></a></span>
+<span id="cb146-32"><a href="viewing-pairwise-sample-clustering.html#cb146-32" tabindex="-1"></a><span class="co">#review data structure</span></span>
+<span id="cb146-33"><a href="viewing-pairwise-sample-clustering.html#cb146-33" tabindex="-1"></a><span class="fu">head</span>(uncorrected_data)</span>
+<span id="cb146-34"><a href="viewing-pairwise-sample-clustering.html#cb146-34" tabindex="-1"></a><span class="fu">dim</span>(uncorrected_data)</span>
+<span id="cb146-35"><a href="viewing-pairwise-sample-clustering.html#cb146-35" tabindex="-1"></a></span>
+<span id="cb146-36"><a href="viewing-pairwise-sample-clustering.html#cb146-36" tabindex="-1"></a><span class="co">#define conditions, library methods, and replicates</span></span>
+<span id="cb146-37"><a href="viewing-pairwise-sample-clustering.html#cb146-37" tabindex="-1"></a>conditions <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;UHR&quot;</span>, <span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;HBR&quot;</span>, <span class="st">&quot;HBR&quot;</span>)</span>
+<span id="cb146-38"><a href="viewing-pairwise-sample-clustering.html#cb146-38" tabindex="-1"></a>library_methods <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;Ribo&quot;</span>, <span class="st">&quot;Ribo&quot;</span>, <span class="st">&quot;Ribo&quot;</span>, <span class="st">&quot;Ribo&quot;</span>, <span class="st">&quot;Ribo&quot;</span>, <span class="st">&quot;Ribo&quot;</span>, <span class="st">&quot;Ribo&quot;</span>, <span class="st">&quot;Ribo&quot;</span>, <span class="st">&quot;Poly&quot;</span>, <span class="st">&quot;Poly&quot;</span>, <span class="st">&quot;Poly&quot;</span>, <span class="st">&quot;Poly&quot;</span>, <span class="st">&quot;Poly&quot;</span>, <span class="st">&quot;Poly&quot;</span>, <span class="st">&quot;Poly&quot;</span>, <span class="st">&quot;Poly&quot;</span>)</span>
+<span id="cb146-39"><a href="viewing-pairwise-sample-clustering.html#cb146-39" tabindex="-1"></a>replicates <span class="ot">=</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>)</span>
+<span id="cb146-40"><a href="viewing-pairwise-sample-clustering.html#cb146-40" tabindex="-1"></a></span>
+<span id="cb146-41"><a href="viewing-pairwise-sample-clustering.html#cb146-41" tabindex="-1"></a><span class="co">#Create a counts per million (CPM) version of the uncorrected data to use just for the PCA analysis</span></span>
+<span id="cb146-42"><a href="viewing-pairwise-sample-clustering.html#cb146-42" tabindex="-1"></a><span class="co">#we do this because we don&#39;t want the variable amount of data generated for each sample to influence the PCs</span></span>
+<span id="cb146-43"><a href="viewing-pairwise-sample-clustering.html#cb146-43" tabindex="-1"></a><span class="co">#extract the count matrix, calculate CPM, rebuild the full dataframe with Gene and Chr columns</span></span>
+<span id="cb146-44"><a href="viewing-pairwise-sample-clustering.html#cb146-44" tabindex="-1"></a>count_matrix <span class="ot">=</span> uncorrected_data[, sample_names]</span>
+<span id="cb146-45"><a href="viewing-pairwise-sample-clustering.html#cb146-45" tabindex="-1"></a>lib_sizes <span class="ot">=</span> <span class="fu">colSums</span>(count_matrix)</span>
+<span id="cb146-46"><a href="viewing-pairwise-sample-clustering.html#cb146-46" tabindex="-1"></a>cpm_matrix <span class="ot">=</span> <span class="fu">sweep</span>(count_matrix, <span class="dv">2</span>, lib_sizes, <span class="at">FUN =</span> <span class="st">&quot;/&quot;</span>) <span class="sc">*</span> <span class="fl">1e6</span></span>
+<span id="cb146-47"><a href="viewing-pairwise-sample-clustering.html#cb146-47" tabindex="-1"></a>uncorrected_data_cpm <span class="ot">=</span> <span class="fu">cbind</span>(uncorrected_data[, <span class="fu">c</span>(<span class="st">&quot;Gene&quot;</span>, <span class="st">&quot;Chr&quot;</span>)], cpm_matrix)</span>
+<span id="cb146-48"><a href="viewing-pairwise-sample-clustering.html#cb146-48" tabindex="-1"></a></span>
+<span id="cb146-49"><a href="viewing-pairwise-sample-clustering.html#cb146-49" tabindex="-1"></a><span class="co">#calculate principal components for the uncorrected data</span></span>
+<span id="cb146-50"><a href="viewing-pairwise-sample-clustering.html#cb146-50" tabindex="-1"></a>pca_uncorrected_obj <span class="ot">=</span> <span class="fu">prcomp</span>(uncorrected_data_cpm[,sample_names])</span>
+<span id="cb146-51"><a href="viewing-pairwise-sample-clustering.html#cb146-51" tabindex="-1"></a></span>
+<span id="cb146-52"><a href="viewing-pairwise-sample-clustering.html#cb146-52" tabindex="-1"></a><span class="co">#pull PCA values out of the PCA object</span></span>
+<span id="cb146-53"><a href="viewing-pairwise-sample-clustering.html#cb146-53" tabindex="-1"></a>pca_uncorrected <span class="ot">=</span> <span class="fu">as.data.frame</span>(pca_uncorrected_obj[<span class="dv">2</span>]<span class="sc">$</span>rotation)</span>
+<span id="cb146-54"><a href="viewing-pairwise-sample-clustering.html#cb146-54" tabindex="-1"></a></span>
+<span id="cb146-55"><a href="viewing-pairwise-sample-clustering.html#cb146-55" tabindex="-1"></a><span class="co">#determine the percentage of variance explained by each PC</span></span>
+<span id="cb146-56"><a href="viewing-pairwise-sample-clustering.html#cb146-56" tabindex="-1"></a>variance <span class="ot">=</span> (pca_uncorrected_obj<span class="sc">$</span>sdev)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb146-57"><a href="viewing-pairwise-sample-clustering.html#cb146-57" tabindex="-1"></a>percent_variance <span class="ot">=</span> (variance <span class="sc">/</span> <span class="fu">sum</span>(variance)) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb146-58"><a href="viewing-pairwise-sample-clustering.html#cb146-58" tabindex="-1"></a></span>
+<span id="cb146-59"><a href="viewing-pairwise-sample-clustering.html#cb146-59" tabindex="-1"></a><span class="co">#assign labels to the data frame</span></span>
+<span id="cb146-60"><a href="viewing-pairwise-sample-clustering.html#cb146-60" tabindex="-1"></a>pca_uncorrected[,<span class="st">&quot;condition&quot;</span>] <span class="ot">=</span> conditions</span>
+<span id="cb146-61"><a href="viewing-pairwise-sample-clustering.html#cb146-61" tabindex="-1"></a>pca_uncorrected[,<span class="st">&quot;library_method&quot;</span>] <span class="ot">=</span> library_methods</span>
+<span id="cb146-62"><a href="viewing-pairwise-sample-clustering.html#cb146-62" tabindex="-1"></a>pca_uncorrected[,<span class="st">&quot;replicate&quot;</span>] <span class="ot">=</span> replicates</span>
+<span id="cb146-63"><a href="viewing-pairwise-sample-clustering.html#cb146-63" tabindex="-1"></a></span>
+<span id="cb146-64"><a href="viewing-pairwise-sample-clustering.html#cb146-64" tabindex="-1"></a><span class="co">#plot the PCA</span></span>
+<span id="cb146-65"><a href="viewing-pairwise-sample-clustering.html#cb146-65" tabindex="-1"></a><span class="co">#create a classic 2-dimension PCA plot (first two principal components) with conditions and library methods indicated</span></span>
+<span id="cb146-66"><a href="viewing-pairwise-sample-clustering.html#cb146-66" tabindex="-1"></a>pc1_label <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">&quot;PC1 (&quot;</span>, <span class="fu">round</span>(percent_variance[<span class="dv">1</span>], <span class="at">digits=</span><span class="dv">1</span>), <span class="st">&quot;% variance explained)&quot;</span>, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb146-67"><a href="viewing-pairwise-sample-clustering.html#cb146-67" tabindex="-1"></a>pc2_label <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">&quot;PC2 (&quot;</span>, <span class="fu">round</span>(percent_variance[<span class="dv">2</span>], <span class="at">digits=</span><span class="dv">1</span>), <span class="st">&quot;% variance explained)&quot;</span>, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb146-68"><a href="viewing-pairwise-sample-clustering.html#cb146-68" tabindex="-1"></a></span>
+<span id="cb146-69"><a href="viewing-pairwise-sample-clustering.html#cb146-69" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;UHR&quot;</span> <span class="ot">=</span> <span class="st">&quot;#481567FF&quot;</span>, <span class="st">&quot;HBR&quot;</span> <span class="ot">=</span> <span class="st">&quot;#1F968BFF&quot;</span>)</span>
+<span id="cb146-70"><a href="viewing-pairwise-sample-clustering.html#cb146-70" tabindex="-1"></a>p1 <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="at">data =</span> pca_uncorrected, <span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">color =</span> condition, <span class="at">shape =</span> library_method))</span>
+<span id="cb146-71"><a href="viewing-pairwise-sample-clustering.html#cb146-71" tabindex="-1"></a>p1 <span class="ot">=</span> p1 <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>)</span>
+<span id="cb146-72"><a href="viewing-pairwise-sample-clustering.html#cb146-72" tabindex="-1"></a>p1 <span class="ot">=</span> p1 <span class="sc">+</span> <span class="fu">stat_ellipse</span>(<span class="at">type =</span> <span class="st">&quot;norm&quot;</span>, <span class="at">linetype =</span> <span class="dv">2</span>)</span>
+<span id="cb146-73"><a href="viewing-pairwise-sample-clustering.html#cb146-73" tabindex="-1"></a>p1 <span class="ot">=</span> p1 <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;PCA, counts for 16 HBR/UHR and Ribo/PolyA samples (uncorrected data)&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Condition&quot;</span>, <span class="at">shape=</span><span class="st">&quot;Library Method&quot;</span>)</span>
+<span id="cb146-74"><a href="viewing-pairwise-sample-clustering.html#cb146-74" tabindex="-1"></a>p1 <span class="ot">=</span> p1 <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> pc1_label, <span class="at">y =</span> pc2_label)</span>
+<span id="cb146-75"><a href="viewing-pairwise-sample-clustering.html#cb146-75" tabindex="-1"></a>p1 <span class="ot">=</span> p1 <span class="sc">+</span> <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> cols)</span>
+<span id="cb146-76"><a href="viewing-pairwise-sample-clustering.html#cb146-76" tabindex="-1"></a></span>
+<span id="cb146-77"><a href="viewing-pairwise-sample-clustering.html#cb146-77" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file =</span> <span class="st">&quot;Uncorrected-PCA.pdf&quot;</span>)</span>
+<span id="cb146-78"><a href="viewing-pairwise-sample-clustering.html#cb146-78" tabindex="-1"></a><span class="fu">print</span>(p1)</span>
+<span id="cb146-79"><a href="viewing-pairwise-sample-clustering.html#cb146-79" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+</div>
+<div id="introduction-to-bioconductor-sva-and-combat-seq-in-r" class="section level3 hasAnchor">
+<h3>Introduction to Bioconductor SVA and ComBat-Seq in R<a href="viewing-pairwise-sample-clustering.html#introduction-to-bioconductor-sva-and-combat-seq-in-r" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>The ComBat-Seq package is made available as part of the <a href="https://www.bioconductor.org/packages/release/bioc/html/sva.html">SVA package</a> for Surrogate Variable Analysis. This package is a collection of methods for removing batch effects and other unwanted variation in large datasets. It includes the ComBat method that has been widely used for batch correction of gene expression datasets, especially those generated on microarray platforms. ComBat-Seq is a modification of the ComBat approach. ComBat-Seq has been tailored to the count based data of bulk RNA-seq datasets. Particular advantages of the ComBat-Seq approach are that it: (1) uses a negative binomial regression model (the negative binomial distribution is thought to model the characteristics of bulk RNA-seq count data), and (2) allows the output of corrected data that retain the count nature of the data and can be safely fed into many existing methods for DE analysis (such as EdgeR and DESeq2).</p>
+<p>ComBat-Seq has a relatively short list of arguments, and for several of these we will use the default setting. Very basic documentation of these arguments can be found <a href="https://rdrr.io/bioc/sva/man/ComBat_seq.html">here</a> and <a href="https://github.com/zhangyuqing/ComBat-seq">here</a>.</p>
+<p>Our attempt to explain each of the ComBat-Seq arguments (for optional arguments, default is shown):</p>
+<ul>
+<li><code>counts</code>. This is your matrix of gene expression read counts (raw counts). Each row is a gene, each column is a sample, and each cell has an integer count for the number of RNA-seq counts observed for that gene/sample combination. In R we want this data to be passed into ComBat-Seq in matrix format (use <code>as.matrix()</code> if neccessary).</li>
+<li><code>batch</code>. This is a vector describing the batches you are concerned about. For example, if you have eight samples that you created RNA-seq data for, but for the first four you used library kit (A) and for the last four samples you used library kit (B). In this situation you would define your <code>batch</code> vector as: <code>c(1,1,1,1,2,2,2,2)</code>.</li>
+<li><code>group = NULL</code>. This is a vector describing your biological condition of interest. For example, if your experiment involved <em>pairs</em> of drug treated and untreated cells, and you did 4 biological replicates. You would define your <code>group</code> vector as: c(1,2,1,2,1,2,1,2).</li>
+<li><code>covar_mod = NULL</code>. If you have multiple biological conditions of interest, you can define these with <code>covar_mod</code> (covariates) instead of <code>group</code>. For example, lets assume we have the same experiment as described above, except that we did four replicates (treated vs untreated pairs), but we alternated use of male and female cells for each of the replicates. You then would define a covariate matrix to supply to <code>covar_mod</code> as follows:</li>
+</ul>
+<div class="sourceCode" id="cb147"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb147-1"><a href="viewing-pairwise-sample-clustering.html#cb147-1" tabindex="-1"></a>  <span class="co">#treatment_group = c(1,2,1,2,1,2,1,2)</span></span>
+<span id="cb147-2"><a href="viewing-pairwise-sample-clustering.html#cb147-2" tabindex="-1"></a>  <span class="co">#sex_group = c(1,1,2,2,1,1,2,2)</span></span>
+<span id="cb147-3"><a href="viewing-pairwise-sample-clustering.html#cb147-3" tabindex="-1"></a>  <span class="co">#covariate_matrix = cbind(treatment_group, sex_group)</span></span></code></pre></div>
+<ul>
+<li><code>full_mod = TRUE</code>. If TRUE include the condition of interest in model. Generally we believe this should be set to the default TRUE. We have yet to find a cohesive explanation for a situation where one would want this to be FALSE.</li>
+<li><code>shrink = FALSE</code>. Whether to apply shrinkage on parameter estimation.<br />
+</li>
+<li><code>shrink.disp = FALSE</code>. Whether to apply shrinkage on dispersion.<br />
+</li>
+<li><code>gene.subset.n = NULL</code>. Number of genes to use in empirical Bayes estimation, only useful when shrink = TRUE.</li>
+</ul>
+<p>A detailed discussion of <em>shrinkage</em> (related to the <code>shrink</code>, <code>shrink.disp</code>, and <code>gene_subset.n</code> arguments is beyond the scope of this tutorial. Briefly, shrinkage refers to a set of methods that attempt to correct for gene-specific variability in the counts observed in RNA-seq datasets. More specifically, it relates to the <em>dispersion parameter</em> of the <a href="https://en.wikipedia.org/wiki/Negative_binomial_distribution">negative binomial distribution</a> used to model RNA-seq count data that can suffer from <a href="https://en.wikipedia.org/wiki/Overdispersion">overdispersion</a>. The dispersion parameter describes how much variance deviates from the mean. In simple terms, shrinkage methods are an attempt to correct for problematic dispersion. A more detailed discussion of these statistical concepts can be found in the <a href="https://pubmed.ncbi.nlm.nih.gov/25516281/">DESeq2 paper</a>. However, for our purposes here, the bottom line is that the ComBat-Seq authors state that “We have shown that applying empirical Bayes shrinkage is not necessary for ComBat-seq because the approach is already sufficiently robust due to the distributional assumption.” So we will leave these arguments at their default <code>FALSE</code> settings.</p>
+</div>
+<div id="demonstration-of-combat-seq-on-the-uhrhbr-data-with-two-library-types-ribopoly" class="section level3 hasAnchor">
+<h3>Demonstration of ComBat-Seq on the UHR/HBR data with two library types (Ribo/Poly)<a href="viewing-pairwise-sample-clustering.html#demonstration-of-combat-seq-on-the-uhrhbr-data-with-two-library-types-ribopoly" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Continuing the R session started above, use ComBat-Seq to perform batch correction as follows:</p>
+<div class="sourceCode" id="cb148"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="viewing-pairwise-sample-clustering.html#cb148-1" tabindex="-1"></a></span>
+<span id="cb148-2"><a href="viewing-pairwise-sample-clustering.html#cb148-2" tabindex="-1"></a><span class="co">#perform the batch correction</span></span>
+<span id="cb148-3"><a href="viewing-pairwise-sample-clustering.html#cb148-3" tabindex="-1"></a></span>
+<span id="cb148-4"><a href="viewing-pairwise-sample-clustering.html#cb148-4" tabindex="-1"></a><span class="co">#first we need to transform the format of our groups and batches from names (e.g. &quot;UHR&quot;, &quot;HBR&quot;, etc.) to numbers (e.g. 1, 2, etc.)</span></span>
+<span id="cb148-5"><a href="viewing-pairwise-sample-clustering.html#cb148-5" tabindex="-1"></a><span class="co">#in the command below &quot;sapply&quot; is used to apply the &quot;switch&quot; command to each element and convert names to numbers as we define</span></span>
+<span id="cb148-6"><a href="viewing-pairwise-sample-clustering.html#cb148-6" tabindex="-1"></a>groups <span class="ot">=</span> <span class="fu">sapply</span>(<span class="fu">as.character</span>(conditions), <span class="cf">switch</span>, <span class="st">&quot;UHR&quot;</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">&quot;HBR&quot;</span> <span class="ot">=</span> <span class="dv">2</span>, <span class="at">USE.NAMES =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb148-7"><a href="viewing-pairwise-sample-clustering.html#cb148-7" tabindex="-1"></a>batches <span class="ot">=</span> <span class="fu">sapply</span>(<span class="fu">as.character</span>(library_methods), <span class="cf">switch</span>, <span class="st">&quot;Ribo&quot;</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">&quot;Poly&quot;</span> <span class="ot">=</span> <span class="dv">2</span>, <span class="at">USE.NAMES =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb148-8"><a href="viewing-pairwise-sample-clustering.html#cb148-8" tabindex="-1"></a></span>
+<span id="cb148-9"><a href="viewing-pairwise-sample-clustering.html#cb148-9" tabindex="-1"></a><span class="co">#now run ComBat_seq</span></span>
+<span id="cb148-10"><a href="viewing-pairwise-sample-clustering.html#cb148-10" tabindex="-1"></a>corrected_data <span class="ot">=</span> <span class="fu">ComBat_seq</span>(<span class="at">counts =</span> <span class="fu">as.matrix</span>(uncorrected_data[,sample_names]), <span class="at">batch =</span> batches, <span class="at">group =</span> groups)</span>
+<span id="cb148-11"><a href="viewing-pairwise-sample-clustering.html#cb148-11" tabindex="-1"></a></span>
+<span id="cb148-12"><a href="viewing-pairwise-sample-clustering.html#cb148-12" tabindex="-1"></a><span class="co">#join the gene and chromosome names onto the now corrected counts from ComBat_seq</span></span>
+<span id="cb148-13"><a href="viewing-pairwise-sample-clustering.html#cb148-13" tabindex="-1"></a>corrected_data <span class="ot">=</span> <span class="fu">cbind</span>(uncorrected_data[, <span class="fu">c</span>(<span class="st">&quot;Gene&quot;</span>, <span class="st">&quot;Chr&quot;</span>)], corrected_data)</span>
+<span id="cb148-14"><a href="viewing-pairwise-sample-clustering.html#cb148-14" tabindex="-1"></a></span>
+<span id="cb148-15"><a href="viewing-pairwise-sample-clustering.html#cb148-15" tabindex="-1"></a><span class="co">#compare dimensions of corrected and uncorrected data sets</span></span>
+<span id="cb148-16"><a href="viewing-pairwise-sample-clustering.html#cb148-16" tabindex="-1"></a><span class="fu">dim</span>(uncorrected_data)</span>
+<span id="cb148-17"><a href="viewing-pairwise-sample-clustering.html#cb148-17" tabindex="-1"></a><span class="fu">dim</span>(corrected_data)</span>
+<span id="cb148-18"><a href="viewing-pairwise-sample-clustering.html#cb148-18" tabindex="-1"></a></span>
+<span id="cb148-19"><a href="viewing-pairwise-sample-clustering.html#cb148-19" tabindex="-1"></a><span class="co">#visually compare values of corrected and uncorrected data sets</span></span>
+<span id="cb148-20"><a href="viewing-pairwise-sample-clustering.html#cb148-20" tabindex="-1"></a>uncorrected_data[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>]</span>
+<span id="cb148-21"><a href="viewing-pairwise-sample-clustering.html#cb148-21" tabindex="-1"></a>corrected_data[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">6</span>]</span></code></pre></div>
+</div>
+<div id="perform-pca-analysis-on-the-batch-corrected-data-and-contrast-with-the-uncorrected-data" class="section level3 hasAnchor">
+<h3>Perform PCA analysis on the batch corrected data and contrast with the uncorrected data<a href="viewing-pairwise-sample-clustering.html#perform-pca-analysis-on-the-batch-corrected-data-and-contrast-with-the-uncorrected-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>As performed above, use PCA to examine whether batch correction changes the grouping of samples by the expression patterns. Does the corrected data cluster according to biological condition (UHR vs HBR) better now regardless of library preparation type (Ribo vs PolyA)?</p>
+<div class="sourceCode" id="cb149"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb149-1"><a href="viewing-pairwise-sample-clustering.html#cb149-1" tabindex="-1"></a></span>
+<span id="cb149-2"><a href="viewing-pairwise-sample-clustering.html#cb149-2" tabindex="-1"></a><span class="co">#Create a counts per million (CPM) version of the corrected data to use just for the PCA analysis</span></span>
+<span id="cb149-3"><a href="viewing-pairwise-sample-clustering.html#cb149-3" tabindex="-1"></a><span class="co">#we do this because we don&#39;t want the variable amount of data generated for each sample to influence the PCs</span></span>
+<span id="cb149-4"><a href="viewing-pairwise-sample-clustering.html#cb149-4" tabindex="-1"></a><span class="co">#extract the count matrix, calculate CPM, rebuild the full dataframe with Gene and Chr columns</span></span>
+<span id="cb149-5"><a href="viewing-pairwise-sample-clustering.html#cb149-5" tabindex="-1"></a>count_matrix <span class="ot">=</span> corrected_data[, sample_names]</span>
+<span id="cb149-6"><a href="viewing-pairwise-sample-clustering.html#cb149-6" tabindex="-1"></a>lib_sizes <span class="ot">=</span> <span class="fu">colSums</span>(count_matrix)</span>
+<span id="cb149-7"><a href="viewing-pairwise-sample-clustering.html#cb149-7" tabindex="-1"></a>cpm_matrix <span class="ot">=</span> <span class="fu">sweep</span>(count_matrix, <span class="dv">2</span>, lib_sizes, <span class="at">FUN =</span> <span class="st">&quot;/&quot;</span>) <span class="sc">*</span> <span class="fl">1e6</span></span>
+<span id="cb149-8"><a href="viewing-pairwise-sample-clustering.html#cb149-8" tabindex="-1"></a>corrected_data_cpm <span class="ot">=</span> <span class="fu">cbind</span>(corrected_data[, <span class="fu">c</span>(<span class="st">&quot;Gene&quot;</span>, <span class="st">&quot;Chr&quot;</span>)], cpm_matrix)</span>
+<span id="cb149-9"><a href="viewing-pairwise-sample-clustering.html#cb149-9" tabindex="-1"></a></span>
+<span id="cb149-10"><a href="viewing-pairwise-sample-clustering.html#cb149-10" tabindex="-1"></a><span class="co">#calculate principal components for the uncorrected data</span></span>
+<span id="cb149-11"><a href="viewing-pairwise-sample-clustering.html#cb149-11" tabindex="-1"></a>pca_corrected_obj <span class="ot">=</span> <span class="fu">prcomp</span>(corrected_data_cpm[, sample_names])</span>
+<span id="cb149-12"><a href="viewing-pairwise-sample-clustering.html#cb149-12" tabindex="-1"></a></span>
+<span id="cb149-13"><a href="viewing-pairwise-sample-clustering.html#cb149-13" tabindex="-1"></a><span class="co">#pull PCA values out of the PCA object</span></span>
+<span id="cb149-14"><a href="viewing-pairwise-sample-clustering.html#cb149-14" tabindex="-1"></a>pca_corrected <span class="ot">=</span> <span class="fu">as.data.frame</span>(pca_corrected_obj[<span class="dv">2</span>]<span class="sc">$</span>rotation)</span>
+<span id="cb149-15"><a href="viewing-pairwise-sample-clustering.html#cb149-15" tabindex="-1"></a></span>
+<span id="cb149-16"><a href="viewing-pairwise-sample-clustering.html#cb149-16" tabindex="-1"></a><span class="co">#determine the percentage of variance explained by each PC</span></span>
+<span id="cb149-17"><a href="viewing-pairwise-sample-clustering.html#cb149-17" tabindex="-1"></a>variance <span class="ot">=</span> (pca_corrected_obj<span class="sc">$</span>sdev)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb149-18"><a href="viewing-pairwise-sample-clustering.html#cb149-18" tabindex="-1"></a>percent_variance <span class="ot">=</span> (variance <span class="sc">/</span> <span class="fu">sum</span>(variance)) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb149-19"><a href="viewing-pairwise-sample-clustering.html#cb149-19" tabindex="-1"></a></span>
+<span id="cb149-20"><a href="viewing-pairwise-sample-clustering.html#cb149-20" tabindex="-1"></a><span class="co">#assign labels to the data frame</span></span>
+<span id="cb149-21"><a href="viewing-pairwise-sample-clustering.html#cb149-21" tabindex="-1"></a>pca_corrected[,<span class="st">&quot;condition&quot;</span>] <span class="ot">=</span> conditions</span>
+<span id="cb149-22"><a href="viewing-pairwise-sample-clustering.html#cb149-22" tabindex="-1"></a>pca_corrected[,<span class="st">&quot;library_method&quot;</span>] <span class="ot">=</span> library_methods</span>
+<span id="cb149-23"><a href="viewing-pairwise-sample-clustering.html#cb149-23" tabindex="-1"></a>pca_corrected[,<span class="st">&quot;replicate&quot;</span>] <span class="ot">=</span> replicates</span>
+<span id="cb149-24"><a href="viewing-pairwise-sample-clustering.html#cb149-24" tabindex="-1"></a></span>
+<span id="cb149-25"><a href="viewing-pairwise-sample-clustering.html#cb149-25" tabindex="-1"></a><span class="co">#as above, create a PCA plot for comparison to the uncorrected data</span></span>
+<span id="cb149-26"><a href="viewing-pairwise-sample-clustering.html#cb149-26" tabindex="-1"></a>pc1_label <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">&quot;PC1 (&quot;</span>, <span class="fu">round</span>(percent_variance[<span class="dv">1</span>], <span class="at">digits=</span><span class="dv">1</span>), <span class="st">&quot;% variance explained)&quot;</span>, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb149-27"><a href="viewing-pairwise-sample-clustering.html#cb149-27" tabindex="-1"></a>pc2_label <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">&quot;PC2 (&quot;</span>, <span class="fu">round</span>(percent_variance[<span class="dv">2</span>], <span class="at">digits=</span><span class="dv">1</span>), <span class="st">&quot;% variance explained)&quot;</span>, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span>
+<span id="cb149-28"><a href="viewing-pairwise-sample-clustering.html#cb149-28" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;UHR&quot;</span> <span class="ot">=</span> <span class="st">&quot;#481567FF&quot;</span>, <span class="st">&quot;HBR&quot;</span> <span class="ot">=</span> <span class="st">&quot;#1F968BFF&quot;</span>)</span>
+<span id="cb149-29"><a href="viewing-pairwise-sample-clustering.html#cb149-29" tabindex="-1"></a></span>
+<span id="cb149-30"><a href="viewing-pairwise-sample-clustering.html#cb149-30" tabindex="-1"></a>p2 <span class="ot">=</span> <span class="fu">ggplot</span>(<span class="at">data =</span> pca_corrected, <span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2, <span class="at">color =</span> condition, <span class="at">shape =</span> library_method))</span>
+<span id="cb149-31"><a href="viewing-pairwise-sample-clustering.html#cb149-31" tabindex="-1"></a>p2 <span class="ot">=</span> p2 <span class="sc">+</span> <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>)</span>
+<span id="cb149-32"><a href="viewing-pairwise-sample-clustering.html#cb149-32" tabindex="-1"></a>p2 <span class="ot">=</span> p2 <span class="sc">+</span> <span class="fu">stat_ellipse</span>(<span class="at">type =</span> <span class="st">&quot;norm&quot;</span>, <span class="at">linetype =</span> <span class="dv">2</span>)</span>
+<span id="cb149-33"><a href="viewing-pairwise-sample-clustering.html#cb149-33" tabindex="-1"></a>p2 <span class="ot">=</span> p2 <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;PCA, counts for 16 HBR/UHR and Ribo/PolyA samples (batch corrected)&quot;</span>, <span class="at">color =</span> <span class="st">&quot;Condition&quot;</span>, <span class="at">shape =</span> <span class="st">&quot;Library Method&quot;</span>)</span>
+<span id="cb149-34"><a href="viewing-pairwise-sample-clustering.html#cb149-34" tabindex="-1"></a>p2 <span class="ot">=</span> p2 <span class="sc">+</span> <span class="fu">labs</span>(<span class="at">x =</span> pc1_label, <span class="at">y =</span> pc2_label)</span>
+<span id="cb149-35"><a href="viewing-pairwise-sample-clustering.html#cb149-35" tabindex="-1"></a>p2 <span class="ot">=</span> p2 <span class="sc">+</span> <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> cols)</span>
+<span id="cb149-36"><a href="viewing-pairwise-sample-clustering.html#cb149-36" tabindex="-1"></a></span>
+<span id="cb149-37"><a href="viewing-pairwise-sample-clustering.html#cb149-37" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file =</span> <span class="st">&quot;Corrected-PCA.pdf&quot;</span>)</span>
+<span id="cb149-38"><a href="viewing-pairwise-sample-clustering.html#cb149-38" tabindex="-1"></a><span class="fu">print</span>(p2)                   </span>
+<span id="cb149-39"><a href="viewing-pairwise-sample-clustering.html#cb149-39" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb149-40"><a href="viewing-pairwise-sample-clustering.html#cb149-40" tabindex="-1"></a></span>
+<span id="cb149-41"><a href="viewing-pairwise-sample-clustering.html#cb149-41" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file =</span> <span class="st">&quot;Uncorrected-vs-BatchCorrected-PCA.pdf&quot;</span>)</span>
+<span id="cb149-42"><a href="viewing-pairwise-sample-clustering.html#cb149-42" tabindex="-1"></a><span class="fu">grid.arrange</span>(p1, p2, <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb149-43"><a href="viewing-pairwise-sample-clustering.html#cb149-43" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<p>If the above analysis worked you should have an image that looks like this:
+<img src="assets/module_3/Uncorrected-vs-BatchCorrected-PCA.png" alt="PCA-Plot" /><br />
+</p>
+<p>Note that prior to correction the UHR samples are separate from the HBR samples. Note that the PolyA and Ribo-reduction samples are also separated. The 16 samples group into 4 fairly distinct clusters. In other words, the overall expression signatures of these samples seem to reflect both the biological condition (UHR vs HBR) and library construction approach (Ribo vs PolyA).</p>
+<p>However, after correcting for the batch effect of library construction approach, we see a marked improvement. The library construction approach still seems to be noticeable, but the 16 samples now essentially group into two distinct clusters: HBR and UHR.</p>
+</div>
+<div id="perform-differential-expression-analysis-of-the-corrected-and-uncorrected-data" class="section level3 hasAnchor">
+<h3>Perform differential expression analysis of the corrected and uncorrected data<a href="viewing-pairwise-sample-clustering.html#perform-differential-expression-analysis-of-the-corrected-and-uncorrected-data" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>How does batch correction influence differential gene expression results? Use UpSet plots to examine the overlap of significant DE genes found for the following comparisons:</p>
+<ul>
+<li>UHR-Ribo vs HBR-Ribo (same library type, 4 vs 4 replicates)</li>
+<li>UHR-Poly vs HBR-Poly (same library type, 4 vs 4 replicates)</li>
+<li>UHR-Ribo vs HBR-Poly (different library types, 4 vs 4 replicates)</li>
+<li>UHR-Poly vs HBR-Ribo (different library types, 4 vs 4 replicates)</li>
+<li>UHR-Comb vs HBR-Comb (combined library types, 8 vs 8 replicates)</li>
+</ul>
+<p>These five differential expression analysis comparisons will be performed with both the uncorrected and corrected data.</p>
+<ul>
+<li>Does correction increase agreement between the five comparisons?</li>
+<li>Does it appear to increase statistical power when combining all 8 replicates of UHR and HBR?</li>
+<li>What do we expect to see for comparisons like UHR-Ribo vs HBR-Poly before and after batch correction? Do we expect correction to increase or decrease the number of significant results?</li>
+</ul>
+<p>Explore these questions by continuing on with the R session started above and doing the following:</p>
+<div class="sourceCode" id="cb150"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="viewing-pairwise-sample-clustering.html#cb150-1" tabindex="-1"></a><span class="co">#perform differential expression analysis on the uncorrected data and batch corrected data sets</span></span>
+<span id="cb150-2"><a href="viewing-pairwise-sample-clustering.html#cb150-2" tabindex="-1"></a></span>
+<span id="cb150-3"><a href="viewing-pairwise-sample-clustering.html#cb150-3" tabindex="-1"></a><span class="co">#first define the sets of samples to be compared to each other</span></span>
+<span id="cb150-4"><a href="viewing-pairwise-sample-clustering.html#cb150-4" tabindex="-1"></a>uhr_ribo_samples <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;UHR_Ribo_1&quot;</span>, <span class="st">&quot;UHR_Ribo_2&quot;</span>, <span class="st">&quot;UHR_Ribo_3&quot;</span>, <span class="st">&quot;UHR_Ribo_4&quot;</span>)</span>
+<span id="cb150-5"><a href="viewing-pairwise-sample-clustering.html#cb150-5" tabindex="-1"></a>uhr_poly_samples <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;UHR_Poly_1&quot;</span>, <span class="st">&quot;UHR_Poly_2&quot;</span>, <span class="st">&quot;UHR_Poly_3&quot;</span>, <span class="st">&quot;UHR_Poly_4&quot;</span>)</span>
+<span id="cb150-6"><a href="viewing-pairwise-sample-clustering.html#cb150-6" tabindex="-1"></a>hbr_ribo_samples <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;HBR_Ribo_1&quot;</span>, <span class="st">&quot;HBR_Ribo_2&quot;</span>, <span class="st">&quot;HBR_Ribo_3&quot;</span>, <span class="st">&quot;HBR_Ribo_4&quot;</span>)</span>
+<span id="cb150-7"><a href="viewing-pairwise-sample-clustering.html#cb150-7" tabindex="-1"></a>hbr_poly_samples <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;HBR_Poly_1&quot;</span>, <span class="st">&quot;HBR_Poly_2&quot;</span>, <span class="st">&quot;HBR_Poly_3&quot;</span>, <span class="st">&quot;HBR_Poly_4&quot;</span>)</span>
+<span id="cb150-8"><a href="viewing-pairwise-sample-clustering.html#cb150-8" tabindex="-1"></a>uhr_samples <span class="ot">=</span> <span class="fu">c</span>(uhr_ribo_samples, uhr_poly_samples)</span>
+<span id="cb150-9"><a href="viewing-pairwise-sample-clustering.html#cb150-9" tabindex="-1"></a>hbr_samples <span class="ot">=</span> <span class="fu">c</span>(hbr_ribo_samples, hbr_poly_samples)</span>
+<span id="cb150-10"><a href="viewing-pairwise-sample-clustering.html#cb150-10" tabindex="-1"></a></span>
+<span id="cb150-11"><a href="viewing-pairwise-sample-clustering.html#cb150-11" tabindex="-1"></a><span class="co">#create a function that will run edgeR (DE analysis) for a particular pair of sample sets</span></span>
+<span id="cb150-12"><a href="viewing-pairwise-sample-clustering.html#cb150-12" tabindex="-1"></a>run_edgeR <span class="ot">=</span> <span class="cf">function</span>(data, group_a_name, group_a_samples, group_b_samples, group_b_name){</span>
+<span id="cb150-13"><a href="viewing-pairwise-sample-clustering.html#cb150-13" tabindex="-1"></a>  <span class="fu">message</span>(<span class="fu">paste0</span>(</span>
+<span id="cb150-14"><a href="viewing-pairwise-sample-clustering.html#cb150-14" tabindex="-1"></a>    <span class="st">&quot;Performing EdgeR DE analysis for group A samples (&quot;</span>, <span class="fu">paste</span>(group_a_samples, <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>), </span>
+<span id="cb150-15"><a href="viewing-pairwise-sample-clustering.html#cb150-15" tabindex="-1"></a>    <span class="st">&quot;) vs group B samples (&quot;</span>, <span class="fu">paste</span>(group_b_samples, <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>), <span class="st">&quot;)&quot;</span>))</span>
+<span id="cb150-16"><a href="viewing-pairwise-sample-clustering.html#cb150-16" tabindex="-1"></a></span>
+<span id="cb150-17"><a href="viewing-pairwise-sample-clustering.html#cb150-17" tabindex="-1"></a>  <span class="co">#create a list of all samples for this current comparison</span></span>
+<span id="cb150-18"><a href="viewing-pairwise-sample-clustering.html#cb150-18" tabindex="-1"></a>  samples_for_comparison <span class="ot">=</span> <span class="fu">c</span>(group_a_samples, group_b_samples)</span>
+<span id="cb150-19"><a href="viewing-pairwise-sample-clustering.html#cb150-19" tabindex="-1"></a>  </span>
+<span id="cb150-20"><a href="viewing-pairwise-sample-clustering.html#cb150-20" tabindex="-1"></a>  <span class="co">#define the class factor for this pair of sample sets</span></span>
+<span id="cb150-21"><a href="viewing-pairwise-sample-clustering.html#cb150-21" tabindex="-1"></a>  class <span class="ot">=</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="fu">rep</span>(group_a_name, <span class="fu">length</span>(group_a_samples)), <span class="fu">rep</span>(group_b_name, <span class="fu">length</span>(group_b_samples))))</span>
+<span id="cb150-22"><a href="viewing-pairwise-sample-clustering.html#cb150-22" tabindex="-1"></a>  </span>
+<span id="cb150-23"><a href="viewing-pairwise-sample-clustering.html#cb150-23" tabindex="-1"></a>  <span class="co">#create a simplified data matrix for only these samples</span></span>
+<span id="cb150-24"><a href="viewing-pairwise-sample-clustering.html#cb150-24" tabindex="-1"></a>  rawdata <span class="ot">=</span> data[, samples_for_comparison]</span>
+<span id="cb150-25"><a href="viewing-pairwise-sample-clustering.html#cb150-25" tabindex="-1"></a>  </span>
+<span id="cb150-26"><a href="viewing-pairwise-sample-clustering.html#cb150-26" tabindex="-1"></a>  <span class="co">#store gene names for later</span></span>
+<span id="cb150-27"><a href="viewing-pairwise-sample-clustering.html#cb150-27" tabindex="-1"></a>  genes <span class="ot">=</span> <span class="fu">rownames</span>(data)</span>
+<span id="cb150-28"><a href="viewing-pairwise-sample-clustering.html#cb150-28" tabindex="-1"></a>  gene_names <span class="ot">=</span> data[,<span class="st">&quot;Gene&quot;</span>]</span>
+<span id="cb150-29"><a href="viewing-pairwise-sample-clustering.html#cb150-29" tabindex="-1"></a>  </span>
+<span id="cb150-30"><a href="viewing-pairwise-sample-clustering.html#cb150-30" tabindex="-1"></a>  <span class="co">#make DGElist object</span></span>
+<span id="cb150-31"><a href="viewing-pairwise-sample-clustering.html#cb150-31" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fu">DGEList</span>(<span class="at">counts =</span> rawdata, <span class="at">genes =</span> genes, <span class="at">group =</span> class)</span>
+<span id="cb150-32"><a href="viewing-pairwise-sample-clustering.html#cb150-32" tabindex="-1"></a>  </span>
+<span id="cb150-33"><a href="viewing-pairwise-sample-clustering.html#cb150-33" tabindex="-1"></a>  <span class="co">#perform TMM normalization</span></span>
+<span id="cb150-34"><a href="viewing-pairwise-sample-clustering.html#cb150-34" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fu">calcNormFactors</span>(y)</span>
+<span id="cb150-35"><a href="viewing-pairwise-sample-clustering.html#cb150-35" tabindex="-1"></a>  </span>
+<span id="cb150-36"><a href="viewing-pairwise-sample-clustering.html#cb150-36" tabindex="-1"></a>  <span class="co">#estimate dispersion</span></span>
+<span id="cb150-37"><a href="viewing-pairwise-sample-clustering.html#cb150-37" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fu">estimateCommonDisp</span>(y, <span class="at">verbose =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb150-38"><a href="viewing-pairwise-sample-clustering.html#cb150-38" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fu">estimateTagwiseDisp</span>(y)</span>
+<span id="cb150-39"><a href="viewing-pairwise-sample-clustering.html#cb150-39" tabindex="-1"></a>  </span>
+<span id="cb150-40"><a href="viewing-pairwise-sample-clustering.html#cb150-40" tabindex="-1"></a>  <span class="co">#perform the differential expression test</span></span>
+<span id="cb150-41"><a href="viewing-pairwise-sample-clustering.html#cb150-41" tabindex="-1"></a>  et <span class="ot">=</span> <span class="fu">exactTest</span>(y)</span>
+<span id="cb150-42"><a href="viewing-pairwise-sample-clustering.html#cb150-42" tabindex="-1"></a>  </span>
+<span id="cb150-43"><a href="viewing-pairwise-sample-clustering.html#cb150-43" tabindex="-1"></a>  <span class="co">#print number of up/down significant genes at FDR = 0.05 significance level and store the DE status in a new variable (de)</span></span>
+<span id="cb150-44"><a href="viewing-pairwise-sample-clustering.html#cb150-44" tabindex="-1"></a>  de <span class="ot">=</span> <span class="fu">decideTests</span>(et, <span class="at">adjust.method =</span> <span class="st">&quot;fdr&quot;</span>, <span class="at">p =</span> <span class="fl">0.05</span>)</span>
+<span id="cb150-45"><a href="viewing-pairwise-sample-clustering.html#cb150-45" tabindex="-1"></a>  <span class="fu">summary</span>(de)</span>
+<span id="cb150-46"><a href="viewing-pairwise-sample-clustering.html#cb150-46" tabindex="-1"></a>  </span>
+<span id="cb150-47"><a href="viewing-pairwise-sample-clustering.html#cb150-47" tabindex="-1"></a>  <span class="co">#create a matrix of the DE results</span></span>
+<span id="cb150-48"><a href="viewing-pairwise-sample-clustering.html#cb150-48" tabindex="-1"></a>  mat <span class="ot">=</span> <span class="fu">cbind</span>(</span>
+<span id="cb150-49"><a href="viewing-pairwise-sample-clustering.html#cb150-49" tabindex="-1"></a>    genes, </span>
+<span id="cb150-50"><a href="viewing-pairwise-sample-clustering.html#cb150-50" tabindex="-1"></a>    gene_names,</span>
+<span id="cb150-51"><a href="viewing-pairwise-sample-clustering.html#cb150-51" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">&quot;%0.3f&quot;</span>, <span class="fu">log10</span>(et<span class="sc">$</span>table<span class="sc">$</span>PValue)),</span>
+<span id="cb150-52"><a href="viewing-pairwise-sample-clustering.html#cb150-52" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">&quot;%0.3f&quot;</span>, et<span class="sc">$</span>table<span class="sc">$</span>logFC)</span>
+<span id="cb150-53"><a href="viewing-pairwise-sample-clustering.html#cb150-53" tabindex="-1"></a>  )</span>
+<span id="cb150-54"><a href="viewing-pairwise-sample-clustering.html#cb150-54" tabindex="-1"></a></span>
+<span id="cb150-55"><a href="viewing-pairwise-sample-clustering.html#cb150-55" tabindex="-1"></a>  <span class="co">#create a version of this matrix that is limited to only the *significant* results</span></span>
+<span id="cb150-56"><a href="viewing-pairwise-sample-clustering.html#cb150-56" tabindex="-1"></a>  mat <span class="ot">=</span> mat[<span class="fu">as.logical</span>(de),]</span>
+<span id="cb150-57"><a href="viewing-pairwise-sample-clustering.html#cb150-57" tabindex="-1"></a>  </span>
+<span id="cb150-58"><a href="viewing-pairwise-sample-clustering.html#cb150-58" tabindex="-1"></a>  <span class="co">#add name to the columns of the final matrix</span></span>
+<span id="cb150-59"><a href="viewing-pairwise-sample-clustering.html#cb150-59" tabindex="-1"></a>  <span class="fu">colnames</span>(mat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Gene&quot;</span>, <span class="st">&quot;Gene_Name&quot;</span>, <span class="st">&quot;Log10_Pvalue&quot;</span>, <span class="st">&quot;Log_fold_change&quot;</span>)</span>
+<span id="cb150-60"><a href="viewing-pairwise-sample-clustering.html#cb150-60" tabindex="-1"></a>  </span>
+<span id="cb150-61"><a href="viewing-pairwise-sample-clustering.html#cb150-61" tabindex="-1"></a>  <span class="fu">return</span>(mat)</span>
+<span id="cb150-62"><a href="viewing-pairwise-sample-clustering.html#cb150-62" tabindex="-1"></a>}</span>
+<span id="cb150-63"><a href="viewing-pairwise-sample-clustering.html#cb150-63" tabindex="-1"></a></span>
+<span id="cb150-64"><a href="viewing-pairwise-sample-clustering.html#cb150-64" tabindex="-1"></a><span class="co">#run the five comparisons through edgeR using the *uncorrected data*</span></span>
+<span id="cb150-65"><a href="viewing-pairwise-sample-clustering.html#cb150-65" tabindex="-1"></a>uhr_ribo_vs_hbr_ribo_uncorrected <span class="ot">=</span> <span class="fu">run_edgeR</span>(<span class="at">data =</span> uncorrected_data, <span class="at">group_a_name =</span> <span class="st">&quot;UHR&quot;</span>, <span class="at">group_a_samples =</span> uhr_ribo_samples, <span class="at">group_b_name =</span> <span class="st">&quot;HBR&quot;</span>, <span class="at">group_b_samples =</span> hbr_ribo_samples)</span>
+<span id="cb150-66"><a href="viewing-pairwise-sample-clustering.html#cb150-66" tabindex="-1"></a>uhr_poly_vs_hbr_poly_uncorrected <span class="ot">=</span> <span class="fu">run_edgeR</span>(<span class="at">data =</span> uncorrected_data, <span class="at">group_a_name =</span> <span class="st">&quot;UHR&quot;</span>, <span class="at">group_a_samples =</span> uhr_poly_samples, <span class="at">group_b_name =</span> <span class="st">&quot;HBR&quot;</span>, <span class="at">group_b_samples =</span> hbr_poly_samples)</span>
+<span id="cb150-67"><a href="viewing-pairwise-sample-clustering.html#cb150-67" tabindex="-1"></a>uhr_ribo_vs_hbr_poly_uncorrected <span class="ot">=</span> <span class="fu">run_edgeR</span>(<span class="at">data =</span> uncorrected_data, <span class="at">group_a_name =</span> <span class="st">&quot;UHR&quot;</span>, <span class="at">group_a_samples =</span> uhr_ribo_samples, <span class="at">group_b_name =</span> <span class="st">&quot;HBR&quot;</span>, <span class="at">group_b_samples =</span> hbr_poly_samples)</span>
+<span id="cb150-68"><a href="viewing-pairwise-sample-clustering.html#cb150-68" tabindex="-1"></a>uhr_poly_vs_hbr_ribo_uncorrected <span class="ot">=</span> <span class="fu">run_edgeR</span>(<span class="at">data =</span> uncorrected_data, <span class="at">group_a_name =</span> <span class="st">&quot;UHR&quot;</span>, <span class="at">group_a_samples =</span> uhr_poly_samples, <span class="at">group_b_name =</span> <span class="st">&quot;HBR&quot;</span>, <span class="at">group_b_samples =</span> hbr_ribo_samples)</span>
+<span id="cb150-69"><a href="viewing-pairwise-sample-clustering.html#cb150-69" tabindex="-1"></a>uhr_vs_hbr_uncorrected <span class="ot">=</span> <span class="fu">run_edgeR</span>(<span class="at">data =</span> uncorrected_data, <span class="at">group_a_name =</span> <span class="st">&quot;UHR&quot;</span>, <span class="at">group_a_samples =</span> uhr_samples, <span class="at">group_b_name =</span> <span class="st">&quot;HBR&quot;</span>, <span class="at">group_b_samples =</span> hbr_samples)</span>
+<span id="cb150-70"><a href="viewing-pairwise-sample-clustering.html#cb150-70" tabindex="-1"></a></span>
+<span id="cb150-71"><a href="viewing-pairwise-sample-clustering.html#cb150-71" tabindex="-1"></a><span class="co">#run the same five comparisons through edgeR using the *batch corrected data*</span></span>
+<span id="cb150-72"><a href="viewing-pairwise-sample-clustering.html#cb150-72" tabindex="-1"></a>uhr_ribo_vs_hbr_ribo_corrected <span class="ot">=</span> <span class="fu">run_edgeR</span>(<span class="at">data =</span> corrected_data, <span class="at">group_a_name =</span> <span class="st">&quot;UHR&quot;</span>, <span class="at">group_a_samples =</span> uhr_ribo_samples, <span class="at">group_b_name =</span> <span class="st">&quot;HBR&quot;</span>, <span class="at">group_b_samples =</span> hbr_ribo_samples)</span>
+<span id="cb150-73"><a href="viewing-pairwise-sample-clustering.html#cb150-73" tabindex="-1"></a>uhr_poly_vs_hbr_poly_corrected <span class="ot">=</span> <span class="fu">run_edgeR</span>(<span class="at">data =</span> corrected_data, <span class="at">group_a_name =</span> <span class="st">&quot;UHR&quot;</span>, <span class="at">group_a_samples =</span> uhr_poly_samples, <span class="at">group_b_name =</span> <span class="st">&quot;HBR&quot;</span>, <span class="at">group_b_samples =</span> hbr_poly_samples)</span>
+<span id="cb150-74"><a href="viewing-pairwise-sample-clustering.html#cb150-74" tabindex="-1"></a>uhr_ribo_vs_hbr_poly_corrected <span class="ot">=</span> <span class="fu">run_edgeR</span>(<span class="at">data =</span> corrected_data, <span class="at">group_a_name =</span> <span class="st">&quot;UHR&quot;</span>, <span class="at">group_a_samples =</span> uhr_ribo_samples, <span class="at">group_b_name =</span> <span class="st">&quot;HBR&quot;</span>, <span class="at">group_b_samples =</span> hbr_poly_samples)</span>
+<span id="cb150-75"><a href="viewing-pairwise-sample-clustering.html#cb150-75" tabindex="-1"></a>uhr_poly_vs_hbr_ribo_corrected <span class="ot">=</span> <span class="fu">run_edgeR</span>(<span class="at">data =</span> corrected_data, <span class="at">group_a_name =</span> <span class="st">&quot;UHR&quot;</span>, <span class="at">group_a_samples =</span> uhr_poly_samples, <span class="at">group_b_name =</span> <span class="st">&quot;HBR&quot;</span>, <span class="at">group_b_samples =</span> hbr_ribo_samples)</span>
+<span id="cb150-76"><a href="viewing-pairwise-sample-clustering.html#cb150-76" tabindex="-1"></a>uhr_vs_hbr_corrected <span class="ot">=</span> <span class="fu">run_edgeR</span>(<span class="at">data =</span> corrected_data, <span class="at">group_a_name =</span> <span class="st">&quot;UHR&quot;</span>, <span class="at">group_a_samples =</span> uhr_samples, <span class="at">group_b_name =</span> <span class="st">&quot;HBR&quot;</span>, <span class="at">group_b_samples =</span> hbr_samples)</span></code></pre></div>
+</div>
+<div id="visualize-and-interpret-the-impact-of-batch-correction-on-differential-expression-results" class="section level3 hasAnchor">
+<h3>Visualize and interpret the impact of batch correction on differential expression results<a href="viewing-pairwise-sample-clustering.html#visualize-and-interpret-the-impact-of-batch-correction-on-differential-expression-results" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>In this section we will explore the 10 sets of differential expression results involving different combinations of data made with different library approaches and pooling of samples, before and after batch correction. First we will create some Venn diagrams.</p>
+<div class="sourceCode" id="cb151"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb151-1"><a href="viewing-pairwise-sample-clustering.html#cb151-1" tabindex="-1"></a><span class="co">#how much of a difference does batch correction make when doing the comparison of all UHR vs all HBR samples?</span></span>
+<span id="cb151-2"><a href="viewing-pairwise-sample-clustering.html#cb151-2" tabindex="-1"></a><span class="fu">dim</span>(uhr_vs_hbr_uncorrected)</span>
+<span id="cb151-3"><a href="viewing-pairwise-sample-clustering.html#cb151-3" tabindex="-1"></a><span class="fu">dim</span>(uhr_vs_hbr_corrected)</span>
+<span id="cb151-4"><a href="viewing-pairwise-sample-clustering.html#cb151-4" tabindex="-1"></a></span>
+<span id="cb151-5"><a href="viewing-pairwise-sample-clustering.html#cb151-5" tabindex="-1"></a><span class="co">#create some venn diagrams to examine a few comparisons of DE gene results</span></span>
+<span id="cb151-6"><a href="viewing-pairwise-sample-clustering.html#cb151-6" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;ggVennDiagram&quot;</span>)</span>
+<span id="cb151-7"><a href="viewing-pairwise-sample-clustering.html#cb151-7" tabindex="-1"></a><span class="fu">library</span>(ggVennDiagram)</span>
+<span id="cb151-8"><a href="viewing-pairwise-sample-clustering.html#cb151-8" tabindex="-1"></a></span>
+<span id="cb151-9"><a href="viewing-pairwise-sample-clustering.html#cb151-9" tabindex="-1"></a><span class="co">#for uncorrected data, compare the DE genes that result from Ribo data only vs a mix of library types</span></span>
+<span id="cb151-10"><a href="viewing-pairwise-sample-clustering.html#cb151-10" tabindex="-1"></a>comparison_pair_1 <span class="ot">=</span> <span class="fu">list</span>(<span class="st">&quot;Ribo&quot;</span> <span class="ot">=</span> uhr_ribo_vs_hbr_ribo_uncorrected[,<span class="st">&quot;Gene&quot;</span>], </span>
+<span id="cb151-11"><a href="viewing-pairwise-sample-clustering.html#cb151-11" tabindex="-1"></a>                       <span class="st">&quot;Mixed&quot;</span> <span class="ot">=</span> uhr_ribo_vs_hbr_poly_uncorrected[,<span class="st">&quot;Gene&quot;</span>])</span>
+<span id="cb151-12"><a href="viewing-pairwise-sample-clustering.html#cb151-12" tabindex="-1"></a></span>
+<span id="cb151-13"><a href="viewing-pairwise-sample-clustering.html#cb151-13" tabindex="-1"></a>comparison_pair_2 <span class="ot">=</span> <span class="fu">list</span>(<span class="st">&quot;Ribo&quot;</span> <span class="ot">=</span> uhr_ribo_vs_hbr_ribo_corrected[,<span class="st">&quot;Gene&quot;</span>], </span>
+<span id="cb151-14"><a href="viewing-pairwise-sample-clustering.html#cb151-14" tabindex="-1"></a>                       <span class="st">&quot;Mixed&quot;</span> <span class="ot">=</span> uhr_ribo_vs_hbr_poly_corrected[,<span class="st">&quot;Gene&quot;</span>])</span>
+<span id="cb151-15"><a href="viewing-pairwise-sample-clustering.html#cb151-15" tabindex="-1"></a></span>
+<span id="cb151-16"><a href="viewing-pairwise-sample-clustering.html#cb151-16" tabindex="-1"></a>p1 <span class="ot">=</span> <span class="fu">ggVennDiagram</span>(comparison_pair_1) <span class="sc">+</span> </span>
+<span id="cb151-17"><a href="viewing-pairwise-sample-clustering.html#cb151-17" tabindex="-1"></a>     <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Number of DE Genes found (Uncorrected data)&quot;</span>, </span>
+<span id="cb151-18"><a href="viewing-pairwise-sample-clustering.html#cb151-18" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">&quot;(Ribo: UHR_Ribo vs HBR_Ribo) and (Mixed: UHR_Ribo vs HBR_Poly)&quot;</span>)</span>
+<span id="cb151-19"><a href="viewing-pairwise-sample-clustering.html#cb151-19" tabindex="-1"></a>p2 <span class="ot">=</span> <span class="fu">ggVennDiagram</span>(comparison_pair_2) <span class="sc">+</span> </span>
+<span id="cb151-20"><a href="viewing-pairwise-sample-clustering.html#cb151-20" tabindex="-1"></a>     <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Number of DE Genes found (Corrected data)&quot;</span>, </span>
+<span id="cb151-21"><a href="viewing-pairwise-sample-clustering.html#cb151-21" tabindex="-1"></a>          <span class="at">subtitle =</span> <span class="st">&quot;(Ribo: UHR_Ribo vs HBR_Ribo) and (Mixed: UHR_Ribo vs HBR_Poly)&quot;</span>)</span>
+<span id="cb151-22"><a href="viewing-pairwise-sample-clustering.html#cb151-22" tabindex="-1"></a></span>
+<span id="cb151-23"><a href="viewing-pairwise-sample-clustering.html#cb151-23" tabindex="-1"></a><span class="co">#fix annoying clipping of labels</span></span>
+<span id="cb151-24"><a href="viewing-pairwise-sample-clustering.html#cb151-24" tabindex="-1"></a>p1 <span class="ot">=</span> <span class="fu">ggplot_build</span>(p1) <span class="sc">|&gt;</span> <span class="fu">ggplot_gtable</span>()</span>
+<span id="cb151-25"><a href="viewing-pairwise-sample-clustering.html#cb151-25" tabindex="-1"></a>p1<span class="sc">$</span>layout<span class="sc">$</span>clip[p1<span class="sc">$</span>layout<span class="sc">$</span>name <span class="sc">==</span> <span class="st">&quot;panel&quot;</span>] <span class="ot">=</span> <span class="st">&quot;off&quot;</span></span>
+<span id="cb151-26"><a href="viewing-pairwise-sample-clustering.html#cb151-26" tabindex="-1"></a>p2 <span class="ot">=</span> <span class="fu">ggplot_build</span>(p2) <span class="sc">|&gt;</span> <span class="fu">ggplot_gtable</span>()</span>
+<span id="cb151-27"><a href="viewing-pairwise-sample-clustering.html#cb151-27" tabindex="-1"></a>p2<span class="sc">$</span>layout<span class="sc">$</span>clip[p2<span class="sc">$</span>layout<span class="sc">$</span>name <span class="sc">==</span> <span class="st">&quot;panel&quot;</span>] <span class="ot">=</span> <span class="st">&quot;off&quot;</span></span>
+<span id="cb151-28"><a href="viewing-pairwise-sample-clustering.html#cb151-28" tabindex="-1"></a></span>
+<span id="cb151-29"><a href="viewing-pairwise-sample-clustering.html#cb151-29" tabindex="-1"></a><span class="fu">pdf</span>(<span class="st">&quot;Venn_Comparison_Corrected_vs_Uncorrected.pdf&quot;</span>)</span>
+<span id="cb151-30"><a href="viewing-pairwise-sample-clustering.html#cb151-30" tabindex="-1"></a><span class="fu">grid.arrange</span>(p1, p2, <span class="at">nrow =</span> <span class="dv">2</span>)</span>
+<span id="cb151-31"><a href="viewing-pairwise-sample-clustering.html#cb151-31" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code></pre></div>
+<p>Some observations from these Venn Diagrams:</p>
+<ul>
+<li>The uncorrected data gives more DE genes when mixing library types (false positives?). The batch correction eliminates most of these.</li>
+<li>The total number of significant genes in the Ribo-vs-Ribo comparison also goes down after batch correction (even though batch correction was not needed for this comparison data) (false negatives?).</li>
+<li>After batch correction the results have higher overall agreement</li>
+</ul>
+<p>Note that Venn diagrams don’t work when we have a lot of sets to compare to each other so we created upset plots to summarize the overlap between all the comparisons performed above</p>
+<p><img src="assets/module_3/Venn-Comparison-Corrected-vs-Uncorrected.png" alt="Venn-Comparison-Corrected-vs-Uncorrected" /><br />
+</p>
+<div class="sourceCode" id="cb152"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="viewing-pairwise-sample-clustering.html#cb152-1" tabindex="-1"></a><span class="co">#now create an upset plot from the *uncorrected* data</span></span>
+<span id="cb152-2"><a href="viewing-pairwise-sample-clustering.html#cb152-2" tabindex="-1"></a>listInput1 <span class="ot">=</span> <span class="fu">list</span>(<span class="st">&quot;4 UHR Ribo vs 4 HBR Ribo&quot;</span> <span class="ot">=</span> uhr_ribo_vs_hbr_ribo_uncorrected[, <span class="st">&quot;Gene&quot;</span>],</span>
+<span id="cb152-3"><a href="viewing-pairwise-sample-clustering.html#cb152-3" tabindex="-1"></a>                  <span class="st">&quot;4 UHR Poly vs 4HBR Poly&quot;</span> <span class="ot">=</span> uhr_poly_vs_hbr_poly_uncorrected[, <span class="st">&quot;Gene&quot;</span>],</span>
+<span id="cb152-4"><a href="viewing-pairwise-sample-clustering.html#cb152-4" tabindex="-1"></a>                  <span class="st">&quot;4 UHR Ribo vs 4 HBR Poly&quot;</span> <span class="ot">=</span> uhr_ribo_vs_hbr_poly_uncorrected[, <span class="st">&quot;Gene&quot;</span>],</span>
+<span id="cb152-5"><a href="viewing-pairwise-sample-clustering.html#cb152-5" tabindex="-1"></a>                  <span class="st">&quot;4 UHR Poly vs 4 HBR Ribo&quot;</span> <span class="ot">=</span> uhr_poly_vs_hbr_ribo_uncorrected[, <span class="st">&quot;Gene&quot;</span>],</span>
+<span id="cb152-6"><a href="viewing-pairwise-sample-clustering.html#cb152-6" tabindex="-1"></a>                  <span class="st">&quot;8 UHR vs 8 HBR&quot;</span> <span class="ot">=</span> uhr_vs_hbr_uncorrected[, <span class="st">&quot;Gene&quot;</span>])</span>
+<span id="cb152-7"><a href="viewing-pairwise-sample-clustering.html#cb152-7" tabindex="-1"></a></span>
+<span id="cb152-8"><a href="viewing-pairwise-sample-clustering.html#cb152-8" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file =</span> <span class="st">&quot;Uncorrected-UpSet.pdf&quot;</span>, <span class="at">onefile =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb152-9"><a href="viewing-pairwise-sample-clustering.html#cb152-9" tabindex="-1"></a><span class="fu">upset</span>(<span class="fu">fromList</span>(listInput1), <span class="at">order.by =</span> <span class="st">&quot;freq&quot;</span>, <span class="at">number.angles =</span> <span class="dv">45</span>, <span class="at">point.size =</span> <span class="dv">3</span>)</span>
+<span id="cb152-10"><a href="viewing-pairwise-sample-clustering.html#cb152-10" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb152-11"><a href="viewing-pairwise-sample-clustering.html#cb152-11" tabindex="-1"></a></span>
+<span id="cb152-12"><a href="viewing-pairwise-sample-clustering.html#cb152-12" tabindex="-1"></a><span class="co">#now create an upset plot from the *batch corrected* data</span></span>
+<span id="cb152-13"><a href="viewing-pairwise-sample-clustering.html#cb152-13" tabindex="-1"></a>listInput2 <span class="ot">=</span> <span class="fu">list</span>(<span class="st">&quot;4 UHR Ribo vs 4 HBR Ribo&quot;</span> <span class="ot">=</span> uhr_ribo_vs_hbr_ribo_corrected[,<span class="st">&quot;Gene&quot;</span>],</span>
+<span id="cb152-14"><a href="viewing-pairwise-sample-clustering.html#cb152-14" tabindex="-1"></a>                  <span class="st">&quot;4 UHR Poly vs 4 HBR Poly&quot;</span> <span class="ot">=</span> uhr_poly_vs_hbr_poly_corrected[,<span class="st">&quot;Gene&quot;</span>],</span>
+<span id="cb152-15"><a href="viewing-pairwise-sample-clustering.html#cb152-15" tabindex="-1"></a>                  <span class="st">&quot;4 UHR Ribo vs 4 HBR Poly&quot;</span> <span class="ot">=</span> uhr_ribo_vs_hbr_poly_corrected[,<span class="st">&quot;Gene&quot;</span>],</span>
+<span id="cb152-16"><a href="viewing-pairwise-sample-clustering.html#cb152-16" tabindex="-1"></a>                  <span class="st">&quot;4 UHR Poly vs 4 HBR Ribo&quot;</span> <span class="ot">=</span> uhr_poly_vs_hbr_ribo_corrected[,<span class="st">&quot;Gene&quot;</span>],</span>
+<span id="cb152-17"><a href="viewing-pairwise-sample-clustering.html#cb152-17" tabindex="-1"></a>                  <span class="st">&quot;8 UHR vs 8 HBR&quot;</span> <span class="ot">=</span> uhr_vs_hbr_corrected[,<span class="st">&quot;Gene&quot;</span>])</span>
+<span id="cb152-18"><a href="viewing-pairwise-sample-clustering.html#cb152-18" tabindex="-1"></a></span>
+<span id="cb152-19"><a href="viewing-pairwise-sample-clustering.html#cb152-19" tabindex="-1"></a><span class="fu">pdf</span>(<span class="at">file =</span> <span class="st">&quot;BatchCorrected-UpSet.pdf&quot;</span>, <span class="at">onefile =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb152-20"><a href="viewing-pairwise-sample-clustering.html#cb152-20" tabindex="-1"></a><span class="fu">upset</span>(<span class="fu">fromList</span>(listInput2), <span class="at">order.by =</span> <span class="st">&quot;freq&quot;</span>, <span class="at">number.angles=</span><span class="dv">45</span>, <span class="at">point.size=</span><span class="dv">3</span>)</span>
+<span id="cb152-21"><a href="viewing-pairwise-sample-clustering.html#cb152-21" tabindex="-1"></a><span class="fu">dev.off</span>()</span>
+<span id="cb152-22"><a href="viewing-pairwise-sample-clustering.html#cb152-22" tabindex="-1"></a></span>
+<span id="cb152-23"><a href="viewing-pairwise-sample-clustering.html#cb152-23" tabindex="-1"></a><span class="co">#write out the final set of DE genes where all UHR and HBR samples were compared using the corrected data</span></span>
+<span id="cb152-24"><a href="viewing-pairwise-sample-clustering.html#cb152-24" tabindex="-1"></a><span class="fu">write.table</span>(uhr_vs_hbr_corrected, <span class="at">file =</span> <span class="st">&quot;DE_genes_uhr_vs_hbr_corrected.tsv&quot;</span>, <span class="at">quote =</span> <span class="cn">FALSE</span>, <span class="at">row.names =</span> <span class="cn">FALSE</span>, <span class="at">sep =</span> <span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>)</span>
+<span id="cb152-25"><a href="viewing-pairwise-sample-clustering.html#cb152-25" tabindex="-1"></a></span>
+<span id="cb152-26"><a href="viewing-pairwise-sample-clustering.html#cb152-26" tabindex="-1"></a><span class="co">#To exit R type the following</span></span>
+<span id="cb152-27"><a href="viewing-pairwise-sample-clustering.html#cb152-27" tabindex="-1"></a><span class="fu">quit</span>(<span class="at">save =</span> <span class="st">&quot;no&quot;</span>)</span></code></pre></div>
+<p>An UpSet plot is an alternative to a Venn Diagram. It shows the overlap (intersection) between an arbitrary number of sets of values. In this case we are comparing the list of genes identified as significantly DE by five different comparisons. The black circles connected by a line indicate each combination of sets being considered. The bar graph above each column shows how many genes are shared across those sets. For example, the first column has all five black circles. The bar above that column indicates how many genes were found in all five DE comparisons performed.</p>
+<p>What differs in each comparison is:</p>
+<ul>
+<li>whether we are comparing replicates prepared with the same library construction approach (Ribo reduction or PolyA) or whether we are comparing data prepared with different approaches</li>
+<li>whether we are comparing 4 UHR vs 4 HBR replicates according to these library construction approaches, or pooling all 8 UHR and all 8 HBR samples (ignoring their different library types)</li>
+<li>whether we are doing these comparisons before or after batch correction</li>
+</ul>
+<div id="before-batch-correction" class="section level4 hasAnchor">
+<h4>Before batch correction<a href="viewing-pairwise-sample-clustering.html#before-batch-correction" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="assets/module_3/Uncorrected-UpSet.png" alt="Uncorrected-UpSet" /><br />
+</p>
+</div>
+<div id="after-batch-correction" class="section level4 hasAnchor">
+<h4>After batch correction<a href="viewing-pairwise-sample-clustering.html#after-batch-correction" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p><img src="assets/module_3/BatchCorrected-UpSet.png" alt="BatchCorrected-UpSet" /><br />
+</p>
+<p>There are several notable observations from the analysis above and the two UpSet plots.</p>
+<ul>
+<li>In the uncorrected data, we actually see more DE genes when comparing a mix of library contruction approaches (e.g. UHR-Ribo vs UHR-Poly). There are likely false positives in these results. i.e. Genes that appear to be different between UHR and HBR, but where the difference is actually caused by differences in the library preparation not the biology.</li>
+<li>If we combine all 8 samples together for each biological condition we can see that we actually get considerably <em>fewer</em> significant genes with the uncorrected data. Presumably this is because we are now introducing noise caused by a mix of different library construction approaches and this impacts the statistical analysis (more variability).</li>
+<li>When we apply batch correction, we see that now all five comparisons tend to agree with each other for the most part on what genes are differentially expressed. Overall agreement across comparisons is improved.</li>
+<li>With the batch corrected data we now see that combining all 8 samples actually improves statistical power and results in a <em>larger</em> number of significant DE genes relative to the 4 vs 4 comparisons. This is presumably the most accurate result of all the comparisons we did.</li>
+</ul>
+<hr />
+<p><font size="5"><b>Team Assignment - Expression and DE</b></font></p>
+</div>
+</div>
+<div id="part-i---expression-estimation" class="section level2 hasAnchor">
+<h2>Part I - Expression Estimation<a href="viewing-pairwise-sample-clustering.html#part-i---expression-estimation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Familiarize yourself with Stringtie options</li>
+<li>Run Stringtie to obtain expression values</li>
+<li>Optionally, run htseq-count to obtain raw count values</li>
+</ul>
+<div id="remember-to-do-this-in-a-new-directory-under-team_exercises" class="section level3 hasAnchor">
+<h3>Remember to do this in a new directory under team_exercises<a href="viewing-pairwise-sample-clustering.html#remember-to-do-this-in-a-new-directory-under-team_exercises" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb153"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb153-1"><a href="viewing-pairwise-sample-clustering.html#cb153-1" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$RNA_HOME</span>/team_exercise/expression/</span>
+<span id="cb153-2"><a href="viewing-pairwise-sample-clustering.html#cb153-2" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span>/team_exercise/expression/</span></code></pre></div>
+<p>Teams can now use <code>Stringtie</code> to estimate the gene expression levels in their sample and answer the following questions:</p>
+<p><strong>Q1.</strong> Based on your stringtie results, what are the top 5 genes with highest average expression levels across all knockout samples? What about in your rescue samples? (Hint: You can use R, command-line tools, or download files to your desktop for this analysis)</p>
+</div>
+</div>
+<div id="part-ii---differential-expression" class="section level2 hasAnchor">
+<h2>Part II - Differential Expression<a href="viewing-pairwise-sample-clustering.html#part-ii---differential-expression" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Perform differential analysis between the knockout and rescued samples</li>
+<li>Check which genes are differentially expressed with statistical significance</li>
+<li>Visualize DE results. For example you could create an MDS plot, x-y scatter plot of mean KO vs Rescue FPKM values, or a volcano plot.</li>
+</ul>
+<p>Teams will now use ballgown to perform differential expression analysis followed by visualization of their results. Alternatively, if raw counts were generated teams can use edgeR or DESeq2 for differential expression analysis.</p>
+<p>Hint: You will should create a separate directory under your team_exercises folder for your ballgown (or edgeR or DESeq2) outputs.</p>
+<p><strong>Q2.</strong> How many significant differentially expressed genes do you observe?</p>
+<p><strong>Q3.</strong> By referring back to the supplementary tutorial in the DE Visualization Module, can you construct a volcano plot showcasing the significantly de genes?</p>
+<p>Additionally, students should feel free to explore other visualization methods, including those they may have used in past research experiences and share with the class.</p>
+</div>
+<div id="presenting-your-results-1" class="section level2 hasAnchor">
+<h2>Presenting Your Results<a href="viewing-pairwise-sample-clustering.html#presenting-your-results-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>At the end of this team exercise, students will show how they visualized their differential expression results to the class.</p>
+<hr />
+<p><font size="5"><b>TIntegrated Assignment</b></font></p>
+<p><strong>Preamble:</strong> Note that the following integrated assignment asks you to work on new RNA-seq data and apply the concepts you have learned up to this point. To complete this assignment you will need to review commands we performed in many of the earlier sections. Try to construct these commands on your own and get all the way to the end of the assignment. If you get very stuck or would like to compare your solutions to those suggested by the instructors, refer to the answers page. The integrated assignment answers page is an expanded version of this page with all of the questions plus detailed code solutions to all problems. Avoid the temptation to look at it without trying on your own.</p>
+<p><strong>Background:</strong> Cell lines are often used to study different experimental conditions and to study the function of specific genes by various perturbation approaches. One such type of study involves knocking down expression of a target of interest by shRNA and then using RNA-seq to measure the impact on gene expression. These eperiments often include use of a control shRNA to account for any expression changes that may occur from just the introduction of these molecules. Differential expression is performed by comparing biological replicates of shRNA knockdown vs shRNA control.</p>
+<p><strong>Objectives:</strong> In this assignment, we will be using a subset of the <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA471072">GSE114360 dataset</a>, which consists of 6 RNA-seq datasets generated from a cell line (3 transfected with shRNA, and 3 controls). Our goal will be to determine differentially expressed genes.</p>
+<p>Experimental information and other things to keep in mind:</p>
+<ul>
+<li>The libraries are prepared as paired end.</li>
+<li>The samples are sequenced on an Illumina 4000.</li>
+<li>Each read is 150 bp long</li>
+<li>The dataset is located here: <a href="https://www.ncbi.nlm.nih.gov/bioproject/PRJNA471072">GSE114360</a></li>
+<li>3 samples transfected with target shRNA and 3 samples with control shRNA</li>
+<li>Libraries were prepared using standard Illumina protocols</li>
+<li>For this exercise we will be using a subset of the reads (first 1,000,000 reads from each pair).</li>
+<li>The files are named based on their SRR id’s, and obey the following key:
+<ul>
+<li>SRR7155055 = CBSLR knockdown sample 1 (T1 - aka transfected 1)</li>
+<li>SRR7155056 = CBSLR knockdown sample 2 (T2 - aka transfected 2)</li>
+<li>SRR7155057 = CBSLR knockdown sample 3 (T3 - aka transfected 3)</li>
+<li>SRR7155058 = control sample 1 (C1 - aka control 1)</li>
+<li>SRR7155059 = control sample 2 (C2 - aka control 2)</li>
+<li>SRR7155060 = control sample 3 (C3 - aka control 3)</li>
+</ul></li>
+</ul>
+<p>Experimental descriptions from the study authors:</p>
+<p>Experimental details from the <a href="https://pubmed.ncbi.nlm.nih.gov/35499052/">paper</a>:
+“An RNA transcriptome-sequencing analysis was performed in shRNA-NC or shRNA-CBSLR-1 MKN45 cells cultured under hypoxic conditions for 24 h (Fig. 2A).”</p>
+<p>Experimental details from the GEO submission:
+“An RNA transcriptome sequencing analysis was performed in MKN45 cells that were transfected with tcons_00001221 shRNA or control shRNA.”</p>
+<p>Note that according to <a href="https://www.genecards.org/cgi-bin/carddisp.pl?gene=CBSLR">GeneCards</a> and <a href="https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/55459">HGNC</a>, <em>CBSLR</em> and <em>tcons_00001221</em> refer to the same gene.</p>
+</div>
+<div id="part-0-obtaining-data-and-references" class="section level2 hasAnchor">
+<h2>PART 0 : Obtaining Data and References<a href="viewing-pairwise-sample-clustering.html#part-0-obtaining-data-and-references" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Obtain the files necessary for data processing</li>
+<li>Familiarize yourself with reference and annotation file format</li>
+<li>Familiarize yourself with sequence FASTQ format</li>
+</ul>
+<p>Create a working directory ~/workspace/rnaseq/integrated_assignment/ to store this exercise. Then create a unix environment variable named <code>RNA_INT_ASSIGNMENT</code> that stores this path for convenience in later commands.</p>
+<div class="sourceCode" id="cb154"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb154-1"><a href="viewing-pairwise-sample-clustering.html#cb154-1" tabindex="-1"></a><span class="bu">export</span> <span class="va">RNA_HOME</span><span class="op">=</span>~/workspace/rnaseq</span>
+<span id="cb154-2"><a href="viewing-pairwise-sample-clustering.html#cb154-2" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_HOME</span></span>
+<span id="cb154-3"><a href="viewing-pairwise-sample-clustering.html#cb154-3" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/workspace/rnaseq/integrated_assignment/</span>
+<span id="cb154-4"><a href="viewing-pairwise-sample-clustering.html#cb154-4" tabindex="-1"></a><span class="bu">export</span> <span class="va">RNA_INT_DIR</span><span class="op">=</span>~/workspace/rnaseq/integrated_assignment</span></code></pre></div>
+<p>Obtain reference, annotation, adapter and data files and place them in the integrated assignment directory</p>
+<p>Remember: when initiating an environment variable, we do NOT need the $; however, everytime we call the variable, it needs to be preceeded by a $.</p>
+<div class="sourceCode" id="cb155"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb155-1"><a href="viewing-pairwise-sample-clustering.html#cb155-1" tabindex="-1"></a><span class="bu">echo</span> <span class="va">$RNA_INT_DIR</span></span>
+<span id="cb155-2"><a href="viewing-pairwise-sample-clustering.html#cb155-2" tabindex="-1"></a><span class="bu">cd</span> <span class="va">$RNA_INT_DIR</span></span>
+<span id="cb155-3"><a href="viewing-pairwise-sample-clustering.html#cb155-3" tabindex="-1"></a></span>
+<span id="cb155-4"><a href="viewing-pairwise-sample-clustering.html#cb155-4" tabindex="-1"></a><span class="fu">wget</span> https://genomedata.org/rnaseq-tutorial/Integrated_Assignment_RNA_Data.tar.gz</span></code></pre></div>
+<p><strong>Q1.)</strong> How many items are there under the “reference” directory (counting all files in all sub-directories)? What if this reference file was not provided for you - how would you obtain/create a reference genome fasta file. How about the GTF transcripts file from Ensembl?</p>
+<p><strong>Q2.)</strong> How many exons does the gene SOX4 have? How about the longest isoform of PCA3?</p>
+<p><strong>Q3.)</strong> How many samples do you see under the data directory?</p>
+<p>NOTE: The fastq files you have copied above contain only the first 1,000,000 reads. Keep this in mind when you are combing through the results of the differential expression analysis.</p>
+</div>
+<div id="part-1-data-preprocessing" class="section level2 hasAnchor">
+<h2>Part 1 : Data preprocessing<a href="viewing-pairwise-sample-clustering.html#part-1-data-preprocessing" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Run a quality check with <code>fastqc</code> before and after trimming</li>
+<li>Familiarize yourself with the options for <code>fastqc</code> to be able to redirect your output</li>
+<li>Perform adapter trimming and data cleanup on your data using <code>fastp</code></li>
+<li>Familiarize yourself with the output metrics from adapter trimming</li>
+<li>Examine <code>fastqc</code> and/or <code>multiqc</code> reports for the pre- and post-trimmed data</li>
+</ul>
+<p><strong>Q4.)</strong> What metrics, if any, have the samples failed? Are the errors related?</p>
+<p><strong>Q5.)</strong> What average percentage of reads remain after adapter trimming? Why do reads get tossed out?</p>
+<p><strong>Q6.)</strong> What sample has the largest number of reads after trimming/cleanup?</p>
+</div>
+<div id="part-2-data-alignment" class="section level2 hasAnchor">
+<h2>Part 2: Data alignment<a href="viewing-pairwise-sample-clustering.html#part-2-data-alignment" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Goals:</strong>
+- Familiarize yourself with HISAT2 alignment options
+- Perform alignments
+- Obtain alignment summary
+- Convert your alignment into compressed bam format</p>
+<p><strong>Q7.)</strong> How would you obtain summary statistics for each aligned file?</p>
+<p><strong>Q8.)</strong> Approximately how much space is saved by converting the sam to a bam format?</p>
+<p>In order to make visualization easier, you should now merge each of your replicate sample bams into one combined BAM for each condition. Make sure to index these bams afterwards to be able to view them on IGV.</p>
+<p>Try viewing genes such as TP53 to get a sense of how the data is aligned. To do this:
+- Load up IGV
+- Change the reference genome to “Human hg38” in the top-left category
+- Click on File &gt; Load from URL, and in the File URL enter: “<a href="https://" class="uri">https://</a><your IP>/rnaseq/integrated_assignment/alignments/transfected.bam”. Repeat this step and enter “<a href="https://" class="uri">https://</a><your IP>/rnaseq/integrated_assignment/alignments/control.bam” to load the other bam.
+- Right-click on the alignments track in the middle, and Group alignments by “Library”
+- Jump to TP53 by typing it into the search bar above</p>
+<p><strong>Q9.)</strong> What portion of the gene do the reads seem to be piling up on? What would be different if we were viewing whole-genome sequencing data?</p>
+<p><strong>Q10.)</strong> What are the lines connecting the reads trying to convey?</p>
+</div>
+<div id="part-3-expression-estimation" class="section level2 hasAnchor">
+<h2>Part 3: Expression Estimation<a href="viewing-pairwise-sample-clustering.html#part-3-expression-estimation" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Familiarize yourself with Stringtie options</li>
+<li>Run Stringtie to obtain expression values</li>
+<li>Obtain expression values for the gene SOX4</li>
+<li>Create an expression results directory, run Stringtie on all samples, and store the results in appropriately named subdirectories in this results dir</li>
+</ul>
+<p><strong>Q11.)</strong> How can you obtain the expression of the gene SOX4 across the transfected and control samples?</p>
+</div>
+<div id="part-4-differential-expression-analysis" class="section level2 hasAnchor">
+<h2>Part 4: Differential Expression Analysis<a href="viewing-pairwise-sample-clustering.html#part-4-differential-expression-analysis" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Goals:</strong></p>
+<ul>
+<li>Perform differential analysis between the transfected and control samples</li>
+</ul>
+<p>Adapt the R tutorial code that was used in <a href="https://rnabio.org/module-03-expression/0003/03/01/Differential_Expression/">Differential Expression</a> section. Modify it to work on these data (which are also a 3x3 replicate comparison of two conditions).</p>
+<p><strong>Q12.)</strong> Are there any significant differentially expressed genes? How many in total do you see? If we expected SOX4 to be differentially expressed, why don’t we see it in this case?</p>
+</div>
+<div id="part-5-differential-expression-analysis-visualization" class="section level2 hasAnchor">
+<h2>Part 5: Differential Expression Analysis Visualization<a href="viewing-pairwise-sample-clustering.html#part-5-differential-expression-analysis-visualization" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>Q13.)</strong> What plots can you generate to help you visualize this gene expression profile?</p>
+<p>Hint, a volcano plot is popular approach to provide a high level summary of a differential expression analysis. Refer to the <a href="https://rnabio.org/module-03-expression/0003/04/01/DE_Visualization/">DE Visualization</a> section for example R code.</p>
 
 
 </div>
